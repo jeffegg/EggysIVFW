@@ -1,0 +1,49 @@
+
+Memory Class Usage:
+
+Program space:
+    CODE                 used   15Bh (   347) of  3840h words   (  2.4%)
+    STRCODE              used    20h (    32) of  3840h words   (  0.2%)
+    STRING               used     0h (     0) of  3840h words   (  0.0%)
+    CONST                used     0h (     0) of  3840h words   (  0.0%)
+    ENTRY                used     0h (     0) of  3840h words   (  0.0%)
+
+Data space:
+    COMMON               used     Eh (    14) of    10h bytes   ( 87.5%)
+    BANK0                used    21h (    33) of    50h bytes   ( 41.2%)
+    BANK1                used     0h (     0) of    50h bytes   (  0.0%)
+    BANK2                used     0h (     0) of    50h bytes   (  0.0%)
+    BANK3                used     0h (     0) of    50h bytes   (  0.0%)
+    BANK4                used     0h (     0) of    50h bytes   (  0.0%)
+    BANK5                used     0h (     0) of    50h bytes   (  0.0%)
+    BANK6                used     0h (     0) of    50h bytes   (  0.0%)
+    BANK7                used     0h (     0) of    50h bytes   (  0.0%)
+    BANK8                used     0h (     0) of    50h bytes   (  0.0%)
+    BANK9                used     0h (     0) of    50h bytes   (  0.0%)
+    BANK10               used     0h (     0) of    50h bytes   (  0.0%)
+    BANK11               used     0h (     0) of    50h bytes   (  0.0%)
+    BANK12               used     0h (     0) of    50h bytes   (  0.0%)
+    BANK13               used     0h (     0) of    50h bytes   (  0.0%)
+    BANK14               used     0h (     0) of    50h bytes   (  0.0%)
+    BANK15               used     0h (     0) of    50h bytes   (  0.0%)
+    BANK16               used     0h (     0) of    50h bytes   (  0.0%)
+    BANK17               used     0h (     0) of    50h bytes   (  0.0%)
+    BANK18               used     0h (     0) of    50h bytes   (  0.0%)
+    BANK19               used     0h (     0) of    50h bytes   (  0.0%)
+    BANK20               used     0h (     0) of    50h bytes   (  0.0%)
+    BANK21               used     0h (     0) of    50h bytes   (  0.0%)
+    BANK22               used     0h (     0) of    50h bytes   (  0.0%)
+    BANK23               used     0h (     0) of    50h bytes   (  0.0%)
+    BANK24               used     0h (     0) of    50h bytes   (  0.0%)
+    BANK25               used     0h (     0) of    20h bytes   (  0.0%)
+    ABS1                 used     2h (     2) of   800h bytes   (  0.1%)
+
+EEPROM space:
+                         None available
+
+Configuration bits:
+    CONFIG               used     2h (     2) of     2h words   (100.0%)
+
+ID Location space:
+    IDLOC                used     4h (     4) of     4h bytes   (100.0%)
+

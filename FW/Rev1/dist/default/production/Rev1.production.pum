@@ -1,0 +1,49 @@
+
+Psect Usage Map:
+
+ Psect      | Contents                         | Memory Range  | Size
+------------|----------------------------------|---------------|------------
+ reset_vec  | Reset vector                     | 07C0h - 07C1h |  2 words  
+ text20     | Program and library code         | 07C2h - 07C2h |  1 word   
+ text22     | Program and library code         | 07C3h - 07C3h |  1 word   
+ intentry   | Interrupt context entry code     | 07C4h - 07D2h |  F words  
+ init       | Initialization code              | 07D3h - 07D3h |  1 word   
+ end_init   | Initialization code              | 07D4h - 07D5h |  2 words  
+ cinit      | Initialization code              | 07D6h - 07E9h | 14 words  
+ text18     | Program and library code         | 07EAh - 07FAh | 11 words  
+ text13     | Program and library code         | 07FBh - 07FFh |  5 words  
+ text11     | Program and library code         | 0EE5h - 0EE8h |  4 words  
+ text2      | Program and library code         | 0EE9h - 0EECh |  4 words  
+ text15     | Program and library code         | 0EEDh - 0EF1h |  5 words  
+ text14     | Program and library code         | 0EF2h - 0EF6h |  5 words  
+ text8      | Program and library code         | 0EF7h - 0EFCh |  6 words  
+ text7      | Program and library code         | 0EFDh - 0F02h |  6 words  
+ maintext   | Program code for main() function | 0F03h - 0F08h |  6 words  
+ clrtext    | Memory clearing code             | 0F09h - 0F0Eh |  6 words  
+ text3      | Program and library code         | 0F0Fh - 0F15h |  7 words  
+ text16     | Program and library code         | 0F16h - 0F1Eh |  9 words  
+ text10     | Program and library code         | 0F1Fh - 0F27h |  9 words  
+ text9      | Program and library code         | 0F28h - 0F33h |  C words  
+ text4      | Program and library code         | 0F34h - 0F40h |  D words  
+ text5      | Program and library code         | 0F41h - 0F4Eh |  E words  
+ text21     | Program and library code         | 0F4Fh - 0F5Dh |  F words  
+ text19     | Program and library code         | 0F5Eh - 0F6Ch |  F words  
+ text1      | Program and library code         | 0F6Dh - 0F8Bh | 1F words  
+ text12     | Program and library code         | 0F8Ch - 0FADh | 22 words  
+ text6      | Program and library code         | 0FAEh - 0FFFh | 52 words  
+            |                                  |               |            
+ stringtext | Strings and constant data        | 1000h - 101Fh | 20 words  
+------------|----------------------------------|---------------|------------
+ bssCOMMON  | RAM variables in common memory   | 0070h - 007Bh |  C bytes  
+ cstackCOMM | Stack in common memory           | 007Ch - 007Dh |  2 bytes  
+            |                                  |               |            
+ bssBANK0   | BSS variables in bank 0          | 0020h - 003Ch | 1D bytes  
+ nvBANK0    | Persistent variables in bank 0   | 003Dh - 0040h |  4 bytes  
+            |                                  |               |            
+ abs_s1     | Absolute RAM variables           | 007Eh - 007Fh |  2 bytes  
+------------|----------------------------------|---------------|------------
+ config     |                                  | 8007h - 8008h |  2 words  
+------------|----------------------------------|---------------|------------
+ idloc      | User-programmed ID locations     | 8000h - 8003h |  4 bytes  
+------------|----------------------------------|---------------|------------
+
