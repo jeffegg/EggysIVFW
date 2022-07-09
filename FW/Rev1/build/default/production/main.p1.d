@@ -9,5 +9,9 @@ mcc_generated_files/tmr1.h  \
 mcc_generated_files/tmr2.h  \
 mcc_generated_files/tmr0.h  \
 mcc_generated_files/fvr.h  \
+mcc_generated_files/memory.h  \
 mcc_generated_files/adc.h  \
-mcc_generated_files/eusart.h 
+mcc_generated_files/eusart.h  \
+mcc_generated_files/examples/i2c_master_example.h  \
+command_system.h  \
+ledcontroller.h 

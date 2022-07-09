@@ -48,14 +48,43 @@
 
 #include "interrupt_manager.h"
 #include "mcc.h"
+void InterruptCallback();
 
 void __interrupt() INTERRUPT_InterruptManager (void)
+{
+    InterruptCallback();
+}
+
+void InterruptCallback()
 {
     // interrupt handler
     if(INTCONbits.IOCIE == 1 && INTCONbits.IOCIF == 1)
     {
         PIN_MANAGER_IOC();
     }
+    else if(INTCONbits.PEIE == 1)
+    {
+        if(PIE2bits.BCL1IE == 1 && PIR2bits.BCL1IF == 1)
+        {
+            MSSP_InterruptHandler();
+        } 
+        else if(PIE1bits.SSP1IE == 1 && PIR1bits.SSP1IF == 1)
+        {
+            MSSP_InterruptHandler();
+        } 
+        else if(PIE1bits.TXIE == 1 && PIR1bits.TXIF == 1)
+        {
+            EUSART_TxDefaultInterruptHandler();
+        } 
+        else if(PIE1bits.RCIE == 1 && PIR1bits.RCIF == 1)
+        {
+            EUSART_RxDefaultInterruptHandler();
+        } 
+        else
+        {
+            //Unhandled Interrupt
+        }
+    }      
     else
     {
         //Unhandled Interrupt

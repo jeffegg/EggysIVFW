@@ -9045,34 +9045,67 @@ typedef union {
     };
     uint8_t status;
 }eusart_status_t;
-# 110 "mcc_generated_files/eusart.h"
+
+
+
+
+extern volatile uint8_t eusartTxBufferRemaining;
+extern volatile uint8_t eusartRxCount;
+
+
+
+
+extern void (*EUSART_TxDefaultInterruptHandler)(void);
+extern void (*EUSART_RxDefaultInterruptHandler)(void);
+# 117 "mcc_generated_files/eusart.h"
 void EUSART_Initialize(void);
-# 158 "mcc_generated_files/eusart.h"
+# 165 "mcc_generated_files/eusart.h"
 _Bool EUSART_is_tx_ready(void);
-# 206 "mcc_generated_files/eusart.h"
+# 213 "mcc_generated_files/eusart.h"
 _Bool EUSART_is_rx_ready(void);
-# 253 "mcc_generated_files/eusart.h"
+# 260 "mcc_generated_files/eusart.h"
 _Bool EUSART_is_tx_done(void);
-# 301 "mcc_generated_files/eusart.h"
+# 308 "mcc_generated_files/eusart.h"
 eusart_status_t EUSART_get_last_status(void);
-# 321 "mcc_generated_files/eusart.h"
+# 328 "mcc_generated_files/eusart.h"
 uint8_t EUSART_Read(void);
-# 341 "mcc_generated_files/eusart.h"
+# 348 "mcc_generated_files/eusart.h"
 void EUSART_Write(uint8_t txData);
-# 361 "mcc_generated_files/eusart.h"
+# 369 "mcc_generated_files/eusart.h"
+void EUSART_Transmit_ISR(void);
+# 390 "mcc_generated_files/eusart.h"
+void EUSART_Receive_ISR(void);
+# 411 "mcc_generated_files/eusart.h"
+void EUSART_RxDataHandler(void);
+# 429 "mcc_generated_files/eusart.h"
 void EUSART_SetFramingErrorHandler(void (* interruptHandler)(void));
-# 379 "mcc_generated_files/eusart.h"
+# 447 "mcc_generated_files/eusart.h"
 void EUSART_SetOverrunErrorHandler(void (* interruptHandler)(void));
-# 397 "mcc_generated_files/eusart.h"
+# 465 "mcc_generated_files/eusart.h"
 void EUSART_SetErrorHandler(void (* interruptHandler)(void));
+# 485 "mcc_generated_files/eusart.h"
+void EUSART_SetTxInterruptHandler(void (* interruptHandler)(void));
+# 505 "mcc_generated_files/eusart.h"
+void EUSART_SetRxInterruptHandler(void (* interruptHandler)(void));
 # 50 "mcc_generated_files/eusart.c" 2
+# 62 "mcc_generated_files/eusart.c"
+volatile uint8_t eusartTxHead = 0;
+volatile uint8_t eusartTxTail = 0;
+volatile uint8_t eusartTxBuffer[8];
+volatile uint8_t eusartTxBufferRemaining;
 
-
+volatile uint8_t eusartRxHead = 0;
+volatile uint8_t eusartRxTail = 0;
+volatile uint8_t eusartRxBuffer[8];
+volatile eusart_status_t eusartRxStatusBuffer[8];
+volatile uint8_t eusartRxCount;
 volatile eusart_status_t eusartRxLastError;
 
 
 
 
+void (*EUSART_TxDefaultInterruptHandler)(void);
+void (*EUSART_RxDefaultInterruptHandler)(void);
 
 void (*EUSART_FramingErrorHandler)(void);
 void (*EUSART_OverrunErrorHandler)(void);
@@ -9084,6 +9117,11 @@ void EUSART_DefaultErrorHandler(void);
 
 void EUSART_Initialize(void)
 {
+
+    PIE1bits.RCIE = 0;
+    EUSART_SetRxInterruptHandler(EUSART_Receive_ISR);
+    PIE1bits.TXIE = 0;
+    EUSART_SetTxInterruptHandler(EUSART_Transmit_ISR);
 
 
 
@@ -9108,16 +9146,27 @@ void EUSART_Initialize(void)
 
     eusartRxLastError.status = 0;
 
+
+    eusartTxHead = 0;
+    eusartTxTail = 0;
+    eusartTxBufferRemaining = sizeof(eusartTxBuffer);
+
+    eusartRxHead = 0;
+    eusartRxTail = 0;
+    eusartRxCount = 0;
+
+
+    PIE1bits.RCIE = 1;
 }
 
 _Bool EUSART_is_tx_ready(void)
 {
-    return (_Bool)(PIR1bits.TXIF && TX1STAbits.TXEN);
+    return (eusartTxBufferRemaining ? 1 : 0);
 }
 
 _Bool EUSART_is_rx_ready(void)
 {
-    return (_Bool)(PIR1bits.RCIF);
+    return (eusartRxCount ? 1 : 0);
 }
 
 _Bool EUSART_is_tx_done(void)
@@ -9131,34 +9180,102 @@ eusart_status_t EUSART_get_last_status(void){
 
 uint8_t EUSART_Read(void)
 {
-    while(!PIR1bits.RCIF)
+    uint8_t readValue = 0;
+
+    while(0 == eusartRxCount)
     {
     }
 
-    eusartRxLastError.status = 0;
+    eusartRxLastError = eusartRxStatusBuffer[eusartRxTail];
 
-    if(1 == RC1STAbits.OERR)
+    readValue = eusartRxBuffer[eusartRxTail++];
+    if(sizeof(eusartRxBuffer) <= eusartRxTail)
     {
-
-
-        RC1STAbits.CREN = 0;
-        RC1STAbits.CREN = 1;
+        eusartRxTail = 0;
     }
+    PIE1bits.RCIE = 0;
+    eusartRxCount--;
+    PIE1bits.RCIE = 1;
 
-    return RC1REG;
+    return readValue;
 }
 
 void EUSART_Write(uint8_t txData)
 {
-    while(0 == PIR1bits.TXIF)
+    while(0 == eusartTxBufferRemaining)
     {
     }
 
-    TX1REG = txData;
+    if(0 == PIE1bits.TXIE)
+    {
+        TX1REG = txData;
+    }
+    else
+    {
+        PIE1bits.TXIE = 0;
+        eusartTxBuffer[eusartTxHead++] = txData;
+        if(sizeof(eusartTxBuffer) <= eusartTxHead)
+        {
+            eusartTxHead = 0;
+        }
+        eusartTxBufferRemaining--;
+    }
+    PIE1bits.TXIE = 1;
 }
 
 
+void EUSART_Transmit_ISR(void)
+{
 
+
+    if(sizeof(eusartTxBuffer) > eusartTxBufferRemaining)
+    {
+        TX1REG = eusartTxBuffer[eusartTxTail++];
+        if(sizeof(eusartTxBuffer) <= eusartTxTail)
+        {
+            eusartTxTail = 0;
+        }
+        eusartTxBufferRemaining++;
+    }
+    else
+    {
+        PIE1bits.TXIE = 0;
+    }
+}
+
+void EUSART_Receive_ISR(void)
+{
+
+    eusartRxStatusBuffer[eusartRxHead].status = 0;
+
+    if(RC1STAbits.FERR){
+        eusartRxStatusBuffer[eusartRxHead].ferr = 1;
+        EUSART_FramingErrorHandler();
+    }
+
+    if(RC1STAbits.OERR){
+        eusartRxStatusBuffer[eusartRxHead].oerr = 1;
+        EUSART_OverrunErrorHandler();
+    }
+
+    if(eusartRxStatusBuffer[eusartRxHead].status){
+        EUSART_ErrorHandler();
+    } else {
+        EUSART_RxDataHandler();
+    }
+
+
+}
+
+void EUSART_RxDataHandler(void){
+
+    eusartRxBuffer[eusartRxHead++] = RC1REG;
+    if(sizeof(eusartRxBuffer) <= eusartRxHead)
+    {
+        eusartRxHead = 0;
+    }
+    eusartRxCount++;
+}
 
 void EUSART_DefaultFramingErrorHandler(void){}
 
@@ -9171,6 +9288,7 @@ void EUSART_DefaultOverrunErrorHandler(void){
 }
 
 void EUSART_DefaultErrorHandler(void){
+    EUSART_RxDataHandler();
 }
 
 void EUSART_SetFramingErrorHandler(void (* interruptHandler)(void)){
@@ -9183,4 +9301,12 @@ void EUSART_SetOverrunErrorHandler(void (* interruptHandler)(void)){
 
 void EUSART_SetErrorHandler(void (* interruptHandler)(void)){
     EUSART_ErrorHandler = interruptHandler;
+}
+
+void EUSART_SetTxInterruptHandler(void (* interruptHandler)(void)){
+    EUSART_TxDefaultInterruptHandler = interruptHandler;
+}
+
+void EUSART_SetRxInterruptHandler(void (* interruptHandler)(void)){
+    EUSART_RxDefaultInterruptHandler = interruptHandler;
 }

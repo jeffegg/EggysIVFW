@@ -98,7 +98,7 @@ typedef struct
 } i2c_status_t;
 
 static void I2C_SetCallback(i2c_callbackIndex_t idx, i2c_callback_t cb, void *ptr);
-static void I2C_Poller(void);
+static void I2C_MasterIsr(void);
 static inline void I2C_MasterFsm(void);
 
 /* I2C interfaces */
@@ -199,8 +199,10 @@ i2c_error_t I2C_Open(i2c_address_t address)
         I2C_Status.callbackTable[I2C_TIMEOUT]=I2C_CallbackReturnReset;
         I2C_Status.callbackPayload[I2C_TIMEOUT] = NULL;
         
+        I2C_SetInterruptHandler(I2C_MasterIsr);
         I2C_MasterClearIrq();
         I2C_MasterOpen();
+        I2C_MasterEnableIrq();
         returnValue = I2C_NOERR;
     }
     return returnValue;
@@ -238,7 +240,6 @@ i2c_error_t I2C_MasterOperation(bool read)
             I2C_Status.state = I2C_SEND_ADR_WRITE;
         }
         I2C_MasterStart();
-        I2C_Poller();
     }
     return returnValue;
 }
@@ -295,6 +296,11 @@ void I2C_SetTimeoutCallback(i2c_callback_t cb, void *ptr)
     I2C_SetCallback(I2C_TIMEOUT, cb, ptr);
 }
 
+void I2C_SetInterruptHandler(void (* InterruptHandler)(void))
+{
+    MSSP_InterruptHandler = InterruptHandler;
+}
+
 static void I2C_SetCallback(i2c_callbackIndex_t idx, i2c_callback_t cb, void *ptr)
 {
     if(cb)
@@ -309,13 +315,9 @@ static void I2C_SetCallback(i2c_callbackIndex_t idx, i2c_callback_t cb, void *pt
     }
 }
 
-static void I2C_Poller(void)
+static void I2C_MasterIsr()
 {
-    while(I2C_Status.busy)
-    {
-        I2C_MasterWaitForEvent();
-        I2C_MasterFsm();
-    }
+    I2C_MasterFsm();
 }
 
 static inline void I2C_MasterFsm(void)
@@ -435,7 +437,6 @@ static i2c_fsm_states_t I2C_DO_RX_EMPTY(void)
             I2C_MasterEnableRestart();
             return I2C_SEND_RESTART_READ;
         case I2C_CONTINUE:
-            // Avoid the counter stop condition , Counter is incremented by 1
             return I2C_RX;
         default:
         case I2C_STOP:
@@ -616,6 +617,7 @@ static inline void I2C_MasterClearBusCollision(void)
 {
     PIR2bits.BCL1IF = 0;
 }
+
 
 static inline bool I2C_MasterIsRxBufFull(void)
 {

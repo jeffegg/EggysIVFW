@@ -328,6 +328,10 @@ void I2C_SetAddressNackCallback(i2c_callback_t cb, void *ptr);
 void I2C_SetDataNackCallback(i2c_callback_t cb, void *ptr);
 # 204 "mcc_generated_files/i2c_master.h"
 void I2C_SetTimeoutCallback(i2c_callback_t cb, void *ptr);
+# 213 "mcc_generated_files/i2c_master.h"
+void (*MSSP_InterruptHandler)(void);
+# 222 "mcc_generated_files/i2c_master.h"
+void I2C_SetInterruptHandler(void (* InterruptHandler)(void));
 # 47 "mcc_generated_files/i2c_master.c" 2
 
 # 1 "C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\\pic\\include\\xc.h" 1 3
@@ -9301,7 +9305,7 @@ typedef struct
 } i2c_status_t;
 
 static void I2C_SetCallback(i2c_callbackIndex_t idx, i2c_callback_t cb, void *ptr);
-static void I2C_Poller(void);
+static void I2C_MasterIsr(void);
 static __attribute__((inline)) void I2C_MasterFsm(void);
 
 
@@ -9402,8 +9406,10 @@ i2c_error_t I2C_Open(i2c_address_t address)
         I2C_Status.callbackTable[I2C_TIMEOUT]=I2C_CallbackReturnReset;
         I2C_Status.callbackPayload[I2C_TIMEOUT] = ((void*)0);
 
+        I2C_SetInterruptHandler(I2C_MasterIsr);
         I2C_MasterClearIrq();
         I2C_MasterOpen();
+        I2C_MasterEnableIrq();
         returnValue = I2C_NOERR;
     }
     return returnValue;
@@ -9441,7 +9447,6 @@ i2c_error_t I2C_MasterOperation(_Bool read)
             I2C_Status.state = I2C_SEND_ADR_WRITE;
         }
         I2C_MasterStart();
-        I2C_Poller();
     }
     return returnValue;
 }
@@ -9498,6 +9503,11 @@ void I2C_SetTimeoutCallback(i2c_callback_t cb, void *ptr)
     I2C_SetCallback(I2C_TIMEOUT, cb, ptr);
 }
 
+void I2C_SetInterruptHandler(void (* InterruptHandler)(void))
+{
+    MSSP_InterruptHandler = InterruptHandler;
+}
+
 static void I2C_SetCallback(i2c_callbackIndex_t idx, i2c_callback_t cb, void *ptr)
 {
     if(cb)
@@ -9512,13 +9522,9 @@ static void I2C_SetCallback(i2c_callbackIndex_t idx, i2c_callback_t cb, void *pt
     }
 }
 
-static void I2C_Poller(void)
+static void I2C_MasterIsr()
 {
-    while(I2C_Status.busy)
-    {
-        I2C_MasterWaitForEvent();
-        I2C_MasterFsm();
-    }
+    I2C_MasterFsm();
 }
 
 static __attribute__((inline)) void I2C_MasterFsm(void)
@@ -9638,7 +9644,6 @@ static i2c_fsm_states_t I2C_DO_RX_EMPTY(void)
             I2C_MasterEnableRestart();
             return I2C_SEND_RESTART_READ;
         case I2C_CONTINUE:
-
             return I2C_RX;
         default:
         case I2C_STOP:
@@ -9819,6 +9824,7 @@ static __attribute__((inline)) void I2C_MasterClearBusCollision(void)
 {
     PIR2bits.BCL1IF = 0;
 }
+
 
 static __attribute__((inline)) _Bool I2C_MasterIsRxBufFull(void)
 {

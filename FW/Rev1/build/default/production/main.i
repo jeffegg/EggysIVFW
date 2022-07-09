@@ -9284,6 +9284,10 @@ void I2C_SetAddressNackCallback(i2c_callback_t cb, void *ptr);
 void I2C_SetDataNackCallback(i2c_callback_t cb, void *ptr);
 # 204 "./mcc_generated_files/i2c_master.h"
 void I2C_SetTimeoutCallback(i2c_callback_t cb, void *ptr);
+# 213 "./mcc_generated_files/i2c_master.h"
+void (*MSSP_InterruptHandler)(void);
+# 222 "./mcc_generated_files/i2c_master.h"
+void I2C_SetInterruptHandler(void (* InterruptHandler)(void));
 # 56 "./mcc_generated_files/mcc.h" 2
 
 # 1 "./mcc_generated_files/tmr1.h" 1
@@ -9344,6 +9348,17 @@ _Bool TMR0_HasOverflowOccured(void);
 _Bool FVR_IsOutputReady(void);
 # 60 "./mcc_generated_files/mcc.h" 2
 
+# 1 "./mcc_generated_files/memory.h" 1
+# 99 "./mcc_generated_files/memory.h"
+uint16_t FLASH_ReadWord(uint16_t flashAddr);
+# 128 "./mcc_generated_files/memory.h"
+void FLASH_WriteWord(uint16_t flashAddr, uint16_t *ramBuf, uint16_t word);
+# 164 "./mcc_generated_files/memory.h"
+int8_t FLASH_WriteBlock(uint16_t writeAddr, uint16_t *flashWordArray);
+# 189 "./mcc_generated_files/memory.h"
+void FLASH_EraseBlock(uint16_t startAddr);
+# 61 "./mcc_generated_files/mcc.h" 2
+
 # 1 "./mcc_generated_files/adc.h" 1
 # 72 "./mcc_generated_files/adc.h"
 typedef uint16_t adc_result_t;
@@ -9381,7 +9396,7 @@ adc_result_t ADC_GetConversionResult(void);
 adc_result_t ADC_GetConversion(adc_channel_t channel);
 # 319 "./mcc_generated_files/adc.h"
 void ADC_TemperatureAcquisitionDelay(void);
-# 61 "./mcc_generated_files/mcc.h" 2
+# 62 "./mcc_generated_files/mcc.h" 2
 
 # 1 "./mcc_generated_files/eusart.h" 1
 # 75 "./mcc_generated_files/eusart.h"
@@ -9394,46 +9409,420 @@ typedef union {
     };
     uint8_t status;
 }eusart_status_t;
-# 110 "./mcc_generated_files/eusart.h"
+
+
+
+
+extern volatile uint8_t eusartTxBufferRemaining;
+extern volatile uint8_t eusartRxCount;
+
+
+
+
+extern void (*EUSART_TxDefaultInterruptHandler)(void);
+extern void (*EUSART_RxDefaultInterruptHandler)(void);
+# 117 "./mcc_generated_files/eusart.h"
 void EUSART_Initialize(void);
-# 158 "./mcc_generated_files/eusart.h"
+# 165 "./mcc_generated_files/eusart.h"
 _Bool EUSART_is_tx_ready(void);
-# 206 "./mcc_generated_files/eusart.h"
+# 213 "./mcc_generated_files/eusart.h"
 _Bool EUSART_is_rx_ready(void);
-# 253 "./mcc_generated_files/eusart.h"
+# 260 "./mcc_generated_files/eusart.h"
 _Bool EUSART_is_tx_done(void);
-# 301 "./mcc_generated_files/eusart.h"
+# 308 "./mcc_generated_files/eusart.h"
 eusart_status_t EUSART_get_last_status(void);
-# 321 "./mcc_generated_files/eusart.h"
+# 328 "./mcc_generated_files/eusart.h"
 uint8_t EUSART_Read(void);
-# 341 "./mcc_generated_files/eusart.h"
+# 348 "./mcc_generated_files/eusart.h"
 void EUSART_Write(uint8_t txData);
-# 361 "./mcc_generated_files/eusart.h"
+# 369 "./mcc_generated_files/eusart.h"
+void EUSART_Transmit_ISR(void);
+# 390 "./mcc_generated_files/eusart.h"
+void EUSART_Receive_ISR(void);
+# 411 "./mcc_generated_files/eusart.h"
+void EUSART_RxDataHandler(void);
+# 429 "./mcc_generated_files/eusart.h"
 void EUSART_SetFramingErrorHandler(void (* interruptHandler)(void));
-# 379 "./mcc_generated_files/eusart.h"
+# 447 "./mcc_generated_files/eusart.h"
 void EUSART_SetOverrunErrorHandler(void (* interruptHandler)(void));
-# 397 "./mcc_generated_files/eusart.h"
+# 465 "./mcc_generated_files/eusart.h"
 void EUSART_SetErrorHandler(void (* interruptHandler)(void));
-# 62 "./mcc_generated_files/mcc.h" 2
-# 77 "./mcc_generated_files/mcc.h"
+# 485 "./mcc_generated_files/eusart.h"
+void EUSART_SetTxInterruptHandler(void (* interruptHandler)(void));
+# 505 "./mcc_generated_files/eusart.h"
+void EUSART_SetRxInterruptHandler(void (* interruptHandler)(void));
+# 63 "./mcc_generated_files/mcc.h" 2
+# 78 "./mcc_generated_files/mcc.h"
 void SYSTEM_Initialize(void);
-# 90 "./mcc_generated_files/mcc.h"
+# 91 "./mcc_generated_files/mcc.h"
 void OSCILLATOR_Initialize(void);
-# 102 "./mcc_generated_files/mcc.h"
+# 103 "./mcc_generated_files/mcc.h"
 void WDT_Initialize(void);
 # 44 "main.c" 2
 
+# 1 "./mcc_generated_files/examples/i2c_master_example.h" 1
+# 54 "./mcc_generated_files/examples/i2c_master_example.h"
+uint8_t I2C_Read1ByteRegister(i2c_address_t address, uint8_t reg);
+uint16_t I2C_Read2ByteRegister(i2c_address_t address, uint8_t reg);
+void I2C_Write1ByteRegister(i2c_address_t address, uint8_t reg, uint8_t data);
+void I2C_Write2ByteRegister(i2c_address_t address, uint8_t reg, uint16_t data);
+void I2C_WriteNBytes(i2c_address_t address, uint8_t *data, size_t len);
+void I2C_ReadNBytes(i2c_address_t address, uint8_t *data, size_t len);
+void I2C_ReadDataBlock(i2c_address_t address, uint8_t reg, uint8_t *data, size_t len);
+# 45 "main.c" 2
+
+# 1 "./command_system.h" 1
+# 48 "./command_system.h"
+typedef enum
+{
+    VALVE_STATE = 0x02,
+    VALVE_STATE_CHANGED = 0x04,
+
+    VALVE_STARTING_UP = 0xE0,
+    VALVE_RESET_START = 0xE2,
+    VALVE_SETTINGS = 0xE4,
+    VALVE_SETTINGS_DONE = 0xE6,
+    VALVE_NAME = 0xEA,
+    VALVE_EEPROM = 0xEC,
+    VALVE_EEPROM_SET_DONE = 0xEE
+} rs485_send_commands;
+
+
+typedef enum
+{
+
+    VALVE_GOTO_0_POSITION = 0x10,
+    VALVE_GOTO_24_POSITION = 0x12,
+    VALVE_GOTO_MIDDLE_POSITION = 0x14,
+    VALVE_SET_DEGREES = 0x16,
+
+    VALVE_ENTER_MAINTENACE_MODE = 0x40,
 
 
 
+    VALVE_RESET = 0xF1,
+    VALVE_FW_UPDATE = 0xF3,
+    VALVE_GET_SETTINGS = 0xF5,
+    VALVE_SET_SETTINGS = 0xF7,
+    VALVE_GET_NAME = 0xF9,
+    VALVE_GET_EEPROM = 0xFB,
+    VALVE_SET_EEPROM = 0xFD,
+
+} rs485_receive_commands;
+
+
+typedef struct
+{
+
+
+    uint8_t header0;
+    uint8_t header1;
+    uint8_t header2;
+    uint8_t protocal;
+    uint8_t destination;
+    uint8_t source;
+    uint8_t command;
+    uint8_t data_length;
+    uint8_t data[0x50];
+    uint16_t checksum;
+}Command;
+
+extern volatile uint8_t sendInProgress;
+extern volatile uint8_t sendBuffersFull;
+extern volatile uint8_t receiveReady;
+extern volatile uint8_t receiveBuffersFull;
+extern volatile uint8_t receiveBuffersOverflow;
+
+void GetCommandEntryBuffer(Command * newCommand);
+uint8_t TransmitMessage(Command * newCommand);
+
+void ReceiveCommandExecutor();
+# 46 "main.c" 2
+
+# 1 "./ledcontroller.h" 1
+# 36 "./ledcontroller.h"
+typedef union {
+    uint16_t raw_leds;
+    struct {
+        unsigned SERVICE_LED :1;
+        unsigned LED12 :1;
+        unsigned LED14 :1;
+        unsigned LED16 :1;
+        unsigned LED18 :1;
+        unsigned LED20 :1;
+        unsigned LED22 :1;
+        unsigned LED24 :1;
+        unsigned LED0 :1;
+        unsigned LED2 :1;
+        unsigned LED4 :1;
+        unsigned LED6 :1;
+        unsigned LED8 :1;
+        unsigned LED10 :1;
+        unsigned AUTO_LED :1;
+        unsigned OFF_LED :1;
+    } LEDbits;
+} LEDS;
+
+void ControlLights(LEDS *param_0);
+# 47 "main.c" 2
+
+
+
+
+
+void WriteRs485Array(uint8_t * value, uint8_t length);
+void DumpEEPROMtoMemory();
+void WriteEEPROM(uint8_t addr, uint8_t value);
+void WriteEEPROMBuffer(uint8_t eeprom_addr, uint8_t *buffer, uint8_t length);
+uint16_t CheckSumMaker(uint8_t *buffer, uint8_t size);
+
+enum
+{
+    POR = 0x1,
+    ILLEGAL = 0x2,
+    BOR = 0x3,
+    WDT_RESET = 0x4,
+    WDT_WAKE = 0x5,
+    INT_WAKE = 0x6,
+    MCLR = 0x7,
+    MCLR_SLEEP = 0x8,
+    RESET = 0x9,
+    STACK_OVER = 0xA,
+    STACK_UNDER = 0xB,
+    BAD_VAL = 0xC
+} Reset_Reason;
+
+const uint8_t VALVE_EEPROM_ADDRESS = 0xA0;
+const uint8_t VALVE_EEPROM_ADDRESS_SHIFTED = VALVE_EEPROM_ADDRESS >> 1;
+enum {VALVE_EEPROM_SIZE = 0x80, VALVE_EEPROM_SERIAL_LEN=0x6, VALVE_EEPROM_SERIAL_ADDR = 0xFA};
+
+uint8_t eeprom_data[VALVE_EEPROM_SIZE] = {0};
+uint8_t *first_stop_ptr = eeprom_data + 1;
+uint8_t *first_stop_backup_ptr = eeprom_data + 32;
+uint8_t *second_stop_ptr = eeprom_data + 3;
+uint8_t *second_stop_backup_ptr = eeprom_data + 34;
+
+uint8_t valve_uid[6] = {VALVE_EEPROM_SERIAL_LEN};
+LEDS display;
 
 void main(void)
 {
+    display.raw_leds = 0;
 
     SYSTEM_Initialize();
-# 69 "main.c"
+
+
+
+
+
+    (INTCONbits.GIE = 1);
+
+
+    (INTCONbits.PEIE = 1);
+
+    DumpEEPROMtoMemory();
+
+    I2C_ReadDataBlock(VALVE_EEPROM_ADDRESS_SHIFTED, VALVE_EEPROM_SERIAL_ADDR, valve_uid, VALVE_EEPROM_SERIAL_LEN);
+# 143 "main.c"
+    int new_value = 0;
+    *first_stop_ptr = new_value;
+    *first_stop_backup_ptr = new_value;
+    *(uint16_t *)(eeprom_data + 30) = CheckSumMaker(eeprom_data, 30);
+    new_value = 0x30;
+    second_stop_ptr = &new_value;
+    second_stop_backup_ptr = &new_value;
+    *(uint16_t *)(eeprom_data + 38) = CheckSumMaker(eeprom_data+ 32, 6);
+
+    eeprom_data[0] = 0x00;
+eeprom_data[1] = 0x18;
+eeprom_data[2] = 0x18;
+eeprom_data[3] = 0x30;
+eeprom_data[4] = 0x01;
+eeprom_data[5] = 0x04;
+eeprom_data[6] = 0x00;
+eeprom_data[7] = 0x00;
+eeprom_data[8] = 0x00;
+eeprom_data[9] = 0x00;
+eeprom_data[10] = 0x00;
+eeprom_data[11] = 0x00;
+eeprom_data[12] = 0x00;
+eeprom_data[13] = 0x00;
+eeprom_data[14] = 0xC0;
+eeprom_data[15] = 0x02;
+eeprom_data[16] = 0x00;
+eeprom_data[17] = 0x00;
+eeprom_data[18] = 0x60;
+eeprom_data[19] = 0x01;
+eeprom_data[20] = 0xBE;
+eeprom_data[21] = 0x06;
+eeprom_data[22] = 0x29;
+eeprom_data[23] = 0x00;
+eeprom_data[24] = 0x00;
+eeprom_data[25] = 0x00;
+eeprom_data[26] = 0x00;
+eeprom_data[27] = 0x00;
+eeprom_data[28] = 0xDE;
+eeprom_data[29] = 0x02;
+eeprom_data[30] = 0xAA;
+eeprom_data[31] = 0xFC;
+eeprom_data[32] = 0x18;
+eeprom_data[33] = 0x18;
+eeprom_data[34] = 0x30;
+eeprom_data[35] = 0x01;
+eeprom_data[36] = 0x84;
+eeprom_data[37] = 0x00;
+eeprom_data[38] = 0x1A;
+eeprom_data[39] = 0xFF;
+eeprom_data[40] = 0x60;
+eeprom_data[41] = 0x01;
+eeprom_data[42] = 0xBE;
+eeprom_data[43] = 0x06;
+eeprom_data[44] = 0x04;
+eeprom_data[45] = 0x00;
+eeprom_data[46] = 0xD6;
+eeprom_data[47] = 0xFE;
+eeprom_data[48] = 0x01;
+eeprom_data[49] = 0x01;
+eeprom_data[50] = 0x01;
+eeprom_data[51] = 0x01;
+eeprom_data[52] = 0x01;
+eeprom_data[53] = 0x01;
+eeprom_data[54] = 0x01;
+eeprom_data[55] = 0x01;
+eeprom_data[56] = 0x01;
+eeprom_data[57] = 0x01;
+eeprom_data[58] = 0x01;
+eeprom_data[59] = 0xFF;
+eeprom_data[60] = 0xFF;
+eeprom_data[61] = 0xFF;
+eeprom_data[62] = 0xF7;
+eeprom_data[63] = 0xFC;
+eeprom_data[64] = 0x01;
+eeprom_data[65] = 0x01;
+eeprom_data[66] = 0x02;
+eeprom_data[67] = 0x01;
+eeprom_data[68] = 0x00;
+eeprom_data[69] = 0x30;
+eeprom_data[70] = 0x5B;
+eeprom_data[71] = 0x20;
+eeprom_data[72] = 0x01;
+eeprom_data[73] = 0xFF;
+eeprom_data[74] = 0xFF;
+eeprom_data[75] = 0xFF;
+eeprom_data[76] = 0xFF;
+eeprom_data[77] = 0xFF;
+eeprom_data[78] = 0x53;
+eeprom_data[79] = 0xFA;
+
+    WriteEEPROMBuffer(0, eeprom_data, 40);
+
+    if (eeprom_data[5] == 0x4)
+        display.LEDbits.AUTO_LED = 1;
+    else
+        display.LEDbits.AUTO_LED = 0;
+
+    if (eeprom_data[5] == 0x6)
+        display.LEDbits.SERVICE_LED = 1;
+    else
+        display.LEDbits.SERVICE_LED = 0;
+    ControlLights(&display);
+
+    if (eeprom_data[5] == 0x5)
+        do { LATAbits.LATA7 = 0; } while(0);
+    else
+        do { LATAbits.LATA7 = 1; } while(0);
+# 274 "main.c"
+    Command * newCommand;
+    GetCommandEntryBuffer(newCommand);
+    if (newCommand)
+    {
+        newCommand->command = (uint8_t)VALVE_STATE;
+    }
+    TransmitMessage(newCommand);
+
     while (1)
     {
-
+        __asm("clrwdt");
     }
+
+}
+
+void WriteRs485Array(uint8_t * value, uint8_t length)
+{
+    uint8_t i = 0;
+    do { LATBbits.LATB4 = 1; } while(0);
+    while(i < length){
+        __asm("clrwdt");
+        if(EUSART_is_tx_ready())
+        {
+            EUSART_Write(value[i]);
+            i++;
+        }
+    }
+    while (!EUSART_is_tx_done())
+    {
+        __asm("clrwdt");
+    }
+    do { LATBbits.LATB4 = 0; } while(0);
+
+}
+
+void DumpEEPROMtoMemory()
+{
+    for (int i= 0; i < VALVE_EEPROM_SIZE; i++)
+    {
+        eeprom_data[i] = I2C_Read1ByteRegister(0xA0>>1, i);
+        __asm("clrwdt");
+    }
+}
+
+void WriteEEPROM(uint8_t addr, uint8_t value)
+{
+    I2C_Write1ByteRegister(0xA0>>1, addr, value);
+}
+
+void WriteEEPROMBuffer(uint8_t eeprom_addr, uint8_t *buffer, uint8_t length)
+{
+    for (uint8_t i = 0; i < length; i++)
+    {
+        WriteEEPROM(eeprom_addr + i, *(buffer + i));
+        uint8_t delayLoop1 = 30;
+        uint8_t delayLoop2 = 0x30;
+        do {
+            do {
+                delayLoop2 -= 1;
+            } while (delayLoop2 != 0);
+            delayLoop1 -= 1;
+        } while (delayLoop1 != 0);
+    }
+}
+
+void SetLeds(uint16_t leds, uint8_t blank)
+{
+    do { LATBbits.LATB0 = 0; } while(0);
+}
+
+void SetBlueModeLed(_Bool led_on)
+{
+  if (led_on != 0)
+      LATA &= 0x7f;
+  else
+      LATA |= 0x80;
+  return;
+}
+
+uint16_t CheckSumMaker(uint8_t *buffer, uint8_t size)
+{
+    uint32_t sum = 0;
+    for (uint8_t i = 0; i < size; i++)
+    {
+        sum += *(buffer + i);
+    }
+    uint32_t temp2 = sum & 0xFFFF;
+    uint32_t temp6 = (sum >> 16) & 0xFFFF;
+    temp2 += temp6;
+
+    sum = temp2;
+    sum += (sum >> 16);
+    return ~((uint16_t)sum);
 }

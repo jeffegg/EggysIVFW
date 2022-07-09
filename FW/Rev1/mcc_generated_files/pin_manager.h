@@ -65,25 +65,25 @@
 #define PULL_UP_ENABLED      1
 #define PULL_UP_DISABLED     0
 
-// get/set channel_AN0 aliases
-#define channel_AN0_TRIS                 TRISAbits.TRISA0
-#define channel_AN0_LAT                  LATAbits.LATA0
-#define channel_AN0_PORT                 PORTAbits.RA0
-#define channel_AN0_WPU                  WPUAbits.WPUA0
-#define channel_AN0_OD                   ODCONAbits.ODA0
-#define channel_AN0_ANS                  ANSELAbits.ANSA0
-#define channel_AN0_SetHigh()            do { LATAbits.LATA0 = 1; } while(0)
-#define channel_AN0_SetLow()             do { LATAbits.LATA0 = 0; } while(0)
-#define channel_AN0_Toggle()             do { LATAbits.LATA0 = ~LATAbits.LATA0; } while(0)
-#define channel_AN0_GetValue()           PORTAbits.RA0
-#define channel_AN0_SetDigitalInput()    do { TRISAbits.TRISA0 = 1; } while(0)
-#define channel_AN0_SetDigitalOutput()   do { TRISAbits.TRISA0 = 0; } while(0)
-#define channel_AN0_SetPullup()          do { WPUAbits.WPUA0 = 1; } while(0)
-#define channel_AN0_ResetPullup()        do { WPUAbits.WPUA0 = 0; } while(0)
-#define channel_AN0_SetPushPull()        do { ODCONAbits.ODA0 = 0; } while(0)
-#define channel_AN0_SetOpenDrain()       do { ODCONAbits.ODA0 = 1; } while(0)
-#define channel_AN0_SetAnalogMode()      do { ANSELAbits.ANSA0 = 1; } while(0)
-#define channel_AN0_SetDigitalMode()     do { ANSELAbits.ANSA0 = 0; } while(0)
+// get/set WhitePin aliases
+#define WhitePin_TRIS                 TRISAbits.TRISA0
+#define WhitePin_LAT                  LATAbits.LATA0
+#define WhitePin_PORT                 PORTAbits.RA0
+#define WhitePin_WPU                  WPUAbits.WPUA0
+#define WhitePin_OD                   ODCONAbits.ODA0
+#define WhitePin_ANS                  ANSELAbits.ANSA0
+#define WhitePin_SetHigh()            do { LATAbits.LATA0 = 1; } while(0)
+#define WhitePin_SetLow()             do { LATAbits.LATA0 = 0; } while(0)
+#define WhitePin_Toggle()             do { LATAbits.LATA0 = ~LATAbits.LATA0; } while(0)
+#define WhitePin_GetValue()           PORTAbits.RA0
+#define WhitePin_SetDigitalInput()    do { TRISAbits.TRISA0 = 1; } while(0)
+#define WhitePin_SetDigitalOutput()   do { TRISAbits.TRISA0 = 0; } while(0)
+#define WhitePin_SetPullup()          do { WPUAbits.WPUA0 = 1; } while(0)
+#define WhitePin_ResetPullup()        do { WPUAbits.WPUA0 = 0; } while(0)
+#define WhitePin_SetPushPull()        do { ODCONAbits.ODA0 = 0; } while(0)
+#define WhitePin_SetOpenDrain()       do { ODCONAbits.ODA0 = 1; } while(0)
+#define WhitePin_SetAnalogMode()      do { ANSELAbits.ANSA0 = 1; } while(0)
+#define WhitePin_SetDigitalMode()     do { ANSELAbits.ANSA0 = 0; } while(0)
 
 // get/set RedPin aliases
 #define RedPin_TRIS                 TRISAbits.TRISA1

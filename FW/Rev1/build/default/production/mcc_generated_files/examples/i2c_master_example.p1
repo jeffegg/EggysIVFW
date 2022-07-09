@@ -1,4 +1,5 @@
 Version 4.0 HI-TECH Software Intermediate Code
+[v F428 `(v ~T0 @X0 0 tf ]
 "67 mcc_generated_files/examples/i2c_master_example.c
 [; ;mcc_generated_files/examples/i2c_master_example.c: 67:     while(!I2C_Open(address));
 [c E355 0 1 2 .. ]
@@ -24,7 +25,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 "184
 [; ;mcc_generated_files/examples/../i2c_master.h: 184: void I2C_SetAddressNackCallback(i2c_callback_t cb, void *ptr);
 [v _I2C_SetAddressNackCallback `(v ~T0 @X0 0 ef2`*F407`*v ]
-[v F474 `(E360 ~T0 @X0 0 tf1`*v ]
+[v F480 `(E360 ~T0 @X0 0 tf1`*v ]
 "128
 [; ;mcc_generated_files/examples/../i2c_master.h: 128: i2c_error_t I2C_MasterWrite(void);
 [v _I2C_MasterWrite `(E355 ~T0 @X0 0 ef ]
@@ -34,16 +35,16 @@ Version 4.0 HI-TECH Software Intermediate Code
 "57 mcc_generated_files/examples/i2c_master_example.c
 [; ;mcc_generated_files/examples/i2c_master_example.c: 57: static i2c_operations_t rd2RegCompleteHandler(void *ptr);
 [v _rd2RegCompleteHandler `(E360 ~T0 @X0 0 sf1`*v ]
-[v F482 `(E360 ~T0 @X0 0 tf1`*v ]
+[v F488 `(E360 ~T0 @X0 0 tf1`*v ]
 "58
 [; ;mcc_generated_files/examples/i2c_master_example.c: 58: static i2c_operations_t wr1RegCompleteHandler(void *ptr);
 [v _wr1RegCompleteHandler `(E360 ~T0 @X0 0 sf1`*v ]
-[v F490 `(E360 ~T0 @X0 0 tf1`*v ]
+[v F496 `(E360 ~T0 @X0 0 tf1`*v ]
 "59
 [; ;mcc_generated_files/examples/i2c_master_example.c: 59: static i2c_operations_t wr2RegCompleteHandler(void *ptr);
 [v _wr2RegCompleteHandler `(E360 ~T0 @X0 0 sf1`*v ]
-[v F498 `(E360 ~T0 @X0 0 tf1`*v ]
 [v F504 `(E360 ~T0 @X0 0 tf1`*v ]
+[v F510 `(E360 ~T0 @X0 0 tf1`*v ]
 "133 mcc_generated_files/examples/../i2c_master.h
 [; ;mcc_generated_files/examples/../i2c_master.h: 133: i2c_error_t I2C_MasterRead(void);
 [v _I2C_MasterRead `(E355 ~T0 @X0 0 ef ]
@@ -54,12 +55,15 @@ Version 4.0 HI-TECH Software Intermediate Code
 "60
 [; ;mcc_generated_files/examples/i2c_master_example.c: 60: static i2c_operations_t rdBlkRegCompleteHandler(void *ptr);
 [v _rdBlkRegCompleteHandler `(E360 ~T0 @X0 0 sf1`*v ]
-[v F518 `(E360 ~T0 @X0 0 tf1`*v ]
-[v F522 `(E360 ~T0 @X0 0 tf1`*v ]
-[v F526 `(E360 ~T0 @X0 0 tf1`*v ]
-[v F530 `(E360 ~T0 @X0 0 tf1`*v ]
-[v F534 `(E360 ~T0 @X0 0 tf1`*v ]
-[v F538 `(E360 ~T0 @X0 0 tf1`*v ]
+[v F524 `(E360 ~T0 @X0 0 tf1`*v ]
+[v F528 `(E360 ~T0 @X0 0 tf1`*v ]
+[v F532 `(E360 ~T0 @X0 0 tf1`*v ]
+[v F536 `(E360 ~T0 @X0 0 tf1`*v ]
+[v F540 `(E360 ~T0 @X0 0 tf1`*v ]
+[v F544 `(E360 ~T0 @X0 0 tf1`*v ]
+"213 mcc_generated_files/examples/../i2c_master.h
+[; ;mcc_generated_files/examples/../i2c_master.h: 213: void (*MSSP_InterruptHandler)(void);
+[v _MSSP_InterruptHandler `*F428 ~T0 @X0 1 e ]
 "63 mcc_generated_files/examples/i2c_master_example.c
 [; ;mcc_generated_files/examples/i2c_master_example.c: 63: uint8_t I2C_Read1ByteRegister(i2c_address_t address, uint8_t reg)
 [v _I2C_Read1ByteRegister `(uc ~T0 @X0 1 ef2`uc`uc ]
@@ -93,7 +97,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e ( _I2C_SetBuffer (2 , -> &U _reg `*v -> -> 1 `i `ui ]
 "70
 [; ;mcc_generated_files/examples/i2c_master_example.c: 70:     I2C_SetAddressNackCallback(((void*)0),((void*)0));
-[e ( _I2C_SetAddressNackCallback (2 , -> -> -> 0 `i `*v `*F474 -> -> 0 `i `*v ]
+[e ( _I2C_SetAddressNackCallback (2 , -> -> -> 0 `i `*v `*F480 -> -> 0 `i `*v ]
 "71
 [; ;mcc_generated_files/examples/i2c_master_example.c: 71:     I2C_MasterWrite();
 [e ( _I2C_MasterWrite ..  ]
@@ -145,7 +149,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e ( _I2C_SetBuffer (2 , -> &U _reg `*v -> -> 1 `i `ui ]
 "84
 [; ;mcc_generated_files/examples/i2c_master_example.c: 84:     I2C_SetAddressNackCallback(((void*)0),((void*)0));
-[e ( _I2C_SetAddressNackCallback (2 , -> -> -> 0 `i `*v `*F482 -> -> 0 `i `*v ]
+[e ( _I2C_SetAddressNackCallback (2 , -> -> -> 0 `i `*v `*F488 -> -> 0 `i `*v ]
 "85
 [; ;mcc_generated_files/examples/i2c_master_example.c: 85:     I2C_MasterWrite();
 [e ( _I2C_MasterWrite ..  ]
@@ -194,7 +198,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e ( _I2C_SetBuffer (2 , -> &U _reg `*v -> -> 1 `i `ui ]
 "96
 [; ;mcc_generated_files/examples/i2c_master_example.c: 96:     I2C_SetAddressNackCallback(((void*)0),((void*)0));
-[e ( _I2C_SetAddressNackCallback (2 , -> -> -> 0 `i `*v `*F490 -> -> 0 `i `*v ]
+[e ( _I2C_SetAddressNackCallback (2 , -> -> -> 0 `i `*v `*F496 -> -> 0 `i `*v ]
 "97
 [; ;mcc_generated_files/examples/i2c_master_example.c: 97:     I2C_MasterWrite();
 [e ( _I2C_MasterWrite ..  ]
@@ -239,7 +243,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e ( _I2C_SetBuffer (2 , -> &U _reg `*v -> -> 1 `i `ui ]
 "106
 [; ;mcc_generated_files/examples/i2c_master_example.c: 106:     I2C_SetAddressNackCallback(((void*)0),((void*)0));
-[e ( _I2C_SetAddressNackCallback (2 , -> -> -> 0 `i `*v `*F498 -> -> 0 `i `*v ]
+[e ( _I2C_SetAddressNackCallback (2 , -> -> -> 0 `i `*v `*F504 -> -> 0 `i `*v ]
 "107
 [; ;mcc_generated_files/examples/i2c_master_example.c: 107:     I2C_MasterWrite();
 [e ( _I2C_MasterWrite ..  ]
@@ -281,7 +285,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e ( _I2C_SetBuffer (2 , -> _data `*v _len ]
 "115
 [; ;mcc_generated_files/examples/i2c_master_example.c: 115:     I2C_SetAddressNackCallback(((void*)0),((void*)0));
-[e ( _I2C_SetAddressNackCallback (2 , -> -> -> 0 `i `*v `*F504 -> -> 0 `i `*v ]
+[e ( _I2C_SetAddressNackCallback (2 , -> -> -> 0 `i `*v `*F510 -> -> 0 `i `*v ]
 "116
 [; ;mcc_generated_files/examples/i2c_master_example.c: 116:     I2C_MasterWrite();
 [e ( _I2C_MasterWrite ..  ]
@@ -375,7 +379,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e ( _I2C_SetBuffer (2 , -> &U _reg `*v -> -> 1 `i `ui ]
 "137
 [; ;mcc_generated_files/examples/i2c_master_example.c: 137:     I2C_SetAddressNackCallback(((void*)0),((void*)0));
-[e ( _I2C_SetAddressNackCallback (2 , -> -> -> 0 `i `*v `*F518 -> -> 0 `i `*v ]
+[e ( _I2C_SetAddressNackCallback (2 , -> -> -> 0 `i `*v `*F524 -> -> 0 `i `*v ]
 "138
 [; ;mcc_generated_files/examples/i2c_master_example.c: 138:     I2C_MasterWrite();
 [e ( _I2C_MasterWrite ..  ]
@@ -408,7 +412,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e ( _I2C_SetBuffer (2 , _ptr -> -> 1 `i `ui ]
 "145
 [; ;mcc_generated_files/examples/i2c_master_example.c: 145:     I2C_SetDataCompleteCallback(((void*)0),((void*)0));
-[e ( _I2C_SetDataCompleteCallback (2 , -> -> -> 0 `i `*v `*F522 -> -> 0 `i `*v ]
+[e ( _I2C_SetDataCompleteCallback (2 , -> -> -> 0 `i `*v `*F528 -> -> 0 `i `*v ]
 "146
 [; ;mcc_generated_files/examples/i2c_master_example.c: 146:     return I2C_RESTART_READ;
 [e ) . `E360 1 ]
@@ -435,7 +439,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e ( _I2C_SetBuffer (2 , _ptr -> -> 2 `i `ui ]
 "152
 [; ;mcc_generated_files/examples/i2c_master_example.c: 152:     I2C_SetDataCompleteCallback(((void*)0),((void*)0));
-[e ( _I2C_SetDataCompleteCallback (2 , -> -> -> 0 `i `*v `*F526 -> -> 0 `i `*v ]
+[e ( _I2C_SetDataCompleteCallback (2 , -> -> -> 0 `i `*v `*F532 -> -> 0 `i `*v ]
 "153
 [; ;mcc_generated_files/examples/i2c_master_example.c: 153:     return I2C_RESTART_READ;
 [e ) . `E360 1 ]
@@ -462,7 +466,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e ( _I2C_SetBuffer (2 , _ptr -> -> 1 `i `ui ]
 "159
 [; ;mcc_generated_files/examples/i2c_master_example.c: 159:     I2C_SetDataCompleteCallback(((void*)0),((void*)0));
-[e ( _I2C_SetDataCompleteCallback (2 , -> -> -> 0 `i `*v `*F530 -> -> 0 `i `*v ]
+[e ( _I2C_SetDataCompleteCallback (2 , -> -> -> 0 `i `*v `*F536 -> -> 0 `i `*v ]
 "160
 [; ;mcc_generated_files/examples/i2c_master_example.c: 160:     return I2C_CONTINUE;
 [e ) . `E360 3 ]
@@ -489,7 +493,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e ( _I2C_SetBuffer (2 , _ptr -> -> 2 `i `ui ]
 "166
 [; ;mcc_generated_files/examples/i2c_master_example.c: 166:     I2C_SetDataCompleteCallback(((void*)0),((void*)0));
-[e ( _I2C_SetDataCompleteCallback (2 , -> -> -> 0 `i `*v `*F534 -> -> 0 `i `*v ]
+[e ( _I2C_SetDataCompleteCallback (2 , -> -> -> 0 `i `*v `*F540 -> -> 0 `i `*v ]
 "167
 [; ;mcc_generated_files/examples/i2c_master_example.c: 167:     return I2C_CONTINUE;
 [e ) . `E360 3 ]
@@ -516,7 +520,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e ( _I2C_SetBuffer (2 , -> . *U -> _ptr `*S3 1 `*v . *U -> _ptr `*S3 0 ]
 "173
 [; ;mcc_generated_files/examples/i2c_master_example.c: 173:     I2C_SetDataCompleteCallback(((void*)0),((void*)0));
-[e ( _I2C_SetDataCompleteCallback (2 , -> -> -> 0 `i `*v `*F538 -> -> 0 `i `*v ]
+[e ( _I2C_SetDataCompleteCallback (2 , -> -> -> 0 `i `*v `*F544 -> -> 0 `i `*v ]
 "174
 [; ;mcc_generated_files/examples/i2c_master_example.c: 174:     return I2C_RESTART_READ;
 [e ) . `E360 1 ]

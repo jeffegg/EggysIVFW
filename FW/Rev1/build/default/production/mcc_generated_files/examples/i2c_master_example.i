@@ -337,6 +337,10 @@ void I2C_SetAddressNackCallback(i2c_callback_t cb, void *ptr);
 void I2C_SetDataNackCallback(i2c_callback_t cb, void *ptr);
 # 204 "mcc_generated_files/examples/../i2c_master.h"
 void I2C_SetTimeoutCallback(i2c_callback_t cb, void *ptr);
+# 213 "mcc_generated_files/examples/../i2c_master.h"
+void (*MSSP_InterruptHandler)(void);
+# 222 "mcc_generated_files/examples/../i2c_master.h"
+void I2C_SetInterruptHandler(void (* InterruptHandler)(void));
 # 52 "mcc_generated_files/examples/i2c_master_example.h" 2
 
 

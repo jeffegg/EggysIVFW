@@ -1,6 +1,10 @@
 Version 4.0 HI-TECH Software Intermediate Code
+[v F5670 `(v ~T0 @X0 0 tf ]
 [t ~ __interrupt . k ]
 [t T1 __interrupt ]
+"51 mcc_generated_files/interrupt_manager.c
+[; ;mcc_generated_files/interrupt_manager.c: 51: void InterruptCallback();
+[v _InterruptCallback `(v ~T0 @X0 0 e? ]
 "358 C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h
 [; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 358:     struct {
 [s S31 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
@@ -19,6 +23,58 @@ Version 4.0 HI-TECH Software Intermediate Code
 "462 mcc_generated_files/pin_manager.h
 [; ;mcc_generated_files/pin_manager.h: 462: void PIN_MANAGER_IOC(void);
 [v _PIN_MANAGER_IOC `(v ~T0 @X0 0 ef ]
+"1407 C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h
+[; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 1407:     struct {
+[s S77 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S77 . CCP2IE TMR4IE TMR6IE BCL1IE . C1IE C2IE OSFIE ]
+"1406
+[; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 1406: typedef union {
+[u S76 `S77 1 ]
+[n S76 . . ]
+"1418
+[; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 1418: extern volatile PIE2bits_t PIE2bits __attribute__((address(0x092)));
+[v _PIE2bits `VS76 ~T0 @X0 0 e@146 ]
+"705
+[; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 705:     struct {
+[s S44 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S44 . CCP2IF TMR4IF TMR6IF BCL1IF . C1IF C2IF OSFIF ]
+"704
+[; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 704: typedef union {
+[u S43 `S44 1 ]
+[n S43 . . ]
+"716
+[; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 716: extern volatile PIR2bits_t PIR2bits __attribute__((address(0x012)));
+[v _PIR2bits `VS43 ~T0 @X0 0 e@18 ]
+"1345
+[; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 1345:     struct {
+[s S75 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S75 . TMR1IE TMR2IE CCP1IE SSP1IE TXIE RCIE ADIE TMR1GIE ]
+"1344
+[; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 1344: typedef union {
+[u S74 `S75 1 ]
+[n S74 . . ]
+"1356
+[; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 1356: extern volatile PIE1bits_t PIE1bits __attribute__((address(0x091)));
+[v _PIE1bits `VS74 ~T0 @X0 0 e@145 ]
+"643
+[; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 643:     struct {
+[s S42 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S42 . TMR1IF TMR2IF CCP1IF SSP1IF TXIF RCIF ADIF TMR1GIF ]
+"642
+[; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 642: typedef union {
+[u S41 `S42 1 ]
+[n S41 . . ]
+"654
+[; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 654: extern volatile PIR1bits_t PIR1bits __attribute__((address(0x011)));
+[v _PIR1bits `VS41 ~T0 @X0 0 e@17 ]
+[v F5748 `(v ~T0 @X0 0 tf ]
+"94 mcc_generated_files/eusart.h
+[; ;mcc_generated_files/eusart.h: 94: extern void (*EUSART_TxDefaultInterruptHandler)(void);
+[v _EUSART_TxDefaultInterruptHandler `*F5748 ~T0 @X0 0 e ]
+[v F5750 `(v ~T0 @X0 0 tf ]
+"95
+[; ;mcc_generated_files/eusart.h: 95: extern void (*EUSART_RxDefaultInterruptHandler)(void);
+[v _EUSART_RxDefaultInterruptHandler `*F5750 ~T0 @X0 0 e ]
 "55 C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h
 [; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 55: __asm("INDF0 equ 00h");
 [; <" INDF0 equ 00h ;# ">
@@ -880,39 +936,137 @@ Version 4.0 HI-TECH Software Intermediate Code
 "15233
 [; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 15233: __asm("TOSH equ 0FEFh");
 [; <" TOSH equ 0FEFh ;# ">
+"213 mcc_generated_files/i2c_master.h
+[; ;mcc_generated_files/i2c_master.h: 213: void (*MSSP_InterruptHandler)(void);
+[v _MSSP_InterruptHandler `*F5670 ~T0 @X0 1 e ]
 [v $root$_INTERRUPT_InterruptManager `(v ~T0 @X0 0 e ]
-"52 mcc_generated_files/interrupt_manager.c
-[; ;mcc_generated_files/interrupt_manager.c: 52: void __attribute__((picinterrupt(("")))) INTERRUPT_InterruptManager (void)
+"53 mcc_generated_files/interrupt_manager.c
+[; ;mcc_generated_files/interrupt_manager.c: 53: void __attribute__((picinterrupt(("")))) INTERRUPT_InterruptManager (void)
 [v _INTERRUPT_InterruptManager `(v ~T1 @X0 1 ef ]
-"53
-[; ;mcc_generated_files/interrupt_manager.c: 53: {
+"54
+[; ;mcc_generated_files/interrupt_manager.c: 54: {
 {
 [e :U _INTERRUPT_InterruptManager ]
 [f ]
 "55
-[; ;mcc_generated_files/interrupt_manager.c: 55:     if(INTCONbits.IOCIE == 1 && INTCONbits.IOCIF == 1)
-[e $ ! && == -> . . _INTCONbits 0 3 `i -> 1 `i == -> . . _INTCONbits 0 0 `i -> 1 `i 742  ]
+[; ;mcc_generated_files/interrupt_manager.c: 55:     InterruptCallback();
+[e ( _InterruptCallback ..  ]
 "56
-[; ;mcc_generated_files/interrupt_manager.c: 56:     {
-{
-"57
-[; ;mcc_generated_files/interrupt_manager.c: 57:         PIN_MANAGER_IOC();
-[e ( _PIN_MANAGER_IOC ..  ]
-"58
-[; ;mcc_generated_files/interrupt_manager.c: 58:     }
-}
-[e $U 743  ]
-"59
-[; ;mcc_generated_files/interrupt_manager.c: 59:     else
-[e :U 742 ]
-"60
-[; ;mcc_generated_files/interrupt_manager.c: 60:     {
-{
-"62
-[; ;mcc_generated_files/interrupt_manager.c: 62:     }
-}
-[e :U 743 ]
-"63
-[; ;mcc_generated_files/interrupt_manager.c: 63: }
+[; ;mcc_generated_files/interrupt_manager.c: 56: }
 [e :UE 741 ]
+}
+"58
+[; ;mcc_generated_files/interrupt_manager.c: 58: void InterruptCallback()
+[v _InterruptCallback `(v ~T0 @X0 1 ef ]
+"59
+[; ;mcc_generated_files/interrupt_manager.c: 59: {
+{
+[e :U _InterruptCallback ]
+[f ]
+"61
+[; ;mcc_generated_files/interrupt_manager.c: 61:     if(INTCONbits.IOCIE == 1 && INTCONbits.IOCIF == 1)
+[e $ ! && == -> . . _INTCONbits 0 3 `i -> 1 `i == -> . . _INTCONbits 0 0 `i -> 1 `i 743  ]
+"62
+[; ;mcc_generated_files/interrupt_manager.c: 62:     {
+{
+"63
+[; ;mcc_generated_files/interrupt_manager.c: 63:         PIN_MANAGER_IOC();
+[e ( _PIN_MANAGER_IOC ..  ]
+"64
+[; ;mcc_generated_files/interrupt_manager.c: 64:     }
+}
+[e $U 744  ]
+"65
+[; ;mcc_generated_files/interrupt_manager.c: 65:     else if(INTCONbits.PEIE == 1)
+[e :U 743 ]
+[e $ ! == -> . . _INTCONbits 0 6 `i -> 1 `i 745  ]
+"66
+[; ;mcc_generated_files/interrupt_manager.c: 66:     {
+{
+"67
+[; ;mcc_generated_files/interrupt_manager.c: 67:         if(PIE2bits.BCL1IE == 1 && PIR2bits.BCL1IF == 1)
+[e $ ! && == -> . . _PIE2bits 0 3 `i -> 1 `i == -> . . _PIR2bits 0 3 `i -> 1 `i 746  ]
+"68
+[; ;mcc_generated_files/interrupt_manager.c: 68:         {
+{
+"69
+[; ;mcc_generated_files/interrupt_manager.c: 69:             MSSP_InterruptHandler();
+[e ( *U _MSSP_InterruptHandler ..  ]
+"70
+[; ;mcc_generated_files/interrupt_manager.c: 70:         }
+}
+[e $U 747  ]
+"71
+[; ;mcc_generated_files/interrupt_manager.c: 71:         else if(PIE1bits.SSP1IE == 1 && PIR1bits.SSP1IF == 1)
+[e :U 746 ]
+[e $ ! && == -> . . _PIE1bits 0 3 `i -> 1 `i == -> . . _PIR1bits 0 3 `i -> 1 `i 748  ]
+"72
+[; ;mcc_generated_files/interrupt_manager.c: 72:         {
+{
+"73
+[; ;mcc_generated_files/interrupt_manager.c: 73:             MSSP_InterruptHandler();
+[e ( *U _MSSP_InterruptHandler ..  ]
+"74
+[; ;mcc_generated_files/interrupt_manager.c: 74:         }
+}
+[e $U 749  ]
+"75
+[; ;mcc_generated_files/interrupt_manager.c: 75:         else if(PIE1bits.TXIE == 1 && PIR1bits.TXIF == 1)
+[e :U 748 ]
+[e $ ! && == -> . . _PIE1bits 0 4 `i -> 1 `i == -> . . _PIR1bits 0 4 `i -> 1 `i 750  ]
+"76
+[; ;mcc_generated_files/interrupt_manager.c: 76:         {
+{
+"77
+[; ;mcc_generated_files/interrupt_manager.c: 77:             EUSART_TxDefaultInterruptHandler();
+[e ( *U _EUSART_TxDefaultInterruptHandler ..  ]
+"78
+[; ;mcc_generated_files/interrupt_manager.c: 78:         }
+}
+[e $U 751  ]
+"79
+[; ;mcc_generated_files/interrupt_manager.c: 79:         else if(PIE1bits.RCIE == 1 && PIR1bits.RCIF == 1)
+[e :U 750 ]
+[e $ ! && == -> . . _PIE1bits 0 5 `i -> 1 `i == -> . . _PIR1bits 0 5 `i -> 1 `i 752  ]
+"80
+[; ;mcc_generated_files/interrupt_manager.c: 80:         {
+{
+"81
+[; ;mcc_generated_files/interrupt_manager.c: 81:             EUSART_RxDefaultInterruptHandler();
+[e ( *U _EUSART_RxDefaultInterruptHandler ..  ]
+"82
+[; ;mcc_generated_files/interrupt_manager.c: 82:         }
+}
+[e $U 753  ]
+"83
+[; ;mcc_generated_files/interrupt_manager.c: 83:         else
+[e :U 752 ]
+"84
+[; ;mcc_generated_files/interrupt_manager.c: 84:         {
+{
+"86
+[; ;mcc_generated_files/interrupt_manager.c: 86:         }
+}
+[e :U 753 ]
+[e :U 751 ]
+[e :U 749 ]
+[e :U 747 ]
+"87
+[; ;mcc_generated_files/interrupt_manager.c: 87:     }
+}
+[e $U 754  ]
+"88
+[; ;mcc_generated_files/interrupt_manager.c: 88:     else
+[e :U 745 ]
+"89
+[; ;mcc_generated_files/interrupt_manager.c: 89:     {
+{
+"91
+[; ;mcc_generated_files/interrupt_manager.c: 91:     }
+}
+[e :U 754 ]
+[e :U 744 ]
+"92
+[; ;mcc_generated_files/interrupt_manager.c: 92: }
+[e :UE 742 ]
 }

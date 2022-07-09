@@ -18,7 +18,7 @@ I2C_CONTINUE 4
 I2C_RESET_LINK 5
 ]
 "146 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/i2c_master.c
-[e E5651 . `uc
+[e E5657 . `uc
 I2C_IDLE 0
 I2C_SEND_ADR_READ 1
 I2C_SEND_ADR_WRITE 2
@@ -50,7 +50,7 @@ I2C_BUSY 1
 I2C_FAIL 2
 ]
 "191
-[e E5669 . `uc
+[e E5675 . `uc
 I2C_DATA_COMPLETE 0
 I2C_WRITE_COLLISION 1
 I2C_ADDR_NACK 2
@@ -68,29 +68,98 @@ channel_Temp 29
 channel_DAC1_Output 30
 channel_FVRBuffer1 31
 ]
+"72 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\main.c
+[e E5896 . `uc
+POR 1
+ILLEGAL 2
+BOR 3
+WDT_RESET 4
+WDT_WAKE 5
+INT_WAKE 6
+MCLR 7
+MCLR_SLEEP 8
+RESET 9
+STACK_OVER 10
+STACK_UNDER 11
+BAD_VAL 12
+]
+"84
+[e E5912 . `uc
+VALVE_EEPROM_SIZE 128
+VALVE_EEPROM_SERIAL_LEN 6
+VALVE_EEPROM_SERIAL_ADDR 250
+]
+"278
+[e E5812 . `uc
+VALVE_STATE 2
+VALVE_STATE_CHANGED 4
+VALVE_STARTING_UP 224
+VALVE_RESET_START 226
+VALVE_SETTINGS 228
+VALVE_SETTINGS_DONE 230
+VALVE_NAME 234
+VALVE_EEPROM 236
+VALVE_EEPROM_SET_DONE 238
+]
 "10 C:\Program Files\Microchip\xc8\v2.36\pic\sources\c99\common\sprcadd.c
 [v ___fladd __fladd `(d  1 e 4 0 ]
 "4 C:\Program Files\Microchip\xc8\v2.36\pic\sources\c99\common\Umul8_16.c
 [v __Umul8_16 _Umul8_16 `(ui  1 e 2 0 ]
-"49 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\main.c
+"15 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\command_system.c
+[v _GetCommandEntryBuffer GetCommandEntryBuffer `(v  1 e 1 0 ]
+"20
+[v _TransmitMessage TransmitMessage `(uc  1 e 1 0 ]
+"19 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\ledcontroller.c
+[v _ControlLights ControlLights `(v  1 e 1 0 ]
+"87 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\main.c
 [v _main main `(v  1 e 1 0 ]
+"309
+[v _DumpEEPROMtoMemory DumpEEPROMtoMemory `(v  1 e 1 0 ]
+"318
+[v _WriteEEPROM WriteEEPROM `(v  1 e 1 0 ]
+"323
+[v _WriteEEPROMBuffer WriteEEPROMBuffer `(v  1 e 1 0 ]
+"353
+[v _CheckSumMaker CheckSumMaker `(us  1 e 2 0 ]
 "67 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/adc.c
 [v _ADC_Initialize ADC_Initialize `(v  1 e 1 0 ]
-"66 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/eusart.c
+"88 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/eusart.c
 [v _EUSART_Initialize EUSART_Initialize `(v  1 e 1 0 ]
-"144
+"132
+[v _EUSART_is_tx_ready EUSART_is_tx_ready `(a  1 e 1 0 ]
+"142
+[v _EUSART_is_tx_done EUSART_is_tx_done `(a  1 e 1 0 ]
+"173
+[v _EUSART_Write EUSART_Write `(v  1 e 1 0 ]
+"197
+[v _EUSART_Transmit_ISR EUSART_Transmit_ISR `(v  1 e 1 0 ]
+"216
+[v _EUSART_Receive_ISR EUSART_Receive_ISR `(v  1 e 1 0 ]
+"240
+[v _EUSART_RxDataHandler EUSART_RxDataHandler `(v  1 e 1 0 ]
+"250
 [v _EUSART_DefaultFramingErrorHandler EUSART_DefaultFramingErrorHandler `(v  1 e 1 0 ]
-"146
+"252
 [v _EUSART_DefaultOverrunErrorHandler EUSART_DefaultOverrunErrorHandler `(v  1 e 1 0 ]
-"154
+"260
 [v _EUSART_DefaultErrorHandler EUSART_DefaultErrorHandler `(v  1 e 1 0 ]
-"157
+"264
 [v _EUSART_SetFramingErrorHandler EUSART_SetFramingErrorHandler `(v  1 e 1 0 ]
-"161
+"268
 [v _EUSART_SetOverrunErrorHandler EUSART_SetOverrunErrorHandler `(v  1 e 1 0 ]
-"165
+"272
 [v _EUSART_SetErrorHandler EUSART_SetErrorHandler `(v  1 e 1 0 ]
-"142 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/examples/i2c_master_example.c
+"276
+[v _EUSART_SetTxInterruptHandler EUSART_SetTxInterruptHandler `(v  1 e 1 0 ]
+"280
+[v _EUSART_SetRxInterruptHandler EUSART_SetRxInterruptHandler `(v  1 e 1 0 ]
+"63 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/examples/i2c_master_example.c
+[v _I2C_Read1ByteRegister I2C_Read1ByteRegister `(uc  1 e 1 0 ]
+"91
+[v _I2C_Write1ByteRegister I2C_Write1ByteRegister `(v  1 e 1 0 ]
+"128
+[v _I2C_ReadDataBlock I2C_ReadDataBlock `(v  1 e 1 0 ]
+"142
 [v _rd1RegCompleteHandler rd1RegCompleteHandler `(E360  1 s 1 rd1RegCompleteHandler ]
 "149
 [v _rd2RegCompleteHandler rd2RegCompleteHandler `(E360  1 s 1 rd2RegCompleteHandler ]
@@ -106,106 +175,118 @@ channel_FVRBuffer1 31
 [v _I2C_Initialize I2C_Initialize `(v  1 e 1 0 ]
 "176
 [v _I2C_Open I2C_Open `(E355  1 e 1 0 ]
-"209
+"211
 [v _I2C_Close I2C_Close `(E355  1 e 1 0 ]
-"224
+"226
 [v _I2C_MasterOperation I2C_MasterOperation `(E355  1 e 1 0 ]
-"246
+"247
 [v _I2C_MasterRead I2C_MasterRead `(E355  1 e 1 0 ]
-"251
+"252
 [v _I2C_MasterWrite I2C_MasterWrite `(E355  1 e 1 0 ]
-"263
+"264
 [v _I2C_SetBuffer I2C_SetBuffer `(v  1 e 1 0 ]
-"273
+[v i1_I2C_SetBuffer I2C_SetBuffer `(v  1 e 1 0 ]
+"274
 [v _I2C_SetDataCompleteCallback I2C_SetDataCompleteCallback `(v  1 e 1 0 ]
-"283
+[v i1_I2C_SetDataCompleteCallback I2C_SetDataCompleteCallback `(v  1 e 1 0 ]
+"284
 [v _I2C_SetAddressNackCallback I2C_SetAddressNackCallback `(v  1 e 1 0 ]
-"298
+"299
+[v _I2C_SetInterruptHandler I2C_SetInterruptHandler `(v  1 e 1 0 ]
+"304
 [v _I2C_SetCallback I2C_SetCallback `(v  1 s 1 I2C_SetCallback ]
-"312
-[v _I2C_Poller I2C_Poller `(v  1 s 1 I2C_Poller ]
-"321
+[v i1_I2C_SetCallback I2C_SetCallback `(v  1 s 1 i1_I2C_SetCallback ]
+"318
+[v _I2C_MasterIsr I2C_MasterIsr `(v  1 s 1 I2C_MasterIsr ]
+"323
 [v _I2C_MasterFsm I2C_MasterFsm `T(v  1 s 1 I2C_MasterFsm ]
-"333
-[v _I2C_DO_IDLE I2C_DO_IDLE `(E5651  1 s 1 I2C_DO_IDLE ]
-"340
-[v _I2C_DO_SEND_ADR_READ I2C_DO_SEND_ADR_READ `(E5651  1 s 1 I2C_DO_SEND_ADR_READ ]
-"347
-[v _I2C_DO_SEND_ADR_WRITE I2C_DO_SEND_ADR_WRITE `(E5651  1 s 1 I2C_DO_SEND_ADR_WRITE ]
-"354
-[v _I2C_DO_TX I2C_DO_TX `(E5651  1 s 1 I2C_DO_TX ]
-"378
-[v _I2C_DO_RX I2C_DO_RX `(E5651  1 s 1 I2C_DO_RX ]
-"402
-[v _I2C_DO_RCEN I2C_DO_RCEN `(E5651  1 s 1 I2C_DO_RCEN ]
-"409
-[v _I2C_DO_TX_EMPTY I2C_DO_TX_EMPTY `(E5651  1 s 1 I2C_DO_TX_EMPTY ]
-"450
-[v _I2C_DO_SEND_RESTART_READ I2C_DO_SEND_RESTART_READ `(E5651  1 s 1 I2C_DO_SEND_RESTART_READ ]
-"456
-[v _I2C_DO_SEND_RESTART_WRITE I2C_DO_SEND_RESTART_WRITE `(E5651  1 s 1 I2C_DO_SEND_RESTART_WRITE ]
-"463
-[v _I2C_DO_SEND_RESTART I2C_DO_SEND_RESTART `(E5651  1 s 1 I2C_DO_SEND_RESTART ]
-"469
-[v _I2C_DO_SEND_STOP I2C_DO_SEND_STOP `(E5651  1 s 1 I2C_DO_SEND_STOP ]
-"475
-[v _I2C_DO_RX_ACK I2C_DO_RX_ACK `(E5651  1 s 1 I2C_DO_RX_ACK ]
-"482
-[v _I2C_DO_RX_NACK_STOP I2C_DO_RX_NACK_STOP `(E5651  1 s 1 I2C_DO_RX_NACK_STOP ]
-"488
-[v _I2C_DO_RX_NACK_RESTART I2C_DO_RX_NACK_RESTART `(E5651  1 s 1 I2C_DO_RX_NACK_RESTART ]
-"494
-[v _I2C_DO_RESET I2C_DO_RESET `(E5651  1 s 1 I2C_DO_RESET ]
-"500
-[v _I2C_DO_ADDRESS_NACK I2C_DO_ADDRESS_NACK `(E5651  1 s 1 I2C_DO_ADDRESS_NACK ]
-"520
+"335
+[v _I2C_DO_IDLE I2C_DO_IDLE `(E5657  1 s 1 I2C_DO_IDLE ]
+"342
+[v _I2C_DO_SEND_ADR_READ I2C_DO_SEND_ADR_READ `(E5657  1 s 1 I2C_DO_SEND_ADR_READ ]
+"349
+[v _I2C_DO_SEND_ADR_WRITE I2C_DO_SEND_ADR_WRITE `(E5657  1 s 1 I2C_DO_SEND_ADR_WRITE ]
+"356
+[v _I2C_DO_TX I2C_DO_TX `(E5657  1 s 1 I2C_DO_TX ]
+"380
+[v _I2C_DO_RX I2C_DO_RX `(E5657  1 s 1 I2C_DO_RX ]
+"404
+[v _I2C_DO_RCEN I2C_DO_RCEN `(E5657  1 s 1 I2C_DO_RCEN ]
+"411
+[v _I2C_DO_TX_EMPTY I2C_DO_TX_EMPTY `(E5657  1 s 1 I2C_DO_TX_EMPTY ]
+"451
+[v _I2C_DO_SEND_RESTART_READ I2C_DO_SEND_RESTART_READ `(E5657  1 s 1 I2C_DO_SEND_RESTART_READ ]
+"457
+[v _I2C_DO_SEND_RESTART_WRITE I2C_DO_SEND_RESTART_WRITE `(E5657  1 s 1 I2C_DO_SEND_RESTART_WRITE ]
+"464
+[v _I2C_DO_SEND_RESTART I2C_DO_SEND_RESTART `(E5657  1 s 1 I2C_DO_SEND_RESTART ]
+"470
+[v _I2C_DO_SEND_STOP I2C_DO_SEND_STOP `(E5657  1 s 1 I2C_DO_SEND_STOP ]
+"476
+[v _I2C_DO_RX_ACK I2C_DO_RX_ACK `(E5657  1 s 1 I2C_DO_RX_ACK ]
+"483
+[v _I2C_DO_RX_NACK_STOP I2C_DO_RX_NACK_STOP `(E5657  1 s 1 I2C_DO_RX_NACK_STOP ]
+"489
+[v _I2C_DO_RX_NACK_RESTART I2C_DO_RX_NACK_RESTART `(E5657  1 s 1 I2C_DO_RX_NACK_RESTART ]
+"495
+[v _I2C_DO_RESET I2C_DO_RESET `(E5657  1 s 1 I2C_DO_RESET ]
+"501
+[v _I2C_DO_ADDRESS_NACK I2C_DO_ADDRESS_NACK `(E5657  1 s 1 I2C_DO_ADDRESS_NACK ]
+"521
 [v _I2C_CallbackReturnStop I2C_CallbackReturnStop `(E360  1 e 1 0 ]
-"525
+"526
 [v _I2C_CallbackReturnReset I2C_CallbackReturnReset `(E360  1 e 1 0 ]
-"543
+"544
 [v _I2C_MasterOpen I2C_MasterOpen `T(a  1 s 1 I2C_MasterOpen ]
-"557
+"558
 [v _I2C_MasterClose I2C_MasterClose `T(v  1 s 1 I2C_MasterClose ]
-"563
+"564
 [v _I2C_MasterGetRxData I2C_MasterGetRxData `T(uc  1 s 1 I2C_MasterGetRxData ]
-"568
+"569
 [v _I2C_MasterSendTxData I2C_MasterSendTxData `T(v  1 s 1 I2C_MasterSendTxData ]
-"573
+"574
 [v _I2C_MasterEnableRestart I2C_MasterEnableRestart `T(v  1 s 1 I2C_MasterEnableRestart ]
-"578
+"579
 [v _I2C_MasterDisableRestart I2C_MasterDisableRestart `T(v  1 s 1 I2C_MasterDisableRestart ]
-"583
+"584
 [v _I2C_MasterStartRx I2C_MasterStartRx `T(v  1 s 1 I2C_MasterStartRx ]
-"588
+"589
 [v _I2C_MasterStart I2C_MasterStart `T(v  1 s 1 I2C_MasterStart ]
-"593
+"594
 [v _I2C_MasterStop I2C_MasterStop `T(v  1 s 1 I2C_MasterStop ]
-"598
+"599
 [v _I2C_MasterIsNack I2C_MasterIsNack `T(a  1 s 1 I2C_MasterIsNack ]
-"603
+"604
 [v _I2C_MasterSendAck I2C_MasterSendAck `T(v  1 s 1 I2C_MasterSendAck ]
-"609
+"610
 [v _I2C_MasterSendNack I2C_MasterSendNack `T(v  1 s 1 I2C_MasterSendNack ]
-"615
+"616
 [v _I2C_MasterClearBusCollision I2C_MasterClearBusCollision `T(v  1 s 1 I2C_MasterClearBusCollision ]
-"625
+"627
 [v _I2C_MasterEnableIrq I2C_MasterEnableIrq `T(v  1 s 1 I2C_MasterEnableIrq ]
-"635
+"637
 [v _I2C_MasterDisableIrq I2C_MasterDisableIrq `T(v  1 s 1 I2C_MasterDisableIrq ]
-"640
+"642
 [v _I2C_MasterClearIrq I2C_MasterClearIrq `T(v  1 s 1 I2C_MasterClearIrq ]
-"645
+[v i1_I2C_MasterClearIrq I2C_MasterClearIrq `T(v  1 s 1 i1_I2C_MasterClearIrq ]
+"647
 [v _I2C_MasterSetIrq I2C_MasterSetIrq `T(v  1 s 1 I2C_MasterSetIrq ]
-"650
-[v _I2C_MasterWaitForEvent I2C_MasterWaitForEvent `T(v  1 s 1 I2C_MasterWaitForEvent ]
-"52 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/interrupt_manager.c
+"53 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/interrupt_manager.c
 [v _INTERRUPT_InterruptManager INTERRUPT_InterruptManager `II(v  1 e 1 0 ]
+"58
+[v _InterruptCallback InterruptCallback `(v  1 e 1 0 ]
 "50 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/mcc.c
 [v _SYSTEM_Initialize SYSTEM_Initialize `(v  1 e 1 0 ]
 "65
 [v _OSCILLATOR_Initialize OSCILLATOR_Initialize `(v  1 e 1 0 ]
 "79
 [v _WDT_Initialize WDT_Initialize `(v  1 e 1 0 ]
+"58 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/memory.c
+[v _FLASH_ReadWord FLASH_ReadWord `(us  1 e 2 0 ]
+"94
+[v _FLASH_WriteBlock FLASH_WriteBlock `(c  1 e 1 0 ]
+"148
+[v _FLASH_EraseBlock FLASH_EraseBlock `(v  1 e 1 0 ]
 "58 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/pin_manager.c
 [v _PIN_MANAGER_Initialize PIN_MANAGER_Initialize `(v  1 e 1 0 ]
 "148
@@ -230,7 +311,9 @@ channel_FVRBuffer1 31
 [v _TMR1_WriteTimer TMR1_WriteTimer `(v  1 e 1 0 ]
 "62 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/tmr2.c
 [v _TMR2_Initialize TMR2_Initialize `(v  1 e 1 0 ]
-[s S331 . 1 `uc 1 IOCIF 1 0 :1:0 
+"213 C:\Projects\eggys-intellivalve-firmware\FW\Rev1/mcc_generated_files/i2c_master.h
+[v _MSSP_InterruptHandler MSSP_InterruptHandler `*.37(v  1 e 2 0 ]
+[s S333 . 1 `uc 1 IOCIF 1 0 :1:0 
 `uc 1 INTF 1 0 :1:1 
 `uc 1 TMR0IF 1 0 :1:2 
 `uc 1 IOCIE 1 0 :1:3 
@@ -240,14 +323,14 @@ channel_FVRBuffer1 31
 `uc 1 GIE 1 0 :1:7 
 ]
 "375 C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h
-[s S340 . 1 `uc 1 . 1 0 :2:0 
+[s S342 . 1 `uc 1 . 1 0 :2:0 
 `uc 1 T0IF 1 0 :1:2 
 `uc 1 . 1 0 :2:3 
 `uc 1 T0IE 1 0 :1:5 
 ]
-[u S345 . 1 `S331 1 . 1 0 `S340 1 . 1 0 ]
-[v _INTCONbits INTCONbits `VES345  1 e 1 @11 ]
-[s S538 . 1 `uc 1 TMR1IF 1 0 :1:0 
+[u S347 . 1 `S333 1 . 1 0 `S342 1 . 1 0 ]
+[v _INTCONbits INTCONbits `VES347  1 e 1 @11 ]
+[s S713 . 1 `uc 1 TMR1IF 1 0 :1:0 
 `uc 1 TMR2IF 1 0 :1:1 
 `uc 1 CCP1IF 1 0 :1:2 
 `uc 1 SSP1IF 1 0 :1:3 
@@ -257,9 +340,9 @@ channel_FVRBuffer1 31
 `uc 1 TMR1GIF 1 0 :1:7 
 ]
 "654
-[u S547 . 1 `S538 1 . 1 0 ]
-[v _PIR1bits PIR1bits `VES547  1 e 1 @17 ]
-[s S1176 . 1 `uc 1 CCP2IF 1 0 :1:0 
+[u S722 . 1 `S713 1 . 1 0 ]
+[v _PIR1bits PIR1bits `VES722  1 e 1 @17 ]
+[s S958 . 1 `uc 1 CCP2IF 1 0 :1:0 
 `uc 1 TMR4IF 1 0 :1:1 
 `uc 1 TMR6IF 1 0 :1:2 
 `uc 1 BCL1IF 1 0 :1:3 
@@ -269,8 +352,8 @@ channel_FVRBuffer1 31
 `uc 1 OSFIF 1 0 :1:7 
 ]
 "716
-[u S1185 . 1 `S1176 1 . 1 0 ]
-[v _PIR2bits PIR2bits `VES1185  1 e 1 @18 ]
+[u S967 . 1 `S958 1 . 1 0 ]
+[v _PIR2bits PIR2bits `VES967  1 e 1 @18 ]
 "812
 [v _TMR0 TMR0 `VEuc  1 e 1 @21 ]
 "839
@@ -279,7 +362,7 @@ channel_FVRBuffer1 31
 [v _TMR1H TMR1H `VEuc  1 e 1 @23 ]
 "879
 [v _T1CON T1CON `VEuc  1 e 1 @24 ]
-[s S734 . 1 `uc 1 TMR1ON 1 0 :1:0 
+[s S801 . 1 `uc 1 TMR1ON 1 0 :1:0 
 `uc 1 . 1 0 :1:1 
 `uc 1 nT1SYNC 1 0 :1:2 
 `uc 1 T1OSCEN 1 0 :1:3 
@@ -287,17 +370,17 @@ channel_FVRBuffer1 31
 `uc 1 TMR1CS 1 0 :2:6 
 ]
 "901
-[s S741 . 1 `uc 1 . 1 0 :4:0 
+[s S808 . 1 `uc 1 . 1 0 :4:0 
 `uc 1 T1CKPS0 1 0 :1:4 
 `uc 1 T1CKPS1 1 0 :1:5 
 `uc 1 TMR1CS0 1 0 :1:6 
 `uc 1 TMR1CS1 1 0 :1:7 
 ]
-[u S747 . 1 `S734 1 . 1 0 `S741 1 . 1 0 ]
-[v _T1CONbits T1CONbits `VES747  1 e 1 @24 ]
+[u S814 . 1 `S801 1 . 1 0 `S808 1 . 1 0 ]
+[v _T1CONbits T1CONbits `VES814  1 e 1 @24 ]
 "951
 [v _T1GCON T1GCON `VEuc  1 e 1 @25 ]
-[s S764 . 1 `uc 1 T1GSS 1 0 :2:0 
+[s S831 . 1 `uc 1 T1GSS 1 0 :2:0 
 `uc 1 T1GVAL 1 0 :1:2 
 `uc 1 T1GGO_nDONE 1 0 :1:3 
 `uc 1 T1GSPM 1 0 :1:4 
@@ -306,23 +389,23 @@ channel_FVRBuffer1 31
 `uc 1 TMR1GE 1 0 :1:7 
 ]
 "971
-[s S772 . 1 `uc 1 T1GSS0 1 0 :1:0 
+[s S839 . 1 `uc 1 T1GSS0 1 0 :1:0 
 `uc 1 T1GSS1 1 0 :1:1 
 ]
-[u S775 . 1 `S764 1 . 1 0 `S772 1 . 1 0 ]
-[v _T1GCONbits T1GCONbits `VES775  1 e 1 @25 ]
+[u S842 . 1 `S831 1 . 1 0 `S839 1 . 1 0 ]
+[v _T1GCONbits T1GCONbits `VES842  1 e 1 @25 ]
 "1021
 [v _TMR2 TMR2 `VEuc  1 e 1 @26 ]
 "1041
 [v _PR2 PR2 `VEuc  1 e 1 @27 ]
 "1061
 [v _T2CON T2CON `VEuc  1 e 1 @28 ]
-[s S676 . 1 `uc 1 T2CKPS 1 0 :2:0 
+[s S735 . 1 `uc 1 T2CKPS 1 0 :2:0 
 `uc 1 TMR2ON 1 0 :1:2 
 `uc 1 T2OUTPS 1 0 :4:3 
 ]
 "1082
-[s S680 . 1 `uc 1 T2CKPS0 1 0 :1:0 
+[s S739 . 1 `uc 1 T2CKPS0 1 0 :1:0 
 `uc 1 T2CKPS1 1 0 :1:1 
 `uc 1 . 1 0 :1:2 
 `uc 1 T2OUTPS0 1 0 :1:3 
@@ -330,8 +413,8 @@ channel_FVRBuffer1 31
 `uc 1 T2OUTPS2 1 0 :1:5 
 `uc 1 T2OUTPS3 1 0 :1:6 
 ]
-[u S688 . 1 `S676 1 . 1 0 `S680 1 . 1 0 ]
-[v _T2CONbits T2CONbits `VES688  1 e 1 @28 ]
+[u S747 . 1 `S735 1 . 1 0 `S739 1 . 1 0 ]
+[v _T2CONbits T2CONbits `VES747  1 e 1 @28 ]
 "1132
 [v _TRISA TRISA `VEuc  1 e 1 @140 ]
 "1194
@@ -340,7 +423,7 @@ channel_FVRBuffer1 31
 [v _TRISC TRISC `VEuc  1 e 1 @142 ]
 "1318
 [v _TRISE TRISE `VEuc  1 e 1 @144 ]
-[s S1218 . 1 `uc 1 TMR1IE 1 0 :1:0 
+[s S500 . 1 `uc 1 TMR1IE 1 0 :1:0 
 `uc 1 TMR2IE 1 0 :1:1 
 `uc 1 CCP1IE 1 0 :1:2 
 `uc 1 SSP1IE 1 0 :1:3 
@@ -350,11 +433,23 @@ channel_FVRBuffer1 31
 `uc 1 TMR1GIE 1 0 :1:7 
 ]
 "1356
-[u S1227 . 1 `S1218 1 . 1 0 ]
-[v _PIE1bits PIE1bits `VES1227  1 e 1 @145 ]
+[u S509 . 1 `S500 1 . 1 0 ]
+[v _PIE1bits PIE1bits `VES509  1 e 1 @145 ]
+[s S937 . 1 `uc 1 CCP2IE 1 0 :1:0 
+`uc 1 TMR4IE 1 0 :1:1 
+`uc 1 TMR6IE 1 0 :1:2 
+`uc 1 BCL1IE 1 0 :1:3 
+`uc 1 . 1 0 :1:4 
+`uc 1 C1IE 1 0 :1:5 
+`uc 1 C2IE 1 0 :1:6 
+`uc 1 OSFIE 1 0 :1:7 
+]
+"1418
+[u S946 . 1 `S937 1 . 1 0 ]
+[v _PIE2bits PIE2bits `VES946  1 e 1 @146 ]
 "1514
 [v _OPTION_REG OPTION_REG `VEuc  1 e 1 @149 ]
-[s S206 . 1 `uc 1 PS 1 0 :3:0 
+[s S208 . 1 `uc 1 PS 1 0 :3:0 
 `uc 1 PSA 1 0 :1:3 
 `uc 1 TMR0SE 1 0 :1:4 
 `uc 1 TMR0CS 1 0 :1:5 
@@ -362,15 +457,15 @@ channel_FVRBuffer1 31
 `uc 1 nWPUEN 1 0 :1:7 
 ]
 "1537
-[s S213 . 1 `uc 1 PS0 1 0 :1:0 
+[s S215 . 1 `uc 1 PS0 1 0 :1:0 
 `uc 1 PS1 1 0 :1:1 
 `uc 1 PS2 1 0 :1:2 
 `uc 1 . 1 0 :1:3 
 `uc 1 T0SE 1 0 :1:4 
 `uc 1 T0CS 1 0 :1:5 
 ]
-[u S220 . 1 `S206 1 . 1 0 `S213 1 . 1 0 ]
-[v _OPTION_REGbits OPTION_REGbits `VES220  1 e 1 @149 ]
+[u S222 . 1 `S208 1 . 1 0 `S215 1 . 1 0 ]
+[v _OPTION_REGbits OPTION_REGbits `VES222  1 e 1 @149 ]
 "1654
 [v _WDTCON WDTCON `VEuc  1 e 1 @151 ]
 "1713
@@ -383,12 +478,12 @@ channel_FVRBuffer1 31
 [v _ADRESH ADRESH `VEuc  1 e 1 @156 ]
 "1952
 [v _ADCON0 ADCON0 `VEuc  1 e 1 @157 ]
-[s S1449 . 1 `uc 1 ADON 1 0 :1:0 
+[s S1585 . 1 `uc 1 ADON 1 0 :1:0 
 `uc 1 GO_nDONE 1 0 :1:1 
 `uc 1 CHS 1 0 :5:2 
 ]
 "1977
-[s S1453 . 1 `uc 1 . 1 0 :1:0 
+[s S1589 . 1 `uc 1 . 1 0 :1:0 
 `uc 1 ADGO 1 0 :1:1 
 `uc 1 CHS0 1 0 :1:2 
 `uc 1 CHS1 1 0 :1:3 
@@ -396,26 +491,50 @@ channel_FVRBuffer1 31
 `uc 1 CHS3 1 0 :1:5 
 `uc 1 CHS4 1 0 :1:6 
 ]
-[s S1461 . 1 `uc 1 . 1 0 :1:0 
+[s S1597 . 1 `uc 1 . 1 0 :1:0 
 `uc 1 GO 1 0 :1:1 
 ]
-[u S1464 . 1 `S1449 1 . 1 0 `S1453 1 . 1 0 `S1461 1 . 1 0 ]
-[v _ADCON0bits ADCON0bits `VES1464  1 e 1 @157 ]
+[u S1600 . 1 `S1585 1 . 1 0 `S1589 1 . 1 0 `S1597 1 . 1 0 ]
+[v _ADCON0bits ADCON0bits `VES1600  1 e 1 @157 ]
 "2032
 [v _ADCON1 ADCON1 `VEuc  1 e 1 @158 ]
 "2085
 [v _ADCON2 ADCON2 `VEuc  1 e 1 @159 ]
 "2133
 [v _LATA LATA `VEuc  1 e 1 @268 ]
+[s S1803 . 1 `uc 1 LATA0 1 0 :1:0 
+`uc 1 LATA1 1 0 :1:1 
+`uc 1 LATA2 1 0 :1:2 
+`uc 1 LATA3 1 0 :1:3 
+`uc 1 LATA4 1 0 :1:4 
+`uc 1 LATA5 1 0 :1:5 
+`uc 1 LATA6 1 0 :1:6 
+`uc 1 LATA7 1 0 :1:7 
+]
+"2150
+[u S1812 . 1 `S1803 1 . 1 0 ]
+[v _LATAbits LATAbits `VES1812  1 e 1 @268 ]
 "2195
 [v _LATB LATB `VEuc  1 e 1 @269 ]
+[s S1855 . 1 `uc 1 LATB0 1 0 :1:0 
+`uc 1 LATB1 1 0 :1:1 
+`uc 1 LATB2 1 0 :1:2 
+`uc 1 LATB3 1 0 :1:3 
+`uc 1 LATB4 1 0 :1:4 
+`uc 1 LATB5 1 0 :1:5 
+`uc 1 LATB6 1 0 :1:6 
+`uc 1 LATB7 1 0 :1:7 
+]
+"2212
+[u S1864 . 1 `S1855 1 . 1 0 ]
+[v _LATBbits LATBbits `VES1864  1 e 1 @269 ]
 "2257
 [v _LATC LATC `VEuc  1 e 1 @270 ]
 "2611
 [v _BORCON BORCON `VEuc  1 e 1 @278 ]
 "2644
 [v _FVRCON FVRCON `VEuc  1 e 1 @279 ]
-[s S23 . 1 `uc 1 ADFVR 1 0 :2:0 
+[s S156 . 1 `uc 1 ADFVR 1 0 :2:0 
 `uc 1 CDAFVR 1 0 :2:2 
 `uc 1 TSRNG 1 0 :1:4 
 `uc 1 TSEN 1 0 :1:5 
@@ -423,19 +542,40 @@ channel_FVRBuffer1 31
 `uc 1 FVREN 1 0 :1:7 
 ]
 "2665
-[s S30 . 1 `uc 1 ADFVR0 1 0 :1:0 
+[s S163 . 1 `uc 1 ADFVR0 1 0 :1:0 
 `uc 1 ADFVR1 1 0 :1:1 
 `uc 1 CDAFVR0 1 0 :1:2 
 `uc 1 CDAFVR1 1 0 :1:3 
 ]
-[u S35 . 1 `S23 1 . 1 0 `S30 1 . 1 0 ]
-[v _FVRCONbits FVRCONbits `VES35  1 e 1 @279 ]
+[u S168 . 1 `S156 1 . 1 0 `S163 1 . 1 0 ]
+[v _FVRCONbits FVRCONbits `VES168  1 e 1 @279 ]
 "3553
 [v _ANSELA ANSELA `VEuc  1 e 1 @396 ]
 "3603
 [v _ANSELB ANSELB `VEuc  1 e 1 @397 ]
 "3653
 [v _ANSELC ANSELC `VEuc  1 e 1 @398 ]
+"3711
+[v _PMADRL PMADRL `VEuc  1 e 1 @401 ]
+"3731
+[v _PMADRH PMADRH `VEuc  1 e 1 @402 ]
+"3758
+[v _PMDATL PMDATL `VEuc  1 e 1 @403 ]
+"3778
+[v _PMDATH PMDATH `VEuc  1 e 1 @404 ]
+[s S1659 . 1 `uc 1 RD 1 0 :1:0 
+`uc 1 WR 1 0 :1:1 
+`uc 1 WREN 1 0 :1:2 
+`uc 1 WRERR 1 0 :1:3 
+`uc 1 FREE 1 0 :1:4 
+`uc 1 LWLO 1 0 :1:5 
+`uc 1 CFGS 1 0 :1:6 
+]
+"3814
+[u S1667 . 1 `S1659 1 . 1 0 ]
+[v _PMCON1bits PMCON1bits `VES1667  1 e 1 @405 ]
+"3854
+[v _PMCON2 PMCON2 `VEuc  1 e 1 @406 ]
 "3895
 [v _RC1REG RC1REG `VEuc  1 e 1 @409 ]
 "3949
@@ -446,7 +586,7 @@ channel_FVRBuffer1 31
 [v _SP1BRGH SP1BRGH `VEuc  1 e 1 @412 ]
 "4134
 [v _RC1STA RC1STA `VEuc  1 e 1 @413 ]
-[s S580 . 1 `uc 1 RX9D 1 0 :1:0 
+[s S598 . 1 `uc 1 RX9D 1 0 :1:0 
 `uc 1 OERR 1 0 :1:1 
 `uc 1 FERR 1 0 :1:2 
 `uc 1 ADDEN 1 0 :1:3 
@@ -456,11 +596,11 @@ channel_FVRBuffer1 31
 `uc 1 SPEN 1 0 :1:7 
 ]
 "4160
-[u S589 . 1 `S580 1 . 1 0 ]
-[v _RC1STAbits RC1STAbits `VES589  1 e 1 @413 ]
+[u S607 . 1 `S598 1 . 1 0 ]
+[v _RC1STAbits RC1STAbits `VES607  1 e 1 @413 ]
 "4314
 [v _TX1STA TX1STA `VEuc  1 e 1 @414 ]
-[s S559 . 1 `uc 1 TX9D 1 0 :1:0 
+[s S576 . 1 `uc 1 TX9D 1 0 :1:0 
 `uc 1 TRMT 1 0 :1:1 
 `uc 1 BRGH 1 0 :1:2 
 `uc 1 SENDB 1 0 :1:3 
@@ -470,8 +610,8 @@ channel_FVRBuffer1 31
 `uc 1 CSRC 1 0 :1:7 
 ]
 "4340
-[u S568 . 1 `S559 1 . 1 0 ]
-[v _TX1STAbits TX1STAbits `VES568  1 e 1 @414 ]
+[u S585 . 1 `S576 1 . 1 0 ]
+[v _TX1STAbits TX1STAbits `VES585  1 e 1 @414 ]
 "4494
 [v _BAUD1CON BAUD1CON `VEuc  1 e 1 @415 ]
 "4740
@@ -488,7 +628,7 @@ channel_FVRBuffer1 31
 [v _SSP1ADD SSP1ADD `VEuc  1 e 1 @530 ]
 "5709
 [v _SSP1STAT SSP1STAT `VEuc  1 e 1 @532 ]
-[s S1197 . 1 `uc 1 BF 1 0 :1:0 
+[s S1355 . 1 `uc 1 BF 1 0 :1:0 
 `uc 1 UA 1 0 :1:1 
 `uc 1 R_nW 1 0 :1:2 
 `uc 1 S 1 0 :1:3 
@@ -498,27 +638,27 @@ channel_FVRBuffer1 31
 `uc 1 SMP 1 0 :1:7 
 ]
 "5731
-[u S1206 . 1 `S1197 1 . 1 0 ]
-[v _SSP1STATbits SSP1STATbits `VES1206  1 e 1 @532 ]
+[u S1364 . 1 `S1355 1 . 1 0 ]
+[v _SSP1STATbits SSP1STATbits `VES1364  1 e 1 @532 ]
 "5831
 [v _SSP1CON1 SSP1CON1 `VEuc  1 e 1 @533 ]
-[s S990 . 1 `uc 1 SSPM 1 0 :4:0 
+[s S1154 . 1 `uc 1 SSPM 1 0 :4:0 
 `uc 1 CKP 1 0 :1:4 
 `uc 1 SSPEN 1 0 :1:5 
 `uc 1 SSPOV 1 0 :1:6 
 `uc 1 WCOL 1 0 :1:7 
 ]
 "5864
-[s S996 . 1 `uc 1 SSPM0 1 0 :1:0 
+[s S1160 . 1 `uc 1 SSPM0 1 0 :1:0 
 `uc 1 SSPM1 1 0 :1:1 
 `uc 1 SSPM2 1 0 :1:2 
 `uc 1 SSPM3 1 0 :1:3 
 ]
-[u S1001 . 1 `S990 1 . 1 0 `S996 1 . 1 0 ]
-[v _SSP1CON1bits SSP1CON1bits `VES1001  1 e 1 @533 ]
+[u S1165 . 1 `S1154 1 . 1 0 `S1160 1 . 1 0 ]
+[v _SSP1CON1bits SSP1CON1bits `VES1165  1 e 1 @533 ]
 "6101
 [v _SSP1CON2 SSP1CON2 `VEuc  1 e 1 @534 ]
-[s S1155 . 1 `uc 1 SEN 1 0 :1:0 
+[s S1322 . 1 `uc 1 SEN 1 0 :1:0 
 `uc 1 RSEN 1 0 :1:1 
 `uc 1 PEN 1 0 :1:2 
 `uc 1 RCEN 1 0 :1:3 
@@ -528,8 +668,8 @@ channel_FVRBuffer1 31
 `uc 1 GCEN 1 0 :1:7 
 ]
 "6123
-[u S1164 . 1 `S1155 1 . 1 0 ]
-[v _SSP1CON2bits SSP1CON2bits `VES1164  1 e 1 @534 ]
+[u S1331 . 1 `S1322 1 . 1 0 ]
+[v _SSP1CON2bits SSP1CON2bits `VES1331  1 e 1 @534 ]
 "6345
 [v _ODCONA ODCONA `VEuc  1 e 1 @652 ]
 "6407
@@ -550,7 +690,7 @@ channel_FVRBuffer1 31
 [v _INLVLC INLVLC `VEuc  1 e 1 @910 ]
 "7397
 [v _INLVLE INLVLE `VEuc  1 e 1 @912 ]
-[s S290 . 1 `uc 1 IOCAP0 1 0 :1:0 
+[s S292 . 1 `uc 1 IOCAP0 1 0 :1:0 
 `uc 1 IOCAP1 1 0 :1:1 
 `uc 1 IOCAP2 1 0 :1:2 
 `uc 1 IOCAP3 1 0 :1:3 
@@ -560,9 +700,9 @@ channel_FVRBuffer1 31
 `uc 1 IOCAP7 1 0 :1:7 
 ]
 "7435
-[u S299 . 1 `S290 1 . 1 0 ]
-[v _IOCAPbits IOCAPbits `VES299  1 e 1 @913 ]
-[s S269 . 1 `uc 1 IOCAN0 1 0 :1:0 
+[u S301 . 1 `S292 1 . 1 0 ]
+[v _IOCAPbits IOCAPbits `VES301  1 e 1 @913 ]
+[s S271 . 1 `uc 1 IOCAN0 1 0 :1:0 
 `uc 1 IOCAN1 1 0 :1:1 
 `uc 1 IOCAN2 1 0 :1:2 
 `uc 1 IOCAN3 1 0 :1:3 
@@ -572,9 +712,9 @@ channel_FVRBuffer1 31
 `uc 1 IOCAN7 1 0 :1:7 
 ]
 "7497
-[u S278 . 1 `S269 1 . 1 0 ]
-[v _IOCANbits IOCANbits `VES278  1 e 1 @914 ]
-[s S248 . 1 `uc 1 IOCAF0 1 0 :1:0 
+[u S280 . 1 `S271 1 . 1 0 ]
+[v _IOCANbits IOCANbits `VES280  1 e 1 @914 ]
+[s S250 . 1 `uc 1 IOCAF0 1 0 :1:0 
 `uc 1 IOCAF1 1 0 :1:1 
 `uc 1 IOCAF2 1 0 :1:2 
 `uc 1 IOCAF3 1 0 :1:3 
@@ -584,8 +724,8 @@ channel_FVRBuffer1 31
 `uc 1 IOCAF7 1 0 :1:7 
 ]
 "7559
-[u S257 . 1 `S248 1 . 1 0 ]
-[v _IOCAFbits IOCAFbits `VES257  1 e 1 @915 ]
+[u S259 . 1 `S250 1 . 1 0 ]
+[v _IOCAFbits IOCAFbits `VES259  1 e 1 @915 ]
 "10247
 [v _SSPCLKPPS SSPCLKPPS `VEuc  1 e 1 @3616 ]
 "10267
@@ -600,29 +740,96 @@ channel_FVRBuffer1 31
 [v _RC6PPS RC6PPS `VEuc  1 e 1 @3750 ]
 "17679
 [v _PLLR PLLR `VEb  1 e 0 @1238 ]
-[s S492 . 1 `uc 1 perr 1 0 :1:0 
+[s S1824 . 90 `uc 1 header0 1 0 `uc 1 header1 1 1 `uc 1 header2 1 2 `uc 1 protocal 1 3 `uc 1 destination 1 4 `uc 1 source 1 5 `uc 1 command 1 6 `uc 1 data_length 1 7 `[80]uc 1 data 80 8 `us 1 checksum 2 88 ]
+"4 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\command_system.c
+[v _rs485TXBuffer rs485TXBuffer `VE[3]S1824  1 e 270 @9954 ]
+"7
+[v _rs485RXBuffer rs485RXBuffer `VE[3]S1824  1 e 270 @9684 ]
+"9
+[v _sendInProgress sendInProgress `VEuc  1 e 1 0 ]
+"10
+[v _sendBuffersFull sendBuffersFull `VEuc  1 e 1 0 ]
+"11
+[v _receiveReady receiveReady `VEuc  1 e 1 0 ]
+"12
+[v _receiveBuffersFull receiveBuffersFull `VEuc  1 e 1 0 ]
+"13
+[v _receiveBuffersOverflow receiveBuffersOverflow `VEuc  1 e 1 0 ]
+"24
+[v _uart_rx_buf_location uart_rx_buf_location `VEuc  1 e 1 0 ]
+"78 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\main.c
+[v _eeprom_data eeprom_data `[128]uc  1 e 128 @9556 ]
+"81
+[v _second_stop_ptr second_stop_ptr `*.39uc  1 e 2 0 ]
+"82
+[v _second_stop_backup_ptr second_stop_backup_ptr `*.39uc  1 e 2 0 ]
+"84
+[v _valve_uid valve_uid `[6]uc  1 e 6 0 ]
+[s S1741 . 2 `uc 1 SERVICE_LED 1 0 :1:0 
+`uc 1 LED12 1 0 :1:1 
+`uc 1 LED14 1 0 :1:2 
+`uc 1 LED16 1 0 :1:3 
+`uc 1 LED18 1 0 :1:4 
+`uc 1 LED20 1 0 :1:5 
+`uc 1 LED22 1 0 :1:6 
+`uc 1 LED24 1 0 :1:7 
+`uc 1 LED0 1 1 :1:0 
+`uc 1 LED2 1 1 :1:1 
+`uc 1 LED4 1 1 :1:2 
+`uc 1 LED6 1 1 :1:3 
+`uc 1 LED8 1 1 :1:4 
+`uc 1 LED10 1 1 :1:5 
+`uc 1 AUTO_LED 1 1 :1:6 
+`uc 1 OFF_LED 1 1 :1:7 
+]
+"85
+[u S1758 . 2 `us 1 raw_leds 2 0 `S1741 1 LEDbits 2 0 ]
+[v _display display `S1758  1 e 2 0 ]
+"62 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/eusart.c
+[v _eusartTxHead eusartTxHead `VEuc  1 e 1 0 ]
+"63
+[v _eusartTxTail eusartTxTail `VEuc  1 e 1 0 ]
+"64
+[v _eusartTxBuffer eusartTxBuffer `VE[8]uc  1 e 8 0 ]
+"65
+[v _eusartTxBufferRemaining eusartTxBufferRemaining `VEuc  1 e 1 0 ]
+"67
+[v _eusartRxHead eusartRxHead `VEuc  1 e 1 0 ]
+"68
+[v _eusartRxTail eusartRxTail `VEuc  1 e 1 0 ]
+"69
+[v _eusartRxBuffer eusartRxBuffer `VE[8]uc  1 e 8 0 ]
+[s S487 . 1 `uc 1 perr 1 0 :1:0 
 `uc 1 ferr 1 0 :1:1 
 `uc 1 oerr 1 0 :1:2 
 `uc 1 reserved 1 0 :5:3 
 ]
-"52 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/eusart.c
-[u S497 . 1 `S492 1 . 1 0 `uc 1 status 1 0 ]
-[v _eusartRxLastError eusartRxLastError `VES497  1 e 1 0 ]
-"58
+"70
+[u S492 . 1 `S487 1 . 1 0 `uc 1 status 1 0 ]
+[v _eusartRxStatusBuffer eusartRxStatusBuffer `VE[8]S492  1 e 8 0 ]
+"71
+[v _eusartRxCount eusartRxCount `VEuc  1 e 1 0 ]
+"72
+[v _eusartRxLastError eusartRxLastError `VES492  1 e 1 0 ]
+"77
+[v _EUSART_TxDefaultInterruptHandler EUSART_TxDefaultInterruptHandler `*.37(v  1 e 2 0 ]
+"78
+[v _EUSART_RxDefaultInterruptHandler EUSART_RxDefaultInterruptHandler `*.37(v  1 e 2 0 ]
+"80
 [v _EUSART_FramingErrorHandler EUSART_FramingErrorHandler `*.37(v  1 e 2 0 ]
-"59
+"81
 [v _EUSART_OverrunErrorHandler EUSART_OverrunErrorHandler `*.37(v  1 e 2 0 ]
-"60
+"82
 [v _EUSART_ErrorHandler EUSART_ErrorHandler `*.37(v  1 e 2 0 ]
 "146 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/i2c_master.c
-[v _i2c_fsmStateTable i2c_fsmStateTable `DC[16]*.37(E5651  1 e 32 0 ]
-[s S964 . 29 `[6]*.37(E360 1 callbackTable 12 0 `[6]*.1v 1 callbackPayload 6 12 `us 1 time_out 2 18 `us 1 time_out_value 2 20 `uc 1 address 1 22 `*.1uc 1 data_ptr 1 23 `ui 1 data_length 2 24 `E5651 1 state 1 26 `E355 1 error 1 27 `uc 1 addressNackCheck 1 28 :1:0 
+[v _i2c_fsmStateTable i2c_fsmStateTable `DC[16]*.37(E5657  1 e 32 0 ]
+[s S1128 . 29 `[6]*.37(E360 1 callbackTable 12 0 `[6]*.4v 1 callbackPayload 6 12 `us 1 time_out 2 18 `us 1 time_out_value 2 20 `uc 1 address 1 22 `*.4uc 1 data_ptr 1 23 `ui 1 data_length 2 24 `E5657 1 state 1 26 `E355 1 error 1 27 `uc 1 addressNackCheck 1 28 :1:0 
 `uc 1 busy 1 28 :1:1 
 `uc 1 inUse 1 28 :1:2 
 `uc 1 bufferFree 1 28 :1:3 
 ]
 "165
-[v _I2C_Status I2C_Status `S964  1 e 29 0 ]
+[v _I2C_Status I2C_Status `S1128  1 e 29 0 ]
 "54 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/pin_manager.c
 [v _IOCAF0_InterruptHandler IOCAF0_InterruptHandler `*.37(v  1 e 2 0 ]
 "55
@@ -631,10 +838,61 @@ channel_FVRBuffer1 31
 [v _timer0ReloadVal timer0ReloadVal `VEuc  1 e 1 0 ]
 "57 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/tmr1.c
 [v _timer1ReloadVal timer1ReloadVal `VEus  1 e 2 0 ]
-"49 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\main.c
+"87 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\main.c
 [v _main main `(v  1 e 1 0 ]
 {
-"73
+"143
+[v main@new_value new_value `i  1 a 2 0 ]
+[s S1824 . 90 `uc 1 header0 1 0 `uc 1 header1 1 1 `uc 1 header2 1 2 `uc 1 protocal 1 3 `uc 1 destination 1 4 `uc 1 source 1 5 `uc 1 command 1 6 `uc 1 data_length 1 7 `[80]uc 1 data 80 8 `us 1 checksum 2 88 ]
+"274
+[v main@newCommand newCommand `*.1S1824  1 a 1 2 ]
+"287
+} 0
+"323
+[v _WriteEEPROMBuffer WriteEEPROMBuffer `(v  1 e 1 0 ]
+{
+[v WriteEEPROMBuffer@eeprom_addr eeprom_addr `uc  1 a 1 wreg ]
+"329
+[v WriteEEPROMBuffer@delayLoop2 delayLoop2 `uc  1 a 1 28 ]
+"328
+[v WriteEEPROMBuffer@delayLoop1 delayLoop1 `uc  1 a 1 27 ]
+"325
+[v WriteEEPROMBuffer@i i `uc  1 a 1 29 ]
+"323
+[v WriteEEPROMBuffer@eeprom_addr eeprom_addr `uc  1 a 1 wreg ]
+[v WriteEEPROMBuffer@buffer buffer `*.39uc  1 p 2 20 ]
+[v WriteEEPROMBuffer@length length `uc  1 p 1 22 ]
+"325
+[v WriteEEPROMBuffer@eeprom_addr eeprom_addr `uc  1 a 1 26 ]
+"337
+} 0
+"318
+[v _WriteEEPROM WriteEEPROM `(v  1 e 1 0 ]
+{
+[v WriteEEPROM@addr addr `uc  1 a 1 wreg ]
+[v WriteEEPROM@addr addr `uc  1 a 1 wreg ]
+[v WriteEEPROM@value value `uc  1 p 1 16 ]
+"320
+[v WriteEEPROM@addr addr `uc  1 a 1 19 ]
+"321
+} 0
+"91 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/examples/i2c_master_example.c
+[v _I2C_Write1ByteRegister I2C_Write1ByteRegister `(v  1 e 1 0 ]
+{
+[v I2C_Write1ByteRegister@address address `uc  1 a 1 wreg ]
+[v I2C_Write1ByteRegister@address address `uc  1 a 1 wreg ]
+[v I2C_Write1ByteRegister@reg reg `uc  1 p 1 12 ]
+[v I2C_Write1ByteRegister@data data `uc  1 p 1 13 ]
+[v I2C_Write1ByteRegister@address address `uc  1 a 1 15 ]
+"99
+} 0
+"20 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\command_system.c
+[v _TransmitMessage TransmitMessage `(uc  1 e 1 0 ]
+{
+[s S1824 . 90 `uc 1 header0 1 0 `uc 1 header1 1 1 `uc 1 header2 1 2 `uc 1 protocal 1 3 `uc 1 destination 1 4 `uc 1 source 1 5 `uc 1 command 1 6 `uc 1 data_length 1 7 `[80]uc 1 data 80 8 `us 1 checksum 2 88 ]
+[v TransmitMessage@newCommand newCommand `*.1S1824  1 a 1 wreg ]
+[v TransmitMessage@newCommand newCommand `*.1S1824  1 a 1 wreg ]
+"23
 } 0
 "50 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/mcc.c
 [v _SYSTEM_Initialize SYSTEM_Initialize `(v  1 e 1 0 ]
@@ -669,13 +927,13 @@ channel_FVRBuffer1 31
 "210
 [v _IOCAF1_SetInterruptHandler IOCAF1_SetInterruptHandler `(v  1 e 1 0 ]
 {
-[v IOCAF1_SetInterruptHandler@InterruptHandler InterruptHandler `*.37(v  1 p 2 0 ]
+[v IOCAF1_SetInterruptHandler@InterruptHandler InterruptHandler `*.37(v  1 p 2 3 ]
 "212
 } 0
 "180
 [v _IOCAF0_SetInterruptHandler IOCAF0_SetInterruptHandler `(v  1 e 1 0 ]
 {
-[v IOCAF0_SetInterruptHandler@InterruptHandler InterruptHandler `*.37(v  1 p 2 0 ]
+[v IOCAF0_SetInterruptHandler@InterruptHandler InterruptHandler `*.37(v  1 p 2 3 ]
 "182
 } 0
 "65 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/mcc.c
@@ -693,38 +951,259 @@ channel_FVRBuffer1 31
 {
 "62
 } 0
-"66 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/eusart.c
+"88 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/eusart.c
 [v _EUSART_Initialize EUSART_Initialize `(v  1 e 1 0 ]
 {
-"92
+"130
 } 0
-"161
+"276
+[v _EUSART_SetTxInterruptHandler EUSART_SetTxInterruptHandler `(v  1 e 1 0 ]
+{
+[v EUSART_SetTxInterruptHandler@interruptHandler interruptHandler `*.37(v  1 p 2 3 ]
+"278
+} 0
+"280
+[v _EUSART_SetRxInterruptHandler EUSART_SetRxInterruptHandler `(v  1 e 1 0 ]
+{
+[v EUSART_SetRxInterruptHandler@interruptHandler interruptHandler `*.37(v  1 p 2 3 ]
+"282
+} 0
+"268
 [v _EUSART_SetOverrunErrorHandler EUSART_SetOverrunErrorHandler `(v  1 e 1 0 ]
 {
-[v EUSART_SetOverrunErrorHandler@interruptHandler interruptHandler `*.37(v  1 p 2 0 ]
-"163
+[v EUSART_SetOverrunErrorHandler@interruptHandler interruptHandler `*.37(v  1 p 2 3 ]
+"270
 } 0
-"157
+"264
 [v _EUSART_SetFramingErrorHandler EUSART_SetFramingErrorHandler `(v  1 e 1 0 ]
 {
-[v EUSART_SetFramingErrorHandler@interruptHandler interruptHandler `*.37(v  1 p 2 0 ]
-"159
+[v EUSART_SetFramingErrorHandler@interruptHandler interruptHandler `*.37(v  1 p 2 3 ]
+"266
 } 0
-"165
+"272
 [v _EUSART_SetErrorHandler EUSART_SetErrorHandler `(v  1 e 1 0 ]
 {
-[v EUSART_SetErrorHandler@interruptHandler interruptHandler `*.37(v  1 p 2 0 ]
-"167
+[v EUSART_SetErrorHandler@interruptHandler interruptHandler `*.37(v  1 p 2 3 ]
+"274
 } 0
 "67 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/adc.c
 [v _ADC_Initialize ADC_Initialize `(v  1 e 1 0 ]
 {
 "86
 } 0
-"52 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/interrupt_manager.c
+"128 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/examples/i2c_master_example.c
+[v _I2C_ReadDataBlock I2C_ReadDataBlock `(v  1 e 1 0 ]
+{
+[v I2C_ReadDataBlock@address address `uc  1 a 1 wreg ]
+[s S95 . 3 `ui 1 len 2 0 `*.4uc 1 data 1 2 ]
+"130
+[v I2C_ReadDataBlock@bufferBlock bufferBlock `S95  1 a 3 18 ]
+"128
+[v I2C_ReadDataBlock@address address `uc  1 a 1 wreg ]
+[v I2C_ReadDataBlock@reg reg `uc  1 p 1 12 ]
+[v I2C_ReadDataBlock@data data `*.4uc  1 p 1 13 ]
+[v I2C_ReadDataBlock@len len `ui  1 p 2 14 ]
+"131
+[v I2C_ReadDataBlock@address address `uc  1 a 1 17 ]
+"140
+} 0
+"15 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\command_system.c
+[v _GetCommandEntryBuffer GetCommandEntryBuffer `(v  1 e 1 0 ]
+{
+[s S1824 . 90 `uc 1 header0 1 0 `uc 1 header1 1 1 `uc 1 header2 1 2 `uc 1 protocal 1 3 `uc 1 destination 1 4 `uc 1 source 1 5 `uc 1 command 1 6 `uc 1 data_length 1 7 `[80]uc 1 data 80 8 `us 1 checksum 2 88 ]
+[v GetCommandEntryBuffer@newCommand newCommand `*.1S1824  1 a 1 wreg ]
+[v GetCommandEntryBuffer@newCommand newCommand `*.1S1824  1 a 1 wreg ]
+"18
+} 0
+"309 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\main.c
+[v _DumpEEPROMtoMemory DumpEEPROMtoMemory `(v  1 e 1 0 ]
+{
+"311
+[v DumpEEPROMtoMemory@i i `i  1 a 2 22 ]
+"316
+} 0
+"63 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/examples/i2c_master_example.c
+[v _I2C_Read1ByteRegister I2C_Read1ByteRegister `(uc  1 e 1 0 ]
+{
+[v I2C_Read1ByteRegister@address address `uc  1 a 1 wreg ]
+"65
+[v I2C_Read1ByteRegister@returnValue returnValue `uc  1 a 1 15 ]
+"63
+[v I2C_Read1ByteRegister@address address `uc  1 a 1 wreg ]
+[v I2C_Read1ByteRegister@reg reg `uc  1 p 1 12 ]
+"65
+[v I2C_Read1ByteRegister@address address `uc  1 a 1 14 ]
+"75
+} 0
+"274 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/i2c_master.c
+[v _I2C_SetDataCompleteCallback I2C_SetDataCompleteCallback `(v  1 e 1 0 ]
+{
+[v I2C_SetDataCompleteCallback@cb cb `*.37(E360  1 p 2 8 ]
+[v I2C_SetDataCompleteCallback@ptr ptr `*.4v  1 p 1 10 ]
+"277
+} 0
+"264
+[v _I2C_SetBuffer I2C_SetBuffer `(v  1 e 1 0 ]
+{
+[v I2C_SetBuffer@buffer buffer `*.4v  1 a 1 wreg ]
+[v I2C_SetBuffer@buffer buffer `*.4v  1 a 1 wreg ]
+[v I2C_SetBuffer@bufferSize bufferSize `ui  1 p 2 3 ]
+"266
+[v I2C_SetBuffer@buffer buffer `*.4v  1 a 1 6 ]
+"272
+} 0
+"284
+[v _I2C_SetAddressNackCallback I2C_SetAddressNackCallback `(v  1 e 1 0 ]
+{
+[v I2C_SetAddressNackCallback@cb cb `*.37(E360  1 p 2 8 ]
+[v I2C_SetAddressNackCallback@ptr ptr `*.1v  1 p 1 10 ]
+"287
+} 0
+"304
+[v _I2C_SetCallback I2C_SetCallback `(v  1 s 1 I2C_SetCallback ]
+{
+[v I2C_SetCallback@idx idx `E5675  1 a 1 wreg ]
+[v I2C_SetCallback@idx idx `E5675  1 a 1 wreg ]
+[v I2C_SetCallback@cb cb `*.37(E360  1 p 2 3 ]
+[v I2C_SetCallback@ptr ptr `*.4v  1 p 1 5 ]
+"306
+[v I2C_SetCallback@idx idx `E5675  1 a 1 7 ]
+"316
+} 0
+"176
+[v _I2C_Open I2C_Open `(E355  1 e 1 0 ]
+{
+[v I2C_Open@address address `uc  1 a 1 wreg ]
+"178
+[v I2C_Open@returnValue returnValue `E355  1 a 1 7 ]
+"176
+[v I2C_Open@address address `uc  1 a 1 wreg ]
+"178
+[v I2C_Open@address address `uc  1 a 1 6 ]
+"209
+} 0
+"299
+[v _I2C_SetInterruptHandler I2C_SetInterruptHandler `(v  1 e 1 0 ]
+{
+[v I2C_SetInterruptHandler@InterruptHandler InterruptHandler `*.37(v  1 p 2 3 ]
+"302
+} 0
+"544
+[v _I2C_MasterOpen I2C_MasterOpen `T(a  1 s 1 I2C_MasterOpen ]
+{
+"556
+} 0
+"627
+[v _I2C_MasterEnableIrq I2C_MasterEnableIrq `T(v  1 s 1 I2C_MasterEnableIrq ]
+{
+"630
+} 0
+"252
+[v _I2C_MasterWrite I2C_MasterWrite `(E355  1 e 1 0 ]
+{
+"255
+} 0
+"226
+[v _I2C_MasterOperation I2C_MasterOperation `(E355  1 e 1 0 ]
+{
+[v I2C_MasterOperation@read read `a  1 a 1 wreg ]
+"228
+[v I2C_MasterOperation@returnValue returnValue `E355  1 a 1 5 ]
+"226
+[v I2C_MasterOperation@read read `a  1 a 1 wreg ]
+"228
+[v I2C_MasterOperation@read read `a  1 a 1 4 ]
+"245
+} 0
+"589
+[v _I2C_MasterStart I2C_MasterStart `T(v  1 s 1 I2C_MasterStart ]
+{
+"592
+} 0
+"211
+[v _I2C_Close I2C_Close `(E355  1 e 1 0 ]
+{
+"213
+[v I2C_Close@returnValue returnValue `E355  1 a 1 4 ]
+"224
+} 0
+"637
+[v _I2C_MasterDisableIrq I2C_MasterDisableIrq `T(v  1 s 1 I2C_MasterDisableIrq ]
+{
+"640
+} 0
+"558
+[v _I2C_MasterClose I2C_MasterClose `T(v  1 s 1 I2C_MasterClose ]
+{
+"562
+} 0
+"642
+[v _I2C_MasterClearIrq I2C_MasterClearIrq `T(v  1 s 1 I2C_MasterClearIrq ]
+{
+"645
+} 0
+"19 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\ledcontroller.c
+[v _ControlLights ControlLights `(v  1 e 1 0 ]
+{
+[s S1741 . 2 `uc 1 SERVICE_LED 1 0 :1:0 
+`uc 1 LED12 1 0 :1:1 
+`uc 1 LED14 1 0 :1:2 
+`uc 1 LED16 1 0 :1:3 
+`uc 1 LED18 1 0 :1:4 
+`uc 1 LED20 1 0 :1:5 
+`uc 1 LED22 1 0 :1:6 
+`uc 1 LED24 1 0 :1:7 
+`uc 1 LED0 1 1 :1:0 
+`uc 1 LED2 1 1 :1:1 
+`uc 1 LED4 1 1 :1:2 
+`uc 1 LED6 1 1 :1:3 
+`uc 1 LED8 1 1 :1:4 
+`uc 1 LED10 1 1 :1:5 
+`uc 1 AUTO_LED 1 1 :1:6 
+`uc 1 OFF_LED 1 1 :1:7 
+]
+[u S1758 . 2 `us 1 raw_leds 2 0 `S1741 1 LEDbits 2 0 ]
+[v ControlLights@param_0 param_0 `*.4S1758  1 a 1 wreg ]
+"43
+[v ControlLights@i i `uc  1 a 1 9 ]
+"23
+[v ControlLights@ledValue ledValue `us  1 a 2 5 ]
+"21
+[v ControlLights@delayLoop1 delayLoop1 `uc  1 a 1 10 ]
+"22
+[v ControlLights@delayLoop2 delayLoop2 `uc  1 a 1 8 ]
+"19
+[v ControlLights@param_0 param_0 `*.4S1758  1 a 1 wreg ]
+"22
+"19
+[v ControlLights@param_0 param_0 `*.4S1758  1 a 1 7 ]
+"89
+} 0
+"353 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\main.c
+[v _CheckSumMaker CheckSumMaker `(us  1 e 2 0 ]
+{
+"356
+[v CheckSumMaker@i i `uc  1 a 1 20 ]
+"355
+[v CheckSumMaker@sum sum `ul  1 a 4 21 ]
+"360
+[v CheckSumMaker@temp2 temp2 `ul  1 a 4 16 ]
+"361
+[v CheckSumMaker@temp6 temp6 `ul  1 a 4 12 ]
+"353
+[v CheckSumMaker@buffer buffer `*.39uc  1 p 2 3 ]
+[v CheckSumMaker@size size `uc  1 p 1 5 ]
+"367
+} 0
+"53 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/interrupt_manager.c
 [v _INTERRUPT_InterruptManager INTERRUPT_InterruptManager `II(v  1 e 1 0 ]
 {
-"63
+"56
+} 0
+"58
+[v _InterruptCallback InterruptCallback `(v  1 e 1 0 ]
+{
+"92
 } 0
 "148 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/pin_manager.c
 [v _PIN_MANAGER_IOC PIN_MANAGER_IOC `(v  1 e 1 0 ]
@@ -750,4 +1229,246 @@ channel_FVRBuffer1 31
 [v _IOCAF0_DefaultInterruptHandler IOCAF0_DefaultInterruptHandler `(v  1 e 1 0 ]
 {
 "190
+} 0
+"318 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/i2c_master.c
+[v _I2C_MasterIsr I2C_MasterIsr `(v  1 s 1 I2C_MasterIsr ]
+{
+"321
+} 0
+"323
+[v _I2C_MasterFsm I2C_MasterFsm `T(v  1 s 1 I2C_MasterFsm ]
+{
+"332
+} 0
+"642
+[v i1_I2C_MasterClearIrq I2C_MasterClearIrq `T(v  1 s 1 i1_I2C_MasterClearIrq ]
+{
+"645
+} 0
+"501
+[v _I2C_DO_ADDRESS_NACK I2C_DO_ADDRESS_NACK `(E5657  1 s 1 I2C_DO_ADDRESS_NACK ]
+{
+"513
+} 0
+"495
+[v _I2C_DO_RESET I2C_DO_RESET `(E5657  1 s 1 I2C_DO_RESET ]
+{
+"500
+} 0
+"489
+[v _I2C_DO_RX_NACK_RESTART I2C_DO_RX_NACK_RESTART `(E5657  1 s 1 I2C_DO_RX_NACK_RESTART ]
+{
+"493
+} 0
+"483
+[v _I2C_DO_RX_NACK_STOP I2C_DO_RX_NACK_STOP `(E5657  1 s 1 I2C_DO_RX_NACK_STOP ]
+{
+"487
+} 0
+"476
+[v _I2C_DO_RX_ACK I2C_DO_RX_ACK `(E5657  1 s 1 I2C_DO_RX_ACK ]
+{
+"480
+} 0
+"470
+[v _I2C_DO_SEND_STOP I2C_DO_SEND_STOP `(E5657  1 s 1 I2C_DO_SEND_STOP ]
+{
+"474
+} 0
+"464
+[v _I2C_DO_SEND_RESTART I2C_DO_SEND_RESTART `(E5657  1 s 1 I2C_DO_SEND_RESTART ]
+{
+"468
+} 0
+"457
+[v _I2C_DO_SEND_RESTART_WRITE I2C_DO_SEND_RESTART_WRITE `(E5657  1 s 1 I2C_DO_SEND_RESTART_WRITE ]
+{
+"461
+} 0
+"451
+[v _I2C_DO_SEND_RESTART_READ I2C_DO_SEND_RESTART_READ `(E5657  1 s 1 I2C_DO_SEND_RESTART_READ ]
+{
+"455
+} 0
+"404
+[v _I2C_DO_RCEN I2C_DO_RCEN `(E5657  1 s 1 I2C_DO_RCEN ]
+{
+"409
+} 0
+"380
+[v _I2C_DO_RX I2C_DO_RX `(E5657  1 s 1 I2C_DO_RX ]
+{
+"402
+} 0
+"356
+[v _I2C_DO_TX I2C_DO_TX `(E5657  1 s 1 I2C_DO_TX ]
+{
+"378
+} 0
+"349
+[v _I2C_DO_SEND_ADR_WRITE I2C_DO_SEND_ADR_WRITE `(E5657  1 s 1 I2C_DO_SEND_ADR_WRITE ]
+{
+"354
+} 0
+"342
+[v _I2C_DO_SEND_ADR_READ I2C_DO_SEND_ADR_READ `(E5657  1 s 1 I2C_DO_SEND_ADR_READ ]
+{
+"347
+} 0
+"335
+[v _I2C_DO_IDLE I2C_DO_IDLE `(E5657  1 s 1 I2C_DO_IDLE ]
+{
+"340
+} 0
+"411
+[v _I2C_DO_TX_EMPTY I2C_DO_TX_EMPTY `(E5657  1 s 1 I2C_DO_TX_EMPTY ]
+{
+"426
+} 0
+"647
+[v _I2C_MasterSetIrq I2C_MasterSetIrq `T(v  1 s 1 I2C_MasterSetIrq ]
+{
+"650
+} 0
+"599
+[v _I2C_MasterIsNack I2C_MasterIsNack `T(a  1 s 1 I2C_MasterIsNack ]
+{
+"602
+} 0
+"569
+[v _I2C_MasterSendTxData I2C_MasterSendTxData `T(v  1 s 1 I2C_MasterSendTxData ]
+{
+[v I2C_MasterSendTxData@data data `uc  1 a 1 wreg ]
+[v I2C_MasterSendTxData@data data `uc  1 a 1 wreg ]
+"571
+[v I2C_MasterSendTxData@data data `uc  1 a 1 0 ]
+"572
+} 0
+"604
+[v _I2C_MasterSendAck I2C_MasterSendAck `T(v  1 s 1 I2C_MasterSendAck ]
+{
+"608
+} 0
+"564
+[v _I2C_MasterGetRxData I2C_MasterGetRxData `T(uc  1 s 1 I2C_MasterGetRxData ]
+{
+"567
+} 0
+"610
+[v _I2C_MasterSendNack I2C_MasterSendNack `T(v  1 s 1 I2C_MasterSendNack ]
+{
+"614
+} 0
+"584
+[v _I2C_MasterStartRx I2C_MasterStartRx `T(v  1 s 1 I2C_MasterStartRx ]
+{
+"587
+} 0
+"526
+[v _I2C_CallbackReturnReset I2C_CallbackReturnReset `(E360  1 e 1 0 ]
+{
+[v I2C_CallbackReturnReset@funPtr funPtr `*.4v  1 p 1 9 ]
+"529
+} 0
+"521
+[v _I2C_CallbackReturnStop I2C_CallbackReturnStop `(E360  1 e 1 0 ]
+{
+"524
+} 0
+"170 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/examples/i2c_master_example.c
+[v _rdBlkRegCompleteHandler rdBlkRegCompleteHandler `(E360  1 s 1 rdBlkRegCompleteHandler ]
+{
+[v rdBlkRegCompleteHandler@ptr ptr `*.4v  1 p 1 9 ]
+"175
+} 0
+"156
+[v _wr1RegCompleteHandler wr1RegCompleteHandler `(E360  1 s 1 wr1RegCompleteHandler ]
+{
+[v wr1RegCompleteHandler@ptr ptr `*.4v  1 p 1 9 ]
+"161
+} 0
+"149
+[v _rd2RegCompleteHandler rd2RegCompleteHandler `(E360  1 s 1 rd2RegCompleteHandler ]
+{
+[v rd2RegCompleteHandler@ptr ptr `*.4v  1 p 1 9 ]
+"154
+} 0
+"142
+[v _rd1RegCompleteHandler rd1RegCompleteHandler `(E360  1 s 1 rd1RegCompleteHandler ]
+{
+[v rd1RegCompleteHandler@ptr ptr `*.4v  1 p 1 9 ]
+"147
+} 0
+"163
+[v _wr2RegCompleteHandler wr2RegCompleteHandler `(E360  1 s 1 wr2RegCompleteHandler ]
+{
+[v wr2RegCompleteHandler@ptr ptr `*.4v  1 p 1 9 ]
+"168
+} 0
+"274 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/i2c_master.c
+[v i1_I2C_SetDataCompleteCallback I2C_SetDataCompleteCallback `(v  1 e 1 0 ]
+{
+[v i1I2C_SetDataCompleteCallback@cb cb `*.37(E360  1 p 2 5 ]
+[v i1I2C_SetDataCompleteCallback@ptr ptr `*.4v  1 p 1 7 ]
+"277
+} 0
+"304
+[v i1_I2C_SetCallback I2C_SetCallback `(v  1 s 1 i1_I2C_SetCallback ]
+{
+[v i1I2C_SetCallback@idx idx `E5675  1 a 1 wreg ]
+[v i1I2C_SetCallback@idx idx `E5675  1 a 1 wreg ]
+[v i1I2C_SetCallback@cb cb `*.37(E360  1 p 2 0 ]
+[v i1I2C_SetCallback@ptr ptr `*.4v  1 p 1 2 ]
+"306
+[v i1I2C_SetCallback@idx idx `E5675  1 a 1 4 ]
+"316
+} 0
+"264
+[v i1_I2C_SetBuffer I2C_SetBuffer `(v  1 e 1 0 ]
+{
+[v i1I2C_SetBuffer@buffer buffer `*.4v  1 a 1 wreg ]
+[v i1I2C_SetBuffer@buffer buffer `*.4v  1 a 1 wreg ]
+[v i1I2C_SetBuffer@bufferSize bufferSize `ui  1 p 2 0 ]
+"266
+[v i1I2C_SetBuffer@buffer buffer `*.4v  1 a 1 3 ]
+"272
+} 0
+"594
+[v _I2C_MasterStop I2C_MasterStop `T(v  1 s 1 I2C_MasterStop ]
+{
+"597
+} 0
+"574
+[v _I2C_MasterEnableRestart I2C_MasterEnableRestart `T(v  1 s 1 I2C_MasterEnableRestart ]
+{
+"577
+} 0
+"197 C:\Projects\eggys-intellivalve-firmware\FW\Rev1\mcc_generated_files/eusart.c
+[v _EUSART_Transmit_ISR EUSART_Transmit_ISR `(v  1 e 1 0 ]
+{
+"214
+} 0
+"216
+[v _EUSART_Receive_ISR EUSART_Receive_ISR `(v  1 e 1 0 ]
+{
+"238
+} 0
+"252
+[v _EUSART_DefaultOverrunErrorHandler EUSART_DefaultOverrunErrorHandler `(v  1 e 1 0 ]
+{
+"258
+} 0
+"250
+[v _EUSART_DefaultFramingErrorHandler EUSART_DefaultFramingErrorHandler `(v  1 e 1 0 ]
+{
+} 0
+"260
+[v _EUSART_DefaultErrorHandler EUSART_DefaultErrorHandler `(v  1 e 1 0 ]
+{
+"262
+} 0
+"240
+[v _EUSART_RxDataHandler EUSART_RxDataHandler `(v  1 e 1 0 ]
+{
+"248
 } 0

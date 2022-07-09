@@ -9073,10 +9073,10 @@ void TMR1_Initialize(void)
     T1GCON = 0x70;
 
 
-    TMR1H = 0x00;
+    TMR1H = 0x02;
 
 
-    TMR1L = 0x02;
+    TMR1L = 0x00;
 
 
     PIR1bits.TMR1IF = 0;

@@ -1,8 +1,109 @@
 Version 4.0 HI-TECH Software Intermediate Code
+[v F5670 `(v ~T0 @X0 0 tf ]
+"72 main.c
+[; ;main.c: 72: } Reset_Reason;
+[c E5896 1 2 3 4 5 6 7 8 9 10 11 12 .. ]
+[n E5896 . POR ILLEGAL BOR WDT_RESET WDT_WAKE INT_WAKE MCLR MCLR_SLEEP RESET STACK_OVER STACK_UNDER BAD_VAL  ]
+"84
+[; ;main.c: 84: uint8_t valve_uid[6] = {VALVE_EEPROM_SERIAL_LEN};
+[c E5912 128 6 250 .. ]
+[n E5912 . VALVE_EEPROM_SIZE VALVE_EEPROM_SERIAL_LEN VALVE_EEPROM_SERIAL_ADDR  ]
+"38 ./ledcontroller.h
+[; ;./ledcontroller.h: 38:     struct {
+[s S743 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S743 . SERVICE_LED LED12 LED14 LED16 LED18 LED20 LED22 LED24 LED0 LED2 LED4 LED6 LED8 LED10 AUTO_LED OFF_LED ]
+"36
+[; ;./ledcontroller.h: 36: typedef union {
+[u S742 `us 1 `S743 1 ]
+[n S742 . raw_leds LEDbits ]
 [p mainexit ]
-"77 ./mcc_generated_files/mcc.h
-[; ;./mcc_generated_files/mcc.h: 77: void SYSTEM_Initialize(void);
+"78 ./mcc_generated_files/mcc.h
+[; ;./mcc_generated_files/mcc.h: 78: void SYSTEM_Initialize(void);
 [v _SYSTEM_Initialize `(v ~T0 @X0 0 ef ]
+"358 C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h
+[; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 358:     struct {
+[s S31 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S31 . IOCIF INTF TMR0IF IOCIE INTE TMR0IE PEIE GIE ]
+"368
+[; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 368:     struct {
+[s S32 :2 `uc 1 :1 `uc 1 :2 `uc 1 :1 `uc 1 ]
+[n S32 . . T0IF . T0IE ]
+"357
+[; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 357: typedef union {
+[u S30 `S31 1 `S32 1 ]
+[n S30 . . . ]
+"375
+[; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 375: extern volatile INTCONbits_t INTCONbits __attribute__((address(0x00B)));
+[v _INTCONbits `VS30 ~T0 @X0 0 e@11 ]
+"53 main.c
+[; ;main.c: 53: void DumpEEPROMtoMemory();
+[v _DumpEEPROMtoMemory `(v ~T0 @X0 0 e? ]
+"60 ./mcc_generated_files/examples/i2c_master_example.h
+[; ;./mcc_generated_files/examples/i2c_master_example.h: 60: void I2C_ReadDataBlock(i2c_address_t address, uint8_t reg, uint8_t *data, size_t len);
+[v _I2C_ReadDataBlock `(v ~T0 @X0 0 ef4`uc`uc`*uc`ui ]
+"56 main.c
+[; ;main.c: 56: uint16_t CheckSumMaker(uint8_t *buffer, uint8_t size);
+[v _CheckSumMaker `(us ~T0 @X0 0 ef2`*uc`uc ]
+"55
+[; ;main.c: 55: void WriteEEPROMBuffer(uint8_t eeprom_addr, uint8_t *buffer, uint8_t length);
+[v _WriteEEPROMBuffer `(v ~T0 @X0 0 ef3`uc`*uc`uc ]
+"58 ./ledcontroller.h
+[; ;./ledcontroller.h: 58: void ControlLights(LEDS *param_0);
+[v _ControlLights `(v ~T0 @X0 0 ef1`*S742 ]
+"2139 C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h
+[; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 2139:     struct {
+[s S111 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S111 . LATA0 LATA1 LATA2 LATA3 LATA4 LATA5 LATA6 LATA7 ]
+"2138
+[; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 2138: typedef union {
+[u S110 `S111 1 ]
+[n S110 . . ]
+"2150
+[; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 2150: extern volatile LATAbits_t LATAbits __attribute__((address(0x10C)));
+[v _LATAbits `VS110 ~T0 @X0 0 e@268 ]
+"87 ./command_system.h
+[; ;./command_system.h: 87: {
+[s S741 `uc 1 `uc 1 `uc 1 `uc 1 `uc 1 `uc 1 `uc 1 `uc 1 `uc -> 80 `i `us 1 ]
+[n S741 . header0 header1 header2 protocal destination source command data_length data checksum ]
+"108
+[; ;./command_system.h: 108: void GetCommandEntryBuffer(Command * newCommand);
+[v _GetCommandEntryBuffer `(v ~T0 @X0 0 ef1`*S741 ]
+"278 main.c
+[; ;main.c: 278:         newCommand->command = (uint8_t)VALVE_STATE;
+[c E5812 2 4 224 226 228 230 234 236 238 .. ]
+[n E5812 . VALVE_STATE VALVE_STATE_CHANGED VALVE_STARTING_UP VALVE_RESET_START VALVE_SETTINGS VALVE_SETTINGS_DONE VALVE_NAME VALVE_EEPROM VALVE_EEPROM_SET_DONE  ]
+"109 ./command_system.h
+[; ;./command_system.h: 109: uint8_t TransmitMessage(Command * newCommand);
+[v _TransmitMessage `(uc ~T0 @X0 0 ef1`*S741 ]
+"2201 C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h
+[; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 2201:     struct {
+[s S113 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S113 . LATB0 LATB1 LATB2 LATB3 LATB4 LATB5 LATB6 LATB7 ]
+"2200
+[; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 2200: typedef union {
+[u S112 `S113 1 ]
+[n S112 . . ]
+"2212
+[; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 2212: extern volatile LATBbits_t LATBbits __attribute__((address(0x10D)));
+[v _LATBbits `VS112 ~T0 @X0 0 e@269 ]
+"165 ./mcc_generated_files/eusart.h
+[; ;./mcc_generated_files/eusart.h: 165: _Bool EUSART_is_tx_ready(void);
+[v _EUSART_is_tx_ready `(a ~T0 @X0 0 ef ]
+"348
+[; ;./mcc_generated_files/eusart.h: 348: void EUSART_Write(uint8_t txData);
+[v _EUSART_Write `(v ~T0 @X0 0 ef1`uc ]
+"260
+[; ;./mcc_generated_files/eusart.h: 260: _Bool EUSART_is_tx_done(void);
+[v _EUSART_is_tx_done `(a ~T0 @X0 0 ef ]
+"54 ./mcc_generated_files/examples/i2c_master_example.h
+[; ;./mcc_generated_files/examples/i2c_master_example.h: 54: uint8_t I2C_Read1ByteRegister(i2c_address_t address, uint8_t reg);
+[v _I2C_Read1ByteRegister `(uc ~T0 @X0 0 ef2`uc`uc ]
+"56
+[; ;./mcc_generated_files/examples/i2c_master_example.h: 56: void I2C_Write1ByteRegister(i2c_address_t address, uint8_t reg, uint8_t data);
+[v _I2C_Write1ByteRegister `(v ~T0 @X0 0 ef3`uc`uc`uc ]
+"2133 C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h
+[; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 2133: extern volatile unsigned char LATA __attribute__((address(0x10C)));
+[v _LATA `Vuc ~T0 @X0 0 e@268 ]
 "55 C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h
 [; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 55: __asm("INDF0 equ 00h");
 [; <" INDF0 equ 00h ;# ">
@@ -864,31 +965,790 @@ Version 4.0 HI-TECH Software Intermediate Code
 "15233
 [; ;C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/PIC12-16F1xxx_DFP/1.3.90/xc8\pic\include\proc\pic16f1718.h: 15233: __asm("TOSH equ 0FEFh");
 [; <" TOSH equ 0FEFh ;# ">
+"213 ./mcc_generated_files/examples/../i2c_master.h
+[v _MSSP_InterruptHandler `*F5670 ~T0 @X0 1 e ]
+"72 main.c
+[; ;main.c: 72: } Reset_Reason;
+[v _Reset_Reason `E5896 ~T0 @X0 1 e ]
+"74
+[; ;main.c: 74: const uint8_t VALVE_EEPROM_ADDRESS = 0xA0;
+[v _VALVE_EEPROM_ADDRESS `Cuc ~T0 @X0 1 e ]
+[i _VALVE_EEPROM_ADDRESS
+-> -> 160 `i `uc
+]
+"75
+[; ;main.c: 75: const uint8_t VALVE_EEPROM_ADDRESS_SHIFTED = VALVE_EEPROM_ADDRESS >> 1;
+[v _VALVE_EEPROM_ADDRESS_SHIFTED `Cuc ~T0 @X0 1 e ]
+[i _VALVE_EEPROM_ADDRESS_SHIFTED
+-> >> -> _VALVE_EEPROM_ADDRESS `i -> 1 `i `uc
+]
+"78
+[; ;main.c: 78: uint8_t eeprom_data[VALVE_EEPROM_SIZE] = {0};
+[v _eeprom_data `uc ~T0 @X0 -> 128 `i e ]
+[i _eeprom_data
+:U ..
+-> -> 0 `i `uc
+..
+]
+"79
+[; ;main.c: 79: uint8_t *first_stop_ptr = eeprom_data + 1;
+[v _first_stop_ptr `*uc ~T0 @X0 1 e ]
+[i _first_stop_ptr
++ &U _eeprom_data * -> -> 1 `i `x -> -> # *U &U _eeprom_data `i `x
+]
+"80
+[; ;main.c: 80: uint8_t *first_stop_backup_ptr = eeprom_data + 32;
+[v _first_stop_backup_ptr `*uc ~T0 @X0 1 e ]
+[i _first_stop_backup_ptr
++ &U _eeprom_data * -> -> 32 `i `x -> -> # *U &U _eeprom_data `i `x
+]
+"81
+[; ;main.c: 81: uint8_t *second_stop_ptr = eeprom_data + 3;
+[v _second_stop_ptr `*uc ~T0 @X0 1 e ]
+[i _second_stop_ptr
++ &U _eeprom_data * -> -> 3 `i `x -> -> # *U &U _eeprom_data `i `x
+]
+"82
+[; ;main.c: 82: uint8_t *second_stop_backup_ptr = eeprom_data + 34;
+[v _second_stop_backup_ptr `*uc ~T0 @X0 1 e ]
+[i _second_stop_backup_ptr
++ &U _eeprom_data * -> -> 34 `i `x -> -> # *U &U _eeprom_data `i `x
+]
+"84
+[; ;main.c: 84: uint8_t valve_uid[6] = {VALVE_EEPROM_SERIAL_LEN};
+[v _valve_uid `uc ~T0 @X0 -> 6 `i e ]
+[i _valve_uid
+:U ..
+-> . `E5912 1 `uc
+..
+]
+"85
+[; ;main.c: 85: LEDS display;
+[v _display `S742 ~T0 @X0 1 e ]
 [v $root$_main `(v ~T0 @X0 0 e ]
-"49 main.c
-[; ;main.c: 49: void main(void)
+"87
+[; ;main.c: 87: void main(void)
 [v _main `(v ~T0 @X0 1 ef ]
-"50
-[; ;main.c: 50: {
+"88
+[; ;main.c: 88: {
 {
 [e :U _main ]
 [f ]
-"52
-[; ;main.c: 52:     SYSTEM_Initialize();
+"89
+[; ;main.c: 89:     display.raw_leds = 0;
+[e = . _display 0 -> -> 0 `i `us ]
+"91
+[; ;main.c: 91:     SYSTEM_Initialize();
 [e ( _SYSTEM_Initialize ..  ]
-"69
-[; ;main.c: 69:     while (1)
-[e :U 743 ]
-"70
-[; ;main.c: 70:     {
+"97
+[; ;main.c: 97:     (INTCONbits.GIE = 1);
+[e = . . _INTCONbits 0 7 -> -> 1 `i `uc ]
+"100
+[; ;main.c: 100:     (INTCONbits.PEIE = 1);
+[e = . . _INTCONbits 0 6 -> -> 1 `i `uc ]
+"102
+[; ;main.c: 102:     DumpEEPROMtoMemory();
+[e ( _DumpEEPROMtoMemory ..  ]
+"104
+[; ;main.c: 104:     I2C_ReadDataBlock(VALVE_EEPROM_ADDRESS_SHIFTED, VALVE_EEPROM_SERIAL_ADDR, valve_uid, VALVE_EEPROM_SERIAL_LEN);
+[e ( _I2C_ReadDataBlock (4 , , , _VALVE_EEPROM_ADDRESS_SHIFTED -> . `E5912 2 `uc &U _valve_uid -> . `E5912 1 `ui ]
+"143
+[; ;main.c: 143:     int new_value = 0;
+[v _new_value `i ~T0 @X0 1 a ]
+[e = _new_value -> 0 `i ]
+"144
+[; ;main.c: 144:     *first_stop_ptr = new_value;
+[e = *U _first_stop_ptr -> _new_value `uc ]
+"145
+[; ;main.c: 145:     *first_stop_backup_ptr = new_value;
+[e = *U _first_stop_backup_ptr -> _new_value `uc ]
+"146
+[; ;main.c: 146:     *(uint16_t *)(eeprom_data + 30) = CheckSumMaker(eeprom_data, 30);
+[e = *U -> + &U _eeprom_data * -> -> 30 `i `x -> -> # *U &U _eeprom_data `i `x `*us ( _CheckSumMaker (2 , &U _eeprom_data -> -> 30 `i `uc ]
+"147
+[; ;main.c: 147:     new_value = 0x30;
+[e = _new_value -> 48 `i ]
+"148
+[; ;main.c: 148:     second_stop_ptr = &new_value;
+[e = _second_stop_ptr -> &U _new_value `*uc ]
+"149
+[; ;main.c: 149:     second_stop_backup_ptr = &new_value;
+[e = _second_stop_backup_ptr -> &U _new_value `*uc ]
+"150
+[; ;main.c: 150:     *(uint16_t *)(eeprom_data + 38) = CheckSumMaker(eeprom_data+ 32, 6);
+[e = *U -> + &U _eeprom_data * -> -> 38 `i `x -> -> # *U &U _eeprom_data `i `x `*us ( _CheckSumMaker (2 , + &U _eeprom_data * -> -> 32 `i `x -> -> # *U &U _eeprom_data `i `x -> -> 6 `i `uc ]
+"152
+[; ;main.c: 152:     eeprom_data[0] = 0x00;
+[e = *U + &U _eeprom_data * -> -> -> 0 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 0 `i `uc ]
+"153
+[; ;main.c: 153: eeprom_data[1] = 0x18;
+[e = *U + &U _eeprom_data * -> -> -> 1 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 24 `i `uc ]
+"154
+[; ;main.c: 154: eeprom_data[2] = 0x18;
+[e = *U + &U _eeprom_data * -> -> -> 2 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 24 `i `uc ]
+"155
+[; ;main.c: 155: eeprom_data[3] = 0x30;
+[e = *U + &U _eeprom_data * -> -> -> 3 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 48 `i `uc ]
+"156
+[; ;main.c: 156: eeprom_data[4] = 0x01;
+[e = *U + &U _eeprom_data * -> -> -> 4 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 1 `i `uc ]
+"157
+[; ;main.c: 157: eeprom_data[5] = 0x04;
+[e = *U + &U _eeprom_data * -> -> -> 5 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 4 `i `uc ]
+"158
+[; ;main.c: 158: eeprom_data[6] = 0x00;
+[e = *U + &U _eeprom_data * -> -> -> 6 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 0 `i `uc ]
+"159
+[; ;main.c: 159: eeprom_data[7] = 0x00;
+[e = *U + &U _eeprom_data * -> -> -> 7 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 0 `i `uc ]
+"160
+[; ;main.c: 160: eeprom_data[8] = 0x00;
+[e = *U + &U _eeprom_data * -> -> -> 8 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 0 `i `uc ]
+"161
+[; ;main.c: 161: eeprom_data[9] = 0x00;
+[e = *U + &U _eeprom_data * -> -> -> 9 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 0 `i `uc ]
+"162
+[; ;main.c: 162: eeprom_data[10] = 0x00;
+[e = *U + &U _eeprom_data * -> -> -> 10 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 0 `i `uc ]
+"163
+[; ;main.c: 163: eeprom_data[11] = 0x00;
+[e = *U + &U _eeprom_data * -> -> -> 11 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 0 `i `uc ]
+"164
+[; ;main.c: 164: eeprom_data[12] = 0x00;
+[e = *U + &U _eeprom_data * -> -> -> 12 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 0 `i `uc ]
+"165
+[; ;main.c: 165: eeprom_data[13] = 0x00;
+[e = *U + &U _eeprom_data * -> -> -> 13 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 0 `i `uc ]
+"166
+[; ;main.c: 166: eeprom_data[14] = 0xC0;
+[e = *U + &U _eeprom_data * -> -> -> 14 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 192 `i `uc ]
+"167
+[; ;main.c: 167: eeprom_data[15] = 0x02;
+[e = *U + &U _eeprom_data * -> -> -> 15 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 2 `i `uc ]
+"168
+[; ;main.c: 168: eeprom_data[16] = 0x00;
+[e = *U + &U _eeprom_data * -> -> -> 16 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 0 `i `uc ]
+"169
+[; ;main.c: 169: eeprom_data[17] = 0x00;
+[e = *U + &U _eeprom_data * -> -> -> 17 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 0 `i `uc ]
+"170
+[; ;main.c: 170: eeprom_data[18] = 0x60;
+[e = *U + &U _eeprom_data * -> -> -> 18 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 96 `i `uc ]
+"171
+[; ;main.c: 171: eeprom_data[19] = 0x01;
+[e = *U + &U _eeprom_data * -> -> -> 19 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 1 `i `uc ]
+"172
+[; ;main.c: 172: eeprom_data[20] = 0xBE;
+[e = *U + &U _eeprom_data * -> -> -> 20 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 190 `i `uc ]
+"173
+[; ;main.c: 173: eeprom_data[21] = 0x06;
+[e = *U + &U _eeprom_data * -> -> -> 21 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 6 `i `uc ]
+"174
+[; ;main.c: 174: eeprom_data[22] = 0x29;
+[e = *U + &U _eeprom_data * -> -> -> 22 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 41 `i `uc ]
+"175
+[; ;main.c: 175: eeprom_data[23] = 0x00;
+[e = *U + &U _eeprom_data * -> -> -> 23 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 0 `i `uc ]
+"176
+[; ;main.c: 176: eeprom_data[24] = 0x00;
+[e = *U + &U _eeprom_data * -> -> -> 24 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 0 `i `uc ]
+"177
+[; ;main.c: 177: eeprom_data[25] = 0x00;
+[e = *U + &U _eeprom_data * -> -> -> 25 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 0 `i `uc ]
+"178
+[; ;main.c: 178: eeprom_data[26] = 0x00;
+[e = *U + &U _eeprom_data * -> -> -> 26 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 0 `i `uc ]
+"179
+[; ;main.c: 179: eeprom_data[27] = 0x00;
+[e = *U + &U _eeprom_data * -> -> -> 27 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 0 `i `uc ]
+"180
+[; ;main.c: 180: eeprom_data[28] = 0xDE;
+[e = *U + &U _eeprom_data * -> -> -> 28 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 222 `i `uc ]
+"181
+[; ;main.c: 181: eeprom_data[29] = 0x02;
+[e = *U + &U _eeprom_data * -> -> -> 29 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 2 `i `uc ]
+"182
+[; ;main.c: 182: eeprom_data[30] = 0xAA;
+[e = *U + &U _eeprom_data * -> -> -> 30 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 170 `i `uc ]
+"183
+[; ;main.c: 183: eeprom_data[31] = 0xFC;
+[e = *U + &U _eeprom_data * -> -> -> 31 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 252 `i `uc ]
+"184
+[; ;main.c: 184: eeprom_data[32] = 0x18;
+[e = *U + &U _eeprom_data * -> -> -> 32 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 24 `i `uc ]
+"185
+[; ;main.c: 185: eeprom_data[33] = 0x18;
+[e = *U + &U _eeprom_data * -> -> -> 33 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 24 `i `uc ]
+"186
+[; ;main.c: 186: eeprom_data[34] = 0x30;
+[e = *U + &U _eeprom_data * -> -> -> 34 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 48 `i `uc ]
+"187
+[; ;main.c: 187: eeprom_data[35] = 0x01;
+[e = *U + &U _eeprom_data * -> -> -> 35 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 1 `i `uc ]
+"188
+[; ;main.c: 188: eeprom_data[36] = 0x84;
+[e = *U + &U _eeprom_data * -> -> -> 36 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 132 `i `uc ]
+"189
+[; ;main.c: 189: eeprom_data[37] = 0x00;
+[e = *U + &U _eeprom_data * -> -> -> 37 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 0 `i `uc ]
+"190
+[; ;main.c: 190: eeprom_data[38] = 0x1A;
+[e = *U + &U _eeprom_data * -> -> -> 38 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 26 `i `uc ]
+"191
+[; ;main.c: 191: eeprom_data[39] = 0xFF;
+[e = *U + &U _eeprom_data * -> -> -> 39 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 255 `i `uc ]
+"192
+[; ;main.c: 192: eeprom_data[40] = 0x60;
+[e = *U + &U _eeprom_data * -> -> -> 40 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 96 `i `uc ]
+"193
+[; ;main.c: 193: eeprom_data[41] = 0x01;
+[e = *U + &U _eeprom_data * -> -> -> 41 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 1 `i `uc ]
+"194
+[; ;main.c: 194: eeprom_data[42] = 0xBE;
+[e = *U + &U _eeprom_data * -> -> -> 42 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 190 `i `uc ]
+"195
+[; ;main.c: 195: eeprom_data[43] = 0x06;
+[e = *U + &U _eeprom_data * -> -> -> 43 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 6 `i `uc ]
+"196
+[; ;main.c: 196: eeprom_data[44] = 0x04;
+[e = *U + &U _eeprom_data * -> -> -> 44 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 4 `i `uc ]
+"197
+[; ;main.c: 197: eeprom_data[45] = 0x00;
+[e = *U + &U _eeprom_data * -> -> -> 45 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 0 `i `uc ]
+"198
+[; ;main.c: 198: eeprom_data[46] = 0xD6;
+[e = *U + &U _eeprom_data * -> -> -> 46 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 214 `i `uc ]
+"199
+[; ;main.c: 199: eeprom_data[47] = 0xFE;
+[e = *U + &U _eeprom_data * -> -> -> 47 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 254 `i `uc ]
+"200
+[; ;main.c: 200: eeprom_data[48] = 0x01;
+[e = *U + &U _eeprom_data * -> -> -> 48 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 1 `i `uc ]
+"201
+[; ;main.c: 201: eeprom_data[49] = 0x01;
+[e = *U + &U _eeprom_data * -> -> -> 49 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 1 `i `uc ]
+"202
+[; ;main.c: 202: eeprom_data[50] = 0x01;
+[e = *U + &U _eeprom_data * -> -> -> 50 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 1 `i `uc ]
+"203
+[; ;main.c: 203: eeprom_data[51] = 0x01;
+[e = *U + &U _eeprom_data * -> -> -> 51 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 1 `i `uc ]
+"204
+[; ;main.c: 204: eeprom_data[52] = 0x01;
+[e = *U + &U _eeprom_data * -> -> -> 52 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 1 `i `uc ]
+"205
+[; ;main.c: 205: eeprom_data[53] = 0x01;
+[e = *U + &U _eeprom_data * -> -> -> 53 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 1 `i `uc ]
+"206
+[; ;main.c: 206: eeprom_data[54] = 0x01;
+[e = *U + &U _eeprom_data * -> -> -> 54 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 1 `i `uc ]
+"207
+[; ;main.c: 207: eeprom_data[55] = 0x01;
+[e = *U + &U _eeprom_data * -> -> -> 55 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 1 `i `uc ]
+"208
+[; ;main.c: 208: eeprom_data[56] = 0x01;
+[e = *U + &U _eeprom_data * -> -> -> 56 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 1 `i `uc ]
+"209
+[; ;main.c: 209: eeprom_data[57] = 0x01;
+[e = *U + &U _eeprom_data * -> -> -> 57 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 1 `i `uc ]
+"210
+[; ;main.c: 210: eeprom_data[58] = 0x01;
+[e = *U + &U _eeprom_data * -> -> -> 58 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 1 `i `uc ]
+"211
+[; ;main.c: 211: eeprom_data[59] = 0xFF;
+[e = *U + &U _eeprom_data * -> -> -> 59 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 255 `i `uc ]
+"212
+[; ;main.c: 212: eeprom_data[60] = 0xFF;
+[e = *U + &U _eeprom_data * -> -> -> 60 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 255 `i `uc ]
+"213
+[; ;main.c: 213: eeprom_data[61] = 0xFF;
+[e = *U + &U _eeprom_data * -> -> -> 61 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 255 `i `uc ]
+"214
+[; ;main.c: 214: eeprom_data[62] = 0xF7;
+[e = *U + &U _eeprom_data * -> -> -> 62 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 247 `i `uc ]
+"215
+[; ;main.c: 215: eeprom_data[63] = 0xFC;
+[e = *U + &U _eeprom_data * -> -> -> 63 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 252 `i `uc ]
+"216
+[; ;main.c: 216: eeprom_data[64] = 0x01;
+[e = *U + &U _eeprom_data * -> -> -> 64 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 1 `i `uc ]
+"217
+[; ;main.c: 217: eeprom_data[65] = 0x01;
+[e = *U + &U _eeprom_data * -> -> -> 65 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 1 `i `uc ]
+"218
+[; ;main.c: 218: eeprom_data[66] = 0x02;
+[e = *U + &U _eeprom_data * -> -> -> 66 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 2 `i `uc ]
+"219
+[; ;main.c: 219: eeprom_data[67] = 0x01;
+[e = *U + &U _eeprom_data * -> -> -> 67 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 1 `i `uc ]
+"220
+[; ;main.c: 220: eeprom_data[68] = 0x00;
+[e = *U + &U _eeprom_data * -> -> -> 68 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 0 `i `uc ]
+"221
+[; ;main.c: 221: eeprom_data[69] = 0x30;
+[e = *U + &U _eeprom_data * -> -> -> 69 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 48 `i `uc ]
+"222
+[; ;main.c: 222: eeprom_data[70] = 0x5B;
+[e = *U + &U _eeprom_data * -> -> -> 70 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 91 `i `uc ]
+"223
+[; ;main.c: 223: eeprom_data[71] = 0x20;
+[e = *U + &U _eeprom_data * -> -> -> 71 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 32 `i `uc ]
+"224
+[; ;main.c: 224: eeprom_data[72] = 0x01;
+[e = *U + &U _eeprom_data * -> -> -> 72 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 1 `i `uc ]
+"225
+[; ;main.c: 225: eeprom_data[73] = 0xFF;
+[e = *U + &U _eeprom_data * -> -> -> 73 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 255 `i `uc ]
+"226
+[; ;main.c: 226: eeprom_data[74] = 0xFF;
+[e = *U + &U _eeprom_data * -> -> -> 74 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 255 `i `uc ]
+"227
+[; ;main.c: 227: eeprom_data[75] = 0xFF;
+[e = *U + &U _eeprom_data * -> -> -> 75 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 255 `i `uc ]
+"228
+[; ;main.c: 228: eeprom_data[76] = 0xFF;
+[e = *U + &U _eeprom_data * -> -> -> 76 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 255 `i `uc ]
+"229
+[; ;main.c: 229: eeprom_data[77] = 0xFF;
+[e = *U + &U _eeprom_data * -> -> -> 77 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 255 `i `uc ]
+"230
+[; ;main.c: 230: eeprom_data[78] = 0x53;
+[e = *U + &U _eeprom_data * -> -> -> 78 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 83 `i `uc ]
+"231
+[; ;main.c: 231: eeprom_data[79] = 0xFA;
+[e = *U + &U _eeprom_data * -> -> -> 79 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux -> -> 250 `i `uc ]
+"233
+[; ;main.c: 233:     WriteEEPROMBuffer(0, eeprom_data, 40);
+[e ( _WriteEEPROMBuffer (3 , , -> -> 0 `i `uc &U _eeprom_data -> -> 40 `i `uc ]
+"235
+[; ;main.c: 235:     if (eeprom_data[5] == 0x4)
+[e $ ! == -> *U + &U _eeprom_data * -> -> -> 5 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux `i -> 4 `i 745  ]
+"236
+[; ;main.c: 236:         display.LEDbits.AUTO_LED = 1;
+[e = . . _display 1 14 -> -> 1 `i `uc ]
+[e $U 746  ]
+"237
+[; ;main.c: 237:     else
+[e :U 745 ]
+"238
+[; ;main.c: 238:         display.LEDbits.AUTO_LED = 0;
+[e = . . _display 1 14 -> -> 0 `i `uc ]
+[e :U 746 ]
+"240
+[; ;main.c: 240:     if (eeprom_data[5] == 0x6)
+[e $ ! == -> *U + &U _eeprom_data * -> -> -> 5 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux `i -> 6 `i 747  ]
+"241
+[; ;main.c: 241:         display.LEDbits.SERVICE_LED = 1;
+[e = . . _display 1 0 -> -> 1 `i `uc ]
+[e $U 748  ]
+"242
+[; ;main.c: 242:     else
+[e :U 747 ]
+"243
+[; ;main.c: 243:         display.LEDbits.SERVICE_LED = 0;
+[e = . . _display 1 0 -> -> 0 `i `uc ]
+[e :U 748 ]
+"244
+[; ;main.c: 244:     ControlLights(&display);
+[e ( _ControlLights (1 &U _display ]
+"246
+[; ;main.c: 246:     if (eeprom_data[5] == 0x5)
+[e $ ! == -> *U + &U _eeprom_data * -> -> -> 5 `i `ui `ux -> -> # *U &U _eeprom_data `ui `ux `i -> 5 `i 749  ]
+"247
+[; ;main.c: 247:         do { LATAbits.LATA7 = 0; } while(0);
+[e :U 752 ]
 {
-"72
-[; ;main.c: 72:     }
+[e = . . _LATAbits 0 7 -> -> 0 `i `uc ]
 }
-[e :U 742 ]
-[e $U 743  ]
-[e :U 744 ]
-"73
-[; ;main.c: 73: }
-[e :UE 741 ]
+[e :U 751 ]
+[e $U 753  ]
+"248
+[; ;main.c: 248:     else
+[e :U 749 ]
+"249
+[; ;main.c: 249:         do { LATAbits.LATA7 = 1; } while(0);
+[e :U 756 ]
+{
+[e = . . _LATAbits 0 7 -> -> 1 `i `uc ]
+}
+[e :U 755 ]
+[e :U 753 ]
+"274
+[; ;main.c: 274:     Command * newCommand;
+[v _newCommand `*S741 ~T0 @X0 1 a ]
+"275
+[; ;main.c: 275:     GetCommandEntryBuffer(newCommand);
+[e ( _GetCommandEntryBuffer (1 _newCommand ]
+"276
+[; ;main.c: 276:     if (newCommand)
+[e $ ! != _newCommand -> -> 0 `i `*S741 757  ]
+"277
+[; ;main.c: 277:     {
+{
+"278
+[; ;main.c: 278:         newCommand->command = (uint8_t)VALVE_STATE;
+[e = . *U _newCommand 6 -> . `E5812 0 `uc ]
+"279
+[; ;main.c: 279:     }
+}
+[e :U 757 ]
+"280
+[; ;main.c: 280:     TransmitMessage(newCommand);
+[e ( _TransmitMessage (1 _newCommand ]
+"282
+[; ;main.c: 282:     while (1)
+[e :U 759 ]
+"283
+[; ;main.c: 283:     {
+{
+"284
+[; ;main.c: 284:         __asm("clrwdt");
+[; <" clrwdt ;# ">
+"285
+[; ;main.c: 285:     }
+}
+[e :U 758 ]
+[e $U 759  ]
+[e :U 760 ]
+"287
+[; ;main.c: 287: }
+[e :UE 744 ]
+}
+"289
+[; ;main.c: 289: void WriteRs485Array(uint8_t * value, uint8_t length)
+[v _WriteRs485Array `(v ~T0 @X0 1 ef2`*uc`uc ]
+"290
+[; ;main.c: 290: {
+{
+[e :U _WriteRs485Array ]
+"289
+[; ;main.c: 289: void WriteRs485Array(uint8_t * value, uint8_t length)
+[v _value `*uc ~T0 @X0 1 r1 ]
+[v _length `uc ~T0 @X0 1 r2 ]
+"290
+[; ;main.c: 290: {
+[f ]
+"291
+[; ;main.c: 291:     uint8_t i = 0;
+[v _i `uc ~T0 @X0 1 a ]
+[e = _i -> -> 0 `i `uc ]
+"292
+[; ;main.c: 292:     do { LATBbits.LATB4 = 1; } while(0);
+[e :U 764 ]
+{
+[e = . . _LATBbits 0 4 -> -> 1 `i `uc ]
+}
+[e :U 763 ]
+"293
+[; ;main.c: 293:     while(i < length){
+[e $U 765  ]
+[e :U 766 ]
+{
+"294
+[; ;main.c: 294:         __asm("clrwdt");
+[; <" clrwdt ;# ">
+"295
+[; ;main.c: 295:         if(EUSART_is_tx_ready())
+[e $ ! != -> ( _EUSART_is_tx_ready ..  `i -> 0 `i 768  ]
+"296
+[; ;main.c: 296:         {
+{
+"297
+[; ;main.c: 297:             EUSART_Write(value[i]);
+[e ( _EUSART_Write (1 *U + _value * -> _i `ux -> -> # *U _value `ui `ux ]
+"298
+[; ;main.c: 298:             i++;
+[e ++ _i -> -> 1 `i `uc ]
+"299
+[; ;main.c: 299:         }
+}
+[e :U 768 ]
+"300
+[; ;main.c: 300:     }
+}
+[e :U 765 ]
+"293
+[; ;main.c: 293:     while(i < length){
+[e $ < -> _i `i -> _length `i 766  ]
+[e :U 767 ]
+"301
+[; ;main.c: 301:     while (!EUSART_is_tx_done())
+[e $U 769  ]
+[e :U 770 ]
+"302
+[; ;main.c: 302:     {
+{
+"303
+[; ;main.c: 303:         __asm("clrwdt");
+[; <" clrwdt ;# ">
+"304
+[; ;main.c: 304:     }
+}
+[e :U 769 ]
+"301
+[; ;main.c: 301:     while (!EUSART_is_tx_done())
+[e $ ! != -> ( _EUSART_is_tx_done ..  `i -> 0 `i 770  ]
+[e :U 771 ]
+"305
+[; ;main.c: 305:     do { LATBbits.LATB4 = 0; } while(0);
+[e :U 774 ]
+{
+[e = . . _LATBbits 0 4 -> -> 0 `i `uc ]
+}
+[e :U 773 ]
+"307
+[; ;main.c: 307: }
+[e :UE 761 ]
+}
+"309
+[; ;main.c: 309: void DumpEEPROMtoMemory()
+[v _DumpEEPROMtoMemory `(v ~T0 @X0 1 ef ]
+"310
+[; ;main.c: 310: {
+{
+[e :U _DumpEEPROMtoMemory ]
+[f ]
+"311
+[; ;main.c: 311:     for (int i= 0; i < VALVE_EEPROM_SIZE; i++)
+{
+[v _i `i ~T0 @X0 1 a ]
+[e = _i -> 0 `i ]
+[e $ < _i -> . `E5912 0 `i 776  ]
+[e $U 777  ]
+[e :U 776 ]
+"312
+[; ;main.c: 312:     {
+{
+"313
+[; ;main.c: 313:         eeprom_data[i] = I2C_Read1ByteRegister(0xA0>>1, i);
+[e = *U + &U _eeprom_data * -> -> _i `ui `ux -> -> # *U &U _eeprom_data `ui `ux ( _I2C_Read1ByteRegister (2 , -> >> -> 160 `i -> 1 `i `uc -> _i `uc ]
+"314
+[; ;main.c: 314:         __asm("clrwdt");
+[; <" clrwdt ;# ">
+"315
+[; ;main.c: 315:     }
+}
+[e ++ _i -> 1 `i ]
+[e $ < _i -> . `E5912 0 `i 776  ]
+[e :U 777 ]
+}
+"316
+[; ;main.c: 316: }
+[e :UE 775 ]
+}
+"318
+[; ;main.c: 318: void WriteEEPROM(uint8_t addr, uint8_t value)
+[v _WriteEEPROM `(v ~T0 @X0 1 ef2`uc`uc ]
+"319
+[; ;main.c: 319: {
+{
+[e :U _WriteEEPROM ]
+"318
+[; ;main.c: 318: void WriteEEPROM(uint8_t addr, uint8_t value)
+[v _addr `uc ~T0 @X0 1 r1 ]
+[v _value `uc ~T0 @X0 1 r2 ]
+"319
+[; ;main.c: 319: {
+[f ]
+"320
+[; ;main.c: 320:     I2C_Write1ByteRegister(0xA0>>1, addr, value);
+[e ( _I2C_Write1ByteRegister (3 , , -> >> -> 160 `i -> 1 `i `uc _addr _value ]
+"321
+[; ;main.c: 321: }
+[e :UE 779 ]
+}
+"323
+[; ;main.c: 323: void WriteEEPROMBuffer(uint8_t eeprom_addr, uint8_t *buffer, uint8_t length)
+[v _WriteEEPROMBuffer `(v ~T0 @X0 1 ef3`uc`*uc`uc ]
+"324
+[; ;main.c: 324: {
+{
+[e :U _WriteEEPROMBuffer ]
+"323
+[; ;main.c: 323: void WriteEEPROMBuffer(uint8_t eeprom_addr, uint8_t *buffer, uint8_t length)
+[v _eeprom_addr `uc ~T0 @X0 1 r1 ]
+[v _buffer `*uc ~T0 @X0 1 r2 ]
+[v _length `uc ~T0 @X0 1 r3 ]
+"324
+[; ;main.c: 324: {
+[f ]
+"325
+[; ;main.c: 325:     for (uint8_t i = 0; i < length; i++)
+{
+[v _i `uc ~T0 @X0 1 a ]
+[e = _i -> -> 0 `i `uc ]
+[e $U 784  ]
+[e :U 781 ]
+"326
+[; ;main.c: 326:     {
+{
+"327
+[; ;main.c: 327:         WriteEEPROM(eeprom_addr + i, *(buffer + i));
+[e ( _WriteEEPROM (2 , -> + -> _eeprom_addr `i -> _i `i `uc *U + _buffer * -> -> _i `i `x -> -> # *U _buffer `i `x ]
+"328
+[; ;main.c: 328:         uint8_t delayLoop1 = 30;
+[v _delayLoop1 `uc ~T0 @X0 1 a ]
+[e = _delayLoop1 -> -> 30 `i `uc ]
+"329
+[; ;main.c: 329:         uint8_t delayLoop2 = 0x30;
+[v _delayLoop2 `uc ~T0 @X0 1 a ]
+[e = _delayLoop2 -> -> 48 `i `uc ]
+"330
+[; ;main.c: 330:         do {
+[e :U 787 ]
+{
+"331
+[; ;main.c: 331:             do {
+[e :U 790 ]
+{
+"332
+[; ;main.c: 332:                 delayLoop2 -= 1;
+[e =- _delayLoop2 -> -> 1 `i `uc ]
+"333
+[; ;main.c: 333:             } while (delayLoop2 != 0);
+}
+[e $ != -> _delayLoop2 `i -> 0 `i 790  ]
+[e :U 789 ]
+"334
+[; ;main.c: 334:             delayLoop1 -= 1;
+[e =- _delayLoop1 -> -> 1 `i `uc ]
+"335
+[; ;main.c: 335:         } while (delayLoop1 != 0);
+}
+[e $ != -> _delayLoop1 `i -> 0 `i 787  ]
+[e :U 786 ]
+"336
+[; ;main.c: 336:     }
+}
+[e ++ _i -> -> 1 `i `uc ]
+[e :U 784 ]
+[e $ < -> _i `i -> _length `i 781  ]
+[e :U 782 ]
+}
+"337
+[; ;main.c: 337: }
+[e :UE 780 ]
+}
+"339
+[; ;main.c: 339: void SetLeds(uint16_t leds, uint8_t blank)
+[v _SetLeds `(v ~T0 @X0 1 ef2`us`uc ]
+"340
+[; ;main.c: 340: {
+{
+[e :U _SetLeds ]
+"339
+[; ;main.c: 339: void SetLeds(uint16_t leds, uint8_t blank)
+[v _leds `us ~T0 @X0 1 r1 ]
+[v _blank `uc ~T0 @X0 1 r2 ]
+"340
+[; ;main.c: 340: {
+[f ]
+"341
+[; ;main.c: 341:     do { LATBbits.LATB0 = 0; } while(0);
+[e :U 794 ]
+{
+[e = . . _LATBbits 0 0 -> -> 0 `i `uc ]
+}
+[e :U 793 ]
+"342
+[; ;main.c: 342: }
+[e :UE 791 ]
+}
+"344
+[; ;main.c: 344: void SetBlueModeLed(_Bool led_on)
+[v _SetBlueModeLed `(v ~T0 @X0 1 ef1`a ]
+"345
+[; ;main.c: 345: {
+{
+[e :U _SetBlueModeLed ]
+"344
+[; ;main.c: 344: void SetBlueModeLed(_Bool led_on)
+[v _led_on `a ~T0 @X0 1 r1 ]
+"345
+[; ;main.c: 345: {
+[f ]
+"346
+[; ;main.c: 346:   if (led_on != 0)
+[e $ ! != -> _led_on `i -> 0 `i 796  ]
+"347
+[; ;main.c: 347:       LATA &= 0x7f;
+[e =& _LATA -> -> 127 `i `Vuc ]
+[e $U 797  ]
+"348
+[; ;main.c: 348:   else
+[e :U 796 ]
+"349
+[; ;main.c: 349:       LATA |= 0x80;
+[e =| _LATA -> -> 128 `i `Vuc ]
+[e :U 797 ]
+"350
+[; ;main.c: 350:   return;
+[e $UE 795  ]
+"351
+[; ;main.c: 351: }
+[e :UE 795 ]
+}
+"353
+[; ;main.c: 353: uint16_t CheckSumMaker(uint8_t *buffer, uint8_t size)
+[v _CheckSumMaker `(us ~T0 @X0 1 ef2`*uc`uc ]
+"354
+[; ;main.c: 354: {
+{
+[e :U _CheckSumMaker ]
+"353
+[; ;main.c: 353: uint16_t CheckSumMaker(uint8_t *buffer, uint8_t size)
+[v _buffer `*uc ~T0 @X0 1 r1 ]
+[v _size `uc ~T0 @X0 1 r2 ]
+"354
+[; ;main.c: 354: {
+[f ]
+"355
+[; ;main.c: 355:     uint32_t sum = 0;
+[v _sum `ul ~T0 @X0 1 a ]
+[e = _sum -> -> -> 0 `i `l `ul ]
+"356
+[; ;main.c: 356:     for (uint8_t i = 0; i < size; i++)
+{
+[v _i `uc ~T0 @X0 1 a ]
+[e = _i -> -> 0 `i `uc ]
+[e $U 802  ]
+[e :U 799 ]
+"357
+[; ;main.c: 357:     {
+{
+"358
+[; ;main.c: 358:         sum += *(buffer + i);
+[e =+ _sum -> *U + _buffer * -> -> _i `i `x -> -> # *U _buffer `i `x `ul ]
+"359
+[; ;main.c: 359:     }
+}
+[e ++ _i -> -> 1 `i `uc ]
+[e :U 802 ]
+[e $ < -> _i `i -> _size `i 799  ]
+[e :U 800 ]
+}
+"360
+[; ;main.c: 360:     uint32_t temp2 = sum & 0xFFFF;
+[v _temp2 `ul ~T0 @X0 1 a ]
+[e = _temp2 & _sum -> -> 65535 `ui `ul ]
+"361
+[; ;main.c: 361:     uint32_t temp6 = (sum >> 16) & 0xFFFF;
+[v _temp6 `ul ~T0 @X0 1 a ]
+[e = _temp6 & >> _sum -> 16 `i -> -> 65535 `ui `ul ]
+"362
+[; ;main.c: 362:     temp2 += temp6;
+[e =+ _temp2 _temp6 ]
+"364
+[; ;main.c: 364:     sum = temp2;
+[e = _sum _temp2 ]
+"365
+[; ;main.c: 365:     sum += (sum >> 16);
+[e =+ _sum >> _sum -> 16 `i ]
+"366
+[; ;main.c: 366:     return ~((uint16_t)sum);
+[e ) -> ~ -> -> _sum `us `ui `us ]
+[e $UE 798  ]
+"367
+[; ;main.c: 367: }
+[e :UE 798 ]
 }
