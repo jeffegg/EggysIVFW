@@ -80,6 +80,11 @@ const uint8_t first_stop_offset = 1;
 const uint8_t first_stop_backup_offset = 32;
 const uint8_t second_stop_offset = 3;
 const uint8_t second_stop_backup_offset = 34;
+const uint8_t mode_offset = 5;
+const uint8_t firmware_update_mode_offset = 65;
+
+const uint8_t did_offset = 69;
+const uint8_t rid_offset = 71;
 
 uint8_t valve_uid[6] = {VALVE_EEPROM_SERIAL_LEN};
 LEDS display;
@@ -102,46 +107,8 @@ void main(void)
     DumpEEPROMtoMemory();
     // Get the UID from the EEPROM - this should be unique per valve.
     I2C_ReadDataBlock(VALVE_EEPROM_ADDRESS_SHIFTED, VALVE_EEPROM_SERIAL_ADDR, valve_uid, VALVE_EEPROM_SERIAL_LEN);
-    /*return;
-    WriteEEPROM(1, 2);
-    uint8_t delayLoop1 = 6;
-    uint8_t delayLoop2 = 0x30;
-    do {
-        do {
-            delayLoop2 -= 1;
-        } while (delayLoop2 != 0);
-        delayLoop1 -= 1;
-    } while (delayLoop1 != 0);
-    WriteEEPROM(32, 2);
-    delayLoop1 = 6;
-    delayLoop2 = 0x30;
-    do {
-        do {
-            delayLoop2 -= 1;
-        } while (delayLoop2 != 0);
-        delayLoop1 -= 1;
-    } while (delayLoop1 != 0);
-    
-    WriteEEPROM(3, 0x2F);
-    delayLoop1 = 6;
-    delayLoop2 = 0x30;
-    do {
-        do {
-            delayLoop2 -= 1;
-        } while (delayLoop2 != 0);
-        delayLoop1 -= 1;
-    } while (delayLoop1 != 0);
-    WriteEEPROM(34, 0x2F);
-    delayLoop1 = 6;
-    delayLoop2 = 0x30;
-    do {
-        do {
-            delayLoop2 -= 1;
-        } while (delayLoop2 != 0);
-        delayLoop1 -= 1;
-    } while (delayLoop1 != 0);*/
 
-    int new_value = 0;
+    /*int new_value = 0;
     eeprom_data[first_stop_offset] = new_value;
     eeprom_data[first_stop_backup_offset] = new_value;  
     
@@ -150,8 +117,10 @@ void main(void)
     eeprom_data[second_stop_backup_offset] = new_value; 
     *(uint16_t *)(eeprom_data + 30) = CheckSumMaker(eeprom_data, 30);
     *(uint16_t *)(eeprom_data + 38) = CheckSumMaker(eeprom_data+ 32, 6);
+     * WriteEEPROMBuffer(0, eeprom_data, 40);
+     * */
     
-    WriteEEPROMBuffer(0, eeprom_data, 40);
+    
     /*
     eeprom_data[0] = 0x00;
     eeprom_data[1] = 0x18;
@@ -252,30 +221,7 @@ void main(void)
         BlueModeLed_SetLow();
     else
         BlueModeLed_SetHigh();
-    
-    /*for (int j=0; j < 0x80; j++)
-    {
-        CLRWDT();
-        WriteEEPROM(j, eeprom_data[j]);
-        int delayLoop1 = 6;
-        int delayLoop2 = 0x30;
-        do {
-            do {
-                delayLoop2 -= 1;
-            } while (delayLoop2 != 0);
-            delayLoop1 -= 1;
-        } while (delayLoop1 != 0);
-    }*/
-    
-    // Disable the Global Interrupts
-    //INTERRUPT_GlobalInterruptDisable();
 
-    // Disable the Peripheral Interrupts
-    //INTERRUPT_PeripheralInterruptDisable();
-    
-    //Blank_SetHigh();
-    
-    //TMR0_StartTimer();
     Command * newCommand;
     GetCommandEntryBuffer(newCommand);
     if (newCommand)
