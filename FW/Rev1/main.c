@@ -45,15 +45,13 @@
 #include "mcc_generated_files/examples/i2c_master_example.h"
 #include "command_system.h"
 #include "ledcontroller.h"
+#include "eeprom_controller.h"
 /*
                          Main application
  */
 
 void WriteRs485Array(uint8_t * value, uint8_t length);
-void DumpEEPROMtoMemory();
-void WriteEEPROM(uint8_t addr, uint8_t value);
-void WriteEEPROMBuffer(uint8_t eeprom_addr, uint8_t *buffer, uint8_t length);
-uint16_t CheckSumMaker(uint8_t *buffer, uint8_t size);
+
 
 enum
 {
@@ -73,7 +71,7 @@ enum
 
 const uint8_t VALVE_EEPROM_ADDRESS = 0xA0;
 const uint8_t VALVE_EEPROM_ADDRESS_SHIFTED = VALVE_EEPROM_ADDRESS >> 1;
-enum {VALVE_EEPROM_SIZE = 0x80, VALVE_EEPROM_SERIAL_LEN=0x6, VALVE_EEPROM_SERIAL_ADDR = 0xFA};
+
 
 uint8_t eeprom_data[VALVE_EEPROM_SIZE] = {0};
 const uint8_t first_stop_offset = 1;
@@ -104,7 +102,7 @@ void main(void)
     // Enable the Peripheral Interrupts
     INTERRUPT_PeripheralInterruptEnable();
 
-    DumpEEPROMtoMemory();
+    DumpEEPROMtoMemory(eeprom_data);
     // Get the UID from the EEPROM - this should be unique per valve.
     I2C_ReadDataBlock(VALVE_EEPROM_ADDRESS_SHIFTED, VALVE_EEPROM_SERIAL_ADDR, valve_uid, VALVE_EEPROM_SERIAL_LEN);
 
@@ -257,36 +255,6 @@ void WriteRs485Array(uint8_t * value, uint8_t length)
     
 }
 
-void DumpEEPROMtoMemory()
-{
-    for (int i= 0; i < VALVE_EEPROM_SIZE; i++)
-    {
-        eeprom_data[i] = I2C_Read1ByteRegister(0xA0>>1, i);
-        CLRWDT();
-    } 
-}
-
-void WriteEEPROM(uint8_t addr, uint8_t value)
-{
-    I2C_Write1ByteRegister(0xA0>>1, addr, value);
-}
-
-void WriteEEPROMBuffer(uint8_t eeprom_addr, uint8_t *buffer, uint8_t length)
-{
-    for (uint8_t i = 0; i < length; i++)
-    {
-        WriteEEPROM(eeprom_addr + i, *(buffer + i));
-        uint8_t delayLoop1 = 30;
-        uint8_t delayLoop2 = 0x30;
-        do {
-            do {
-                delayLoop2 -= 1;
-            } while (delayLoop2 != 0);
-            delayLoop1 -= 1;
-        } while (delayLoop1 != 0);
-    }
-}
-
 void SetLeds(uint16_t leds, uint8_t blank)
 {
     Blank_SetLow();
@@ -301,21 +269,7 @@ void SetBlueModeLed(bool led_on)
   return;
 }
 
-uint16_t CheckSumMaker(uint8_t *buffer, uint8_t size)
-{
-    uint32_t sum = 0;
-    for (uint8_t i = 0; i < size; i++)
-    {
-        sum += *(buffer + i);
-    }
-    uint32_t temp2 = sum & 0xFFFF;
-    uint32_t temp6 = (sum >> 16) & 0xFFFF;
-    temp2 += temp6;
-    
-    sum = temp2;
-    sum += (sum >> 16);
-    return ~((uint16_t)sum);
-}
+
 /**
  End of File
 */
