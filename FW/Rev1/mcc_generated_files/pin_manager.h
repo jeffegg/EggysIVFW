@@ -145,22 +145,22 @@
 #define MotorB_SetAnalogMode()      do { ANSELAbits.ANSA5 = 1; } while(0)
 #define MotorB_SetDigitalMode()     do { ANSELAbits.ANSA5 = 0; } while(0)
 
-// get/set IO_RA6 aliases
-#define IO_RA6_TRIS                 TRISAbits.TRISA6
-#define IO_RA6_LAT                  LATAbits.LATA6
-#define IO_RA6_PORT                 PORTAbits.RA6
-#define IO_RA6_WPU                  WPUAbits.WPUA6
-#define IO_RA6_OD                   ODCONAbits.ODA6
-#define IO_RA6_SetHigh()            do { LATAbits.LATA6 = 1; } while(0)
-#define IO_RA6_SetLow()             do { LATAbits.LATA6 = 0; } while(0)
-#define IO_RA6_Toggle()             do { LATAbits.LATA6 = ~LATAbits.LATA6; } while(0)
-#define IO_RA6_GetValue()           PORTAbits.RA6
-#define IO_RA6_SetDigitalInput()    do { TRISAbits.TRISA6 = 1; } while(0)
-#define IO_RA6_SetDigitalOutput()   do { TRISAbits.TRISA6 = 0; } while(0)
-#define IO_RA6_SetPullup()          do { WPUAbits.WPUA6 = 1; } while(0)
-#define IO_RA6_ResetPullup()        do { WPUAbits.WPUA6 = 0; } while(0)
-#define IO_RA6_SetPushPull()        do { ODCONAbits.ODA6 = 0; } while(0)
-#define IO_RA6_SetOpenDrain()       do { ODCONAbits.ODA6 = 1; } while(0)
+// get/set YellowButton aliases
+#define YellowButton_TRIS                 TRISAbits.TRISA6
+#define YellowButton_LAT                  LATAbits.LATA6
+#define YellowButton_PORT                 PORTAbits.RA6
+#define YellowButton_WPU                  WPUAbits.WPUA6
+#define YellowButton_OD                   ODCONAbits.ODA6
+#define YellowButton_SetHigh()            do { LATAbits.LATA6 = 1; } while(0)
+#define YellowButton_SetLow()             do { LATAbits.LATA6 = 0; } while(0)
+#define YellowButton_Toggle()             do { LATAbits.LATA6 = ~LATAbits.LATA6; } while(0)
+#define YellowButton_GetValue()           PORTAbits.RA6
+#define YellowButton_SetDigitalInput()    do { TRISAbits.TRISA6 = 1; } while(0)
+#define YellowButton_SetDigitalOutput()   do { TRISAbits.TRISA6 = 0; } while(0)
+#define YellowButton_SetPullup()          do { WPUAbits.WPUA6 = 1; } while(0)
+#define YellowButton_ResetPullup()        do { WPUAbits.WPUA6 = 0; } while(0)
+#define YellowButton_SetPushPull()        do { ODCONAbits.ODA6 = 0; } while(0)
+#define YellowButton_SetOpenDrain()       do { ODCONAbits.ODA6 = 1; } while(0)
 
 // get/set BlueModeLed aliases
 #define BlueModeLed_TRIS                 TRISAbits.TRISA7

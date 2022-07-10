@@ -46,12 +46,14 @@
 #include "command_system.h"
 #include "ledcontroller.h"
 #include "eeprom_controller.h"
+#include "settings_state_controller.h"
 /*
                          Main application
  */
 
 void WriteRs485Array(uint8_t * value, uint8_t length);
-
+void SetLeds();
+void ReadButtons();
 
 enum
 {
@@ -69,11 +71,8 @@ enum
     BAD_VAL     = 0xC
 } Reset_Reason;
 
-const uint8_t VALVE_EEPROM_ADDRESS = 0xA0;
-const uint8_t VALVE_EEPROM_ADDRESS_SHIFTED = VALVE_EEPROM_ADDRESS >> 1;
 
 
-uint8_t eeprom_data[VALVE_EEPROM_SIZE] = {0};
 const uint8_t first_stop_offset = 1;
 const uint8_t first_stop_backup_offset = 32;
 const uint8_t second_stop_offset = 3;
@@ -84,12 +83,26 @@ const uint8_t firmware_update_mode_offset = 65;
 const uint8_t did_offset = 69;
 const uint8_t rid_offset = 71;
 
-uint8_t valve_uid[6] = {VALVE_EEPROM_SERIAL_LEN};
+const uint8_t unused_offset = 0x50;
+const uint8_t unused_offset_length = 0x80 - 0x50; // 48 bytes available to us
+
+
+volatile uint8_t eeprom_data[VALVE_EEPROM_SIZE] = {0};
+volatile uint8_t valve_uid[VALVE_EEPROM_SERIAL_LEN] = {0};
 LEDS display;
+LEDS next_display;
+
+bool modeButtonPushed = false;
+bool saveButtonPushed = false;
+bool yellowButtonPushed = false;
+bool redButtonPushed = false;
+
+uint8_t nextMode = 0;
 
 void main(void)
 {
     display.raw_leds = 0;
+    next_display.raw_leds = display.raw_leds;
     // initialize the device
     SYSTEM_Initialize();
 
@@ -104,122 +117,10 @@ void main(void)
 
     DumpEEPROMtoMemory(eeprom_data);
     // Get the UID from the EEPROM - this should be unique per valve.
-    I2C_ReadDataBlock(VALVE_EEPROM_ADDRESS_SHIFTED, VALVE_EEPROM_SERIAL_ADDR, valve_uid, VALVE_EEPROM_SERIAL_LEN);
-
-    /*int new_value = 0;
-    eeprom_data[first_stop_offset] = new_value;
-    eeprom_data[first_stop_backup_offset] = new_value;  
+    GetUUID(valve_uid);
     
-    new_value = 0x30;
-    eeprom_data[second_stop_offset] = new_value;
-    eeprom_data[second_stop_backup_offset] = new_value; 
-    *(uint16_t *)(eeprom_data + 30) = CheckSumMaker(eeprom_data, 30);
-    *(uint16_t *)(eeprom_data + 38) = CheckSumMaker(eeprom_data+ 32, 6);
-     * WriteEEPROMBuffer(0, eeprom_data, 40);
-     * */
-    
-    
-    /*
-    eeprom_data[0] = 0x00;
-    eeprom_data[1] = 0x18;
-    eeprom_data[2] = 0x18;
-    eeprom_data[3] = 0x30;
-    eeprom_data[4] = 0x01;
-    eeprom_data[5] = 0x04;
-    eeprom_data[6] = 0x00;
-    eeprom_data[7] = 0x00;
-    eeprom_data[8] = 0x00;
-    eeprom_data[9] = 0x00;
-    eeprom_data[10] = 0x00;
-    eeprom_data[11] = 0x00;
-    eeprom_data[12] = 0x00;
-    eeprom_data[13] = 0x00;
-    eeprom_data[14] = 0xC0;
-    eeprom_data[15] = 0x02;
-    eeprom_data[16] = 0x00;
-    eeprom_data[17] = 0x00;
-    eeprom_data[18] = 0x60;
-    eeprom_data[19] = 0x01;
-    eeprom_data[20] = 0xBE;
-    eeprom_data[21] = 0x06;
-    eeprom_data[22] = 0x29;
-    eeprom_data[23] = 0x00;
-    eeprom_data[24] = 0x00;
-    eeprom_data[25] = 0x00;
-    eeprom_data[26] = 0x00;
-    eeprom_data[27] = 0x00;
-    eeprom_data[28] = 0xDE;
-    eeprom_data[29] = 0x02;
-    eeprom_data[30] = 0xAA;
-    eeprom_data[31] = 0xFC;
-    eeprom_data[32] = 0x18;
-    eeprom_data[33] = 0x18;
-    eeprom_data[34] = 0x30;
-    eeprom_data[35] = 0x01;
-    eeprom_data[36] = 0x84;
-    eeprom_data[37] = 0x00;
-    eeprom_data[38] = 0x1A;
-    eeprom_data[39] = 0xFF;
-    eeprom_data[40] = 0x60;
-    eeprom_data[41] = 0x01;
-    eeprom_data[42] = 0xBE;
-    eeprom_data[43] = 0x06;
-    eeprom_data[44] = 0x04;
-    eeprom_data[45] = 0x00;
-    eeprom_data[46] = 0xD6;
-    eeprom_data[47] = 0xFE;
-    eeprom_data[48] = 0x01;
-    eeprom_data[49] = 0x01;
-    eeprom_data[50] = 0x01;
-    eeprom_data[51] = 0x01;
-    eeprom_data[52] = 0x01;
-    eeprom_data[53] = 0x01;
-    eeprom_data[54] = 0x01;
-    eeprom_data[55] = 0x01;
-    eeprom_data[56] = 0x01;
-    eeprom_data[57] = 0x01;
-    eeprom_data[58] = 0x01;
-    eeprom_data[59] = 0xFF;
-    eeprom_data[60] = 0xFF;
-    eeprom_data[61] = 0xFF;
-    eeprom_data[62] = 0xF7;
-    eeprom_data[63] = 0xFC;
-    eeprom_data[64] = 0x01;
-    eeprom_data[65] = 0x01;
-    eeprom_data[66] = 0x02;
-    eeprom_data[67] = 0x01;
-    eeprom_data[68] = 0x00;
-    eeprom_data[69] = 0x30;
-    eeprom_data[70] = 0x5B;
-    eeprom_data[71] = 0x20;
-    eeprom_data[72] = 0x01;
-    eeprom_data[73] = 0xFF;
-    eeprom_data[74] = 0xFF;
-    eeprom_data[75] = 0xFF;
-    eeprom_data[76] = 0xFF;
-    eeprom_data[77] = 0xFF;
-    eeprom_data[78] = 0x53;
-    eeprom_data[79] = 0xFA;
-     * WriteEEPROMBuffer(0, eeprom_data, 80);
-        */
-    
-    
-    if (eeprom_data[5] == 0x4)
-        display.LEDbits.AUTO_LED = 1;
-    else
-        display.LEDbits.AUTO_LED = 0;
-
-    if (eeprom_data[5] == 0x6)
-        display.LEDbits.SERVICE_LED = 1;
-    else
-        display.LEDbits.SERVICE_LED = 0;
-    ControlLights(&display);
-    
-    if (eeprom_data[5] == 0x5)
-        BlueModeLed_SetLow();
-    else
-        BlueModeLed_SetHigh();
-
+    nextMode = eeprom_data[mode_offset];
+    SetLeds();
     Command * newCommand;
     GetCommandEntryBuffer(newCommand);
     if (newCommand)
@@ -231,6 +132,29 @@ void main(void)
     while (1)
     {
         CLRWDT();      
+        ReadButtons();
+        
+        if (modeButtonPushed)
+        {
+            nextMode++;
+            if (nextMode >= 0x7)
+            {
+                nextMode = 0x4;
+            }
+            modeButtonPushed = false;
+        }
+        
+        if (nextMode != eeprom_data[mode_offset])
+        {
+            SetLeds();
+        }
+        if (next_display.raw_leds != display.raw_leds)
+        {
+            display.raw_leds = next_display.raw_leds;
+            ControlLights(&display);
+        }
+        
+        
     }
     
 }
@@ -255,9 +179,23 @@ void WriteRs485Array(uint8_t * value, uint8_t length)
     
 }
 
-void SetLeds(uint16_t leds, uint8_t blank)
+void SetLeds()
 {
-    Blank_SetLow();
+    eeprom_data[mode_offset] = nextMode;
+    if (nextMode == 0x4)
+        next_display.LEDbits.AUTO_LED = 1;
+    else
+        next_display.LEDbits.AUTO_LED = 0;
+
+    if (nextMode == 0x6)
+        next_display.LEDbits.SERVICE_LED = 1;
+    else
+        next_display.LEDbits.SERVICE_LED = 0;
+
+    if (nextMode == 0x5)
+        BlueModeLed_SetLow();
+    else
+        BlueModeLed_SetHigh();
 }
 
 void SetBlueModeLed(bool led_on)
@@ -269,6 +207,62 @@ void SetBlueModeLed(bool led_on)
   return;
 }
 
+void ReadButtons()
+{
+    bool modeButtonPushedFirst = false;
+    bool saveButtonPushedFirst = false;
+    bool yellowButtonPushedFirst = false;
+    bool redButtonPushedFirst = false;
+
+    modeButtonPushedFirst |= (ModeButton_GetValue() == 0);
+    saveButtonPushedFirst |= (SaveButton_GetValue() == 0);
+    yellowButtonPushedFirst |= (YellowButton_GetValue() == 0);
+    redButtonPushedFirst |= (RedButton_GetValue() == 0);
+    
+    // TODO - needs to move to a timer
+    // Delay for about 50 mS-100mS
+    uint8_t delayLoop1 = 0xF0;
+    uint8_t delayLoop2 = 0xF0;
+    do {
+        do {
+            delayLoop2 -= 1;
+        } while (delayLoop2 != 0);
+        delayLoop1 -= 1;
+    } while (delayLoop1 != 0);
+
+    if(modeButtonPushedFirst)
+    {
+        if (ModeButton_GetValue() == 0)
+            modeButtonPushed |= true;
+        else
+            modeButtonPushed = false;
+        modeButtonPushedFirst = false;
+    }
+    if(saveButtonPushedFirst)
+    {
+        if(SaveButton_GetValue() == 0)
+            saveButtonPushed |= true;
+        else
+            saveButtonPushed = false;
+        saveButtonPushedFirst = false;
+    }
+    if(yellowButtonPushedFirst)
+    {
+        if(YellowButton_GetValue() == 0)
+            yellowButtonPushed |= true;
+        else
+            yellowButtonPushed = false;
+        yellowButtonPushedFirst = false;
+    }
+    if(redButtonPushedFirst)
+    {
+        if(RedButton_GetValue() == 0)
+            redButtonPushed |= true;
+        else
+            redButtonPushed = false;
+        redButtonPushedFirst = false;
+    }
+}
 
 /**
  End of File

@@ -2000,7 +2000,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="Pin Module" name="Custom Name RA6"/>
-         <value>IO_RA6</value>
+         <value>YellowButton</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="Pin Module" name="Custom Name RA7"/>
@@ -2187,7 +2187,7 @@
          <value>disabled</value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="Pin Module" name="RXPPS%aux3"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="Pin Module" name="RXPPS%aux1"/>
          <value>23</value>
       </entry>
       <entry>
@@ -2215,15 +2215,15 @@
          <value>enabled</value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="Pin Module" name="T0CKIPPS%aux2"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="Pin Module" name="T0CKIPPS%aux0"/>
          <value>%DESELECT%</value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="Pin Module" name="T1CKIPPS%aux0"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="Pin Module" name="T1CKIPPS%aux2"/>
          <value>%DESELECT%</value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="Pin Module" name="T1GPPS%aux1"/>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="Pin Module" name="T1GPPS%aux3"/>
          <value>%DESELECT%</value>
       </entry>
       <entry>
@@ -2324,7 +2324,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="Pin Module" name="customNameUserSet RA6"/>
-         <value>disabled</value>
+         <value>enabled</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="Pin Module" name="customNameUserSet RA7"/>
@@ -7097,12 +7097,12 @@
          <hash>af1fd5c5b02e3249fb80bffc8afe97d8e752842459bf87cb1d93804df2739c36</hash>
       </entry>
       <entry>
-         <file>mcc_generated_files\fvr.h</file>
-         <hash>bd1dbe47f2f41df70f21c7d59539c6fad532dddefddcc873b2928dd100fa740b</hash>
-      </entry>
-      <entry>
          <file>mcc_generated_files\examples\i2c_master_example.h</file>
          <hash>c8ebe844e976ee68b485f47cdb2cc7a9aebd74ed12c97bb7e6d56728a855e2d8</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files\fvr.h</file>
+         <hash>bd1dbe47f2f41df70f21c7d59539c6fad532dddefddcc873b2928dd100fa740b</hash>
       </entry>
       <entry>
          <file>mcc_generated_files\fvr.c</file>
@@ -7146,7 +7146,7 @@
       </entry>
       <entry>
          <file>mcc_generated_files\pin_manager.h</file>
-         <hash>87fe96e5c177ab46c4caf36cffa781e966c86cf8071710fffe570b7279ad92fd</hash>
+         <hash>276915601081c4b0a0433b1d64f1a93ac076004e339cec50be2ca8153225a5c8</hash>
       </entry>
       <entry>
          <file>mcc_generated_files\tmr2.c</file>

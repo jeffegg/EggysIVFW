@@ -28,27 +28,29 @@
 
 // This is a guard condition so that contents of this file are not included
 // more than once.  
-#ifndef EEPROM_CONTROLLER_H
-#define	EEPROM_CONTROLLER_H
+#ifndef SETTING_STATE_CONTROLLER_H
+#define	SETTING_STATE_CONTROLLER_H
 
 #include <xc.h> // include processor files - each processor file is guarded.  
-
-enum {VALVE_EEPROM_SIZE = 0x80, VALVE_EEPROM_SERIAL_LEN=0x6, VALVE_EEPROM_SERIAL_ADDR = 0xFA};
-const uint8_t VALVE_EEPROM_ADDRESS = 0xA0;
-const uint8_t VALVE_EEPROM_ADDRESS_SHIFTED = VALVE_EEPROM_ADDRESS >> 1;
-
-void DumpEEPROMtoMemory(uint8_t *eeprom_data);
-void GetUUID(uint8_t *valve_uid);
-
-void WriteEEPROM(uint8_t addr, uint8_t value);
-void WriteEEPROMBuffer(uint8_t eeprom_addr, uint8_t *buffer, uint8_t length);
-uint16_t CheckSumMaker(uint8_t *buffer, uint8_t size);
 
 // TODO Insert appropriate #include <>
 
 // TODO Insert C++ class definitions if appropriate
 
+/*
+ Settings:
+ * Valve Address
+ * Valve Name (30 char limit)
+ * Ignore Relay Input
+ * Service Mode remote lockout mode
+ */
+struct{
+    uint8_t valve_address
+};
+
+
 // TODO Insert declarations
+
 
 // Comment a function and leverage automatic documentation with slash star star
 /**
@@ -85,5 +87,5 @@ extern "C" {
 }
 #endif /* __cplusplus */
 
-#endif	/* EEPROM_CONTROLLER_H */
+#endif	/* SETTING_STATE_CONTROLLER_H */
 
