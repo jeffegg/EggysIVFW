@@ -32,7 +32,8 @@
 #define	COMMAND_SYSTEM_H
 
 #include <xc.h> // include processor files - each processor file is guarded.  
-
+#include "mcc_generated_files/mcc.h"
+#include "mcc_generated_files/examples/i2c_master_example.h"
 // TODO Insert appropriate #include <>
 
 // TODO Insert C++ class definitions if appropriate
@@ -43,7 +44,7 @@
 
 // Lazy way, don't worry on the malloc; just set fixed sizes
 #define MAX_DATA_LENGTH 0x50
-#define MAX_PACKET (3 + 1 + 1 + 1 +1 +1 + MAX_DATA_LENGTH + 2)
+#define MAX_PACKET (4 + 1 + 1 + 1 +1 +1 + MAX_DATA_LENGTH + 2)
 
 typedef enum
 {
@@ -86,11 +87,11 @@ typedef enum
 
 typedef struct 
 {   
-    //Header will be added automatically => 0x00 0xFF 0xA5
-    // Max size is 3 + 1 + 1 + 1 +1 +1 + MAX_DATA_LENGTH + 2 => 0x5A
-    uint8_t header0;
+    //Header will be added automatically => 0xFF 0x00 0xFF 0xA5
+    // Max size is 4 + 1 + 1 + 1 +1 +1 + MAX_DATA_LENGTH + 2 => 0x5A
+    /*uint8_t header0;
     uint8_t header1;
-    uint8_t header2;
+    uint8_t header2;*/
     uint8_t protocal;
     uint8_t destination;
     uint8_t source;
@@ -106,7 +107,7 @@ extern volatile uint8_t receiveReady; // Something in the receive buffer that ne
 extern volatile uint8_t receiveBuffersFull;
 extern volatile uint8_t receiveBuffersOverflow;
 
-void GetCommandEntryBuffer(Command * newCommand); //Gets an entry in the command buffer or Null if no available
+volatile Command * GetCommandEntryBuffer(void); //Gets an entry in the command buffer or Null if no available
 uint8_t TransmitMessage(Command * newCommand); //Adds to transmit buffer if possible; returns true if added, else false; This is non-blocking
 
 void ReceiveCommandExecutor();

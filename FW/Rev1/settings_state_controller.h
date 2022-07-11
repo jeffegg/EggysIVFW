@@ -45,7 +45,7 @@
  * Service Mode remote lockout mode
  */
 struct{
-    uint8_t valve_address
+    uint8_t valve_address;
 };
 
 

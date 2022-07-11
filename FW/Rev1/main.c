@@ -52,8 +52,8 @@
  */
 
 void WriteRs485Array(uint8_t * value, uint8_t length);
-void SetLeds();
-void ReadButtons();
+void SetLeds(void);
+void ReadButtons(void);
 
 enum
 {
@@ -98,6 +98,9 @@ bool yellowButtonPushed = false;
 bool redButtonPushed = false;
 
 uint8_t nextMode = 0;
+uint8_t nextValveLocation = 0;
+uint8_t currentValveLocation = 0;
+uint8_t currentValveAddress = 0;
 
 void main(void)
 {
@@ -105,9 +108,6 @@ void main(void)
     next_display.raw_leds = display.raw_leds;
     // initialize the device
     SYSTEM_Initialize();
-
-    // When using interrupts, you need to set the Global and Peripheral Interrupt Enable bits
-    // Use the following macros to:
 
     // Enable the Global Interrupts
     INTERRUPT_GlobalInterruptEnable();
@@ -120,12 +120,20 @@ void main(void)
     GetUUID(valve_uid);
     
     nextMode = eeprom_data[mode_offset];
+    currentValveAddress = 0xC;
     SetLeds();
-    Command * newCommand;
-    GetCommandEntryBuffer(newCommand);
+    volatile Command * newCommand;
+    newCommand = GetCommandEntryBuffer();
+       
     if (newCommand)
     {
+        newCommand->protocal = 0x1;
+        newCommand->source = currentValveAddress;
+        newCommand->destination = 0x10;
         newCommand->command = (uint8_t)VALVE_STATE;
+        newCommand->data[0] = nextMode;
+        newCommand->data[1] = currentValveLocation;
+        newCommand->data_length = 2;
     }
     TransmitMessage(newCommand);
     
@@ -147,39 +155,32 @@ void main(void)
         if (nextMode != eeprom_data[mode_offset])
         {
             SetLeds();
+            volatile Command * newCommand;
+            newCommand = GetCommandEntryBuffer();
+
+            if (newCommand)
+            {
+                newCommand->protocal = 0x1;
+                newCommand->source = currentValveAddress;
+                newCommand->destination = 0x10;
+                newCommand->command = (uint8_t)VALVE_STATE;
+                newCommand->data[0] = nextMode;
+                newCommand->data[1] = currentValveLocation;
+                newCommand->data_length = 2;
+            }
+            TransmitMessage(newCommand);
         }
         if (next_display.raw_leds != display.raw_leds)
         {
             display.raw_leds = next_display.raw_leds;
             ControlLights(&display);
         }
-        
-        
     }
-    
 }
 
-void WriteRs485Array(uint8_t * value, uint8_t length)
-{
-    uint8_t i = 0;
-    DE_SetHigh();
-    while(i < length){
-        CLRWDT();
-        if(EUSART_is_tx_ready())
-        {    
-            EUSART_Write(value[i]);
-            i++;
-        }
-    }
-    while (!EUSART_is_tx_done())
-    {
-        CLRWDT();
-    }
-    DE_SetLow();
-    
-}
 
-void SetLeds()
+
+void SetLeds(void)
 {
     eeprom_data[mode_offset] = nextMode;
     if (nextMode == 0x4)
@@ -207,7 +208,7 @@ void SetBlueModeLed(bool led_on)
   return;
 }
 
-void ReadButtons()
+void ReadButtons(void)
 {
     bool modeButtonPushedFirst = false;
     bool saveButtonPushedFirst = false;
