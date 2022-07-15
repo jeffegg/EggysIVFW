@@ -1,6 +1,7 @@
 #include "command_system.h"
 
 void WriteRs485Array(uint8_t * value, uint8_t length);
+void CommandExecutor(Command *currentRS485RXBuffer);
 
 #define TX_COMMAND_BUFFER_SIZE 3 
 volatile Command rs485TXBuffer [TX_COMMAND_BUFFER_SIZE];
@@ -10,9 +11,9 @@ volatile Command rs485RXBuffer [RX_COMMAND_BUFFER_SIZE];
 
 volatile uint8_t sendInProgress; // Transmit in progress
 volatile uint8_t sendBuffersFull; 
-volatile uint8_t receiveReady; // Something in the receive buffer that needs to be executed 
-volatile uint8_t receiveBuffersFull;
-volatile uint8_t receiveBuffersOverflow;
+volatile bool receiveReady; // Something in the receive buffer that needs to be executed 
+volatile bool receiveBuffersFull;
+volatile bool receiveBuffersOverflow;
 
 volatile uint8_t transmitBuffer[MAX_PACKET] = {0};
 
@@ -39,29 +40,32 @@ uint8_t TransmitMessage(Command * newCommand)
     uint16_t checksum = 0;
     uint8_t checkSumLocation = 9 + newCommand->data_length;
     
-    for (uint8_t i = 4; i < checkSumLocation; ++i)
+    for (uint8_t i = 3; i < checkSumLocation; ++i)
     {
-        checksum += transmitBuffer[i];
+        checksum += (uint16_t)transmitBuffer[i];
     }
-    transmitBuffer[checkSumLocation] = (checksum & 0xFF) >> 0x8;
+    transmitBuffer[checkSumLocation] = (checksum >> (uint16_t)0x8) & (uint16_t)0xFF;
     transmitBuffer[checkSumLocation + 1] = checksum & 0xFF;
     
     WriteRs485Array(transmitBuffer, checkSumLocation+2);
     
     return 0;
 }
-volatile uint8_t uart_rx_buf_location = 0;
-//volatile uint8_t uart_rx_buffer[MAX_DATA_LENGTH] = 0;
 
-void RestartUartRXReceiveBufflocatoin(void)
+volatile uint8_t uart_rx_buffer[MAX_DATA_LENGTH] = {0};
+
+void CopyToUARTRXBuff(uint8_t * rx_buffer, uint8_t length)
 {
-  uart_rx_buf_location = 0;
-  return;
+    for (uint8_t i = 0; i < length; i++)
+    {
+        uart_rx_buffer[i] = uart_rx_buffer[i];
+    }
 }
 
 void WriteRs485Array(uint8_t * value, uint8_t length)
 {
     uint8_t i = 0;
+    nRE_SetHigh(); 
     DE_SetHigh();
     while(i < length){
         CLRWDT();
@@ -75,7 +79,57 @@ void WriteRs485Array(uint8_t * value, uint8_t length)
     {
         CLRWDT();
     }
+    nRE_SetLow();
     DE_SetLow();
     
+}
+
+void ReceiveCommandExecutor(void)
+{
+    rs485RXBuffer[0].protocal = uart_rx_buffer[4];
+    rs485RXBuffer[0].destination = uart_rx_buffer[5];
+    rs485RXBuffer[0].source = uart_rx_buffer[6];
+    rs485RXBuffer[0].command = uart_rx_buffer[7];
+    rs485RXBuffer[0].data_length = uart_rx_buffer[8];
+    
+    for (uint8_t i =0; i < uart_rx_buffer[8]; i++)
+    {
+        rs485RXBuffer[0].data[i] = uart_rx_buffer[9 + i];
+    }
+    CommandExecutor(&(rs485RXBuffer[0]));
+}
+
+#define VALVE_EEPROM_SERIAL_LEN 0x6
+extern volatile uint8_t valve_uid[VALVE_EEPROM_SERIAL_LEN];
+void CommandExecutor(Command *currentRS485RXBuffer)
+{
+    uint8_t command = currentRS485RXBuffer->command;
+    Command * newCommand;
+    switch (command)
+    {
+        case VALVE_GET_ADDR:
+            
+    
+            newCommand = GetCommandEntryBuffer();
+
+            if (newCommand)
+            {
+                newCommand->protocal = 0x1;
+                newCommand->source = 99;
+                newCommand->destination = 0x10;
+                newCommand->command = (uint8_t)VALVE_ADDR;
+                newCommand->data[0] = valve_uid[0];
+                newCommand->data[1] = valve_uid[1];
+                newCommand->data[2] = valve_uid[2];
+                newCommand->data[3] = valve_uid[3];
+                newCommand->data[4] = valve_uid[4];
+                newCommand->data[5] = valve_uid[5];
+                newCommand->data[6] = 0;
+                newCommand->data[7] = 99;
+                newCommand->data_length = 8;
+            }
+            TransmitMessage(newCommand);
+            break;
+    }
 }
 

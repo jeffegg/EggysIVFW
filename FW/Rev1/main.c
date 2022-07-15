@@ -42,11 +42,12 @@
 */
 
 #include "mcc_generated_files/mcc.h"
-#include "mcc_generated_files/examples/i2c_master_example.h"
+#include "mcc_generated_files/examples/i2c_master_example.h" 
 #include "command_system.h"
 #include "ledcontroller.h"
 #include "eeprom_controller.h"
 #include "settings_state_controller.h"
+#include "mcc_generated_files/eusart.h"
 /*
                          Main application
  */
@@ -89,6 +90,9 @@ const uint8_t unused_offset_length = 0x80 - 0x50; // 48 bytes available to us
 
 volatile uint8_t eeprom_data[VALVE_EEPROM_SIZE] = {0};
 volatile uint8_t valve_uid[VALVE_EEPROM_SERIAL_LEN] = {0};
+
+extern volatile bool eusartRxDone;
+
 LEDS display;
 LEDS next_display;
 
@@ -99,7 +103,7 @@ bool redButtonPushed = false;
 
 uint8_t nextMode = 0;
 uint8_t nextValveLocation = 0;
-uint8_t currentValveLocation = 0;
+uint8_t currentValveLocation = 23;
 uint8_t currentValveAddress = 0;
 
 void main(void)
@@ -123,6 +127,28 @@ void main(void)
     currentValveAddress = 0xC;
     SetLeds();
     volatile Command * newCommand;
+    
+    newCommand = GetCommandEntryBuffer();
+       
+    if (newCommand)
+    {
+        newCommand->protocal = 0x1;
+        newCommand->source = currentValveAddress;
+        newCommand->destination = 0x10;
+        newCommand->command = (uint8_t)VALVE_ADDR;
+        newCommand->data[0] = valve_uid[0];
+        newCommand->data[1] = valve_uid[1];
+        newCommand->data[2] = valve_uid[2];
+        newCommand->data[3] = valve_uid[3];
+        newCommand->data[4] = valve_uid[4];
+        newCommand->data[5] = valve_uid[5];
+        newCommand->data[6] = 0;
+        newCommand->data[7] = currentValveAddress;
+        newCommand->data_length = 8;
+    }
+    TransmitMessage(newCommand);
+    
+    
     newCommand = GetCommandEntryBuffer();
        
     if (newCommand)
@@ -139,7 +165,20 @@ void main(void)
     
     while (1)
     {
-        CLRWDT();      
+        CLRWDT();     
+        if (receiveReady == true)
+        {
+            ReceiveCommandExecutor();
+        }
+        
+        if (eusartRxDone == true)
+        {
+            uint8_t * buffer = GetBuffer();
+            CopyToUARTRXBuff(buffer, eusartRxCount);
+            eusartRxDone = false;
+            receiveReady = true;
+        }
+        
         ReadButtons();
         
         if (modeButtonPushed)

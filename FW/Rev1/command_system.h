@@ -55,7 +55,7 @@ typedef enum
     VALVE_RESET_START       = 0xE2, // Valve will emit before resetting if reset command sent
     VALVE_SETTINGS          = 0xE4, // These are the valve settings
     VALVE_SETTINGS_DONE     = 0xE6, // Valve settings have been set and acknowledged
-    VALVE_NAME              = 0xEA, // My Name
+    VALVE_ADDR              = 0xEA, // My address
     VALVE_EEPROM            = 0xEC, // Valve EEPROM Data (For backup)
     VALVE_EEPROM_SET_DONE   = 0xEE  // Valve EEPROM Data (For backup
 } rs485_send_commands;
@@ -78,7 +78,7 @@ typedef enum
     VALVE_FW_UPDATE                 = 0xF3, // Enter FW update on next boot
     VALVE_GET_SETTINGS              = 0xF5, // Returns current valve settings (no state)
     VALVE_SET_SETTINGS              = 0xF7, // Sets valve settings (not state)
-    VALVE_GET_NAME                  = 0xF9, // Gets the values Name (Part of settings but added shortcut)
+    VALVE_GET_ADDR                  = 0xF9, // Gets the values address (Part of settings but added shortcut)
     VALVE_GET_EEPROM                = 0xFB, // Gets the EEPROM for backup
     VALVE_SET_EEPROM                = 0xFD, // Use with extreme caution - will overwrite EEPROM      
             
@@ -103,14 +103,15 @@ typedef struct
 
 extern volatile uint8_t sendInProgress; // Transmit in progress
 extern volatile uint8_t sendBuffersFull; 
-extern volatile uint8_t receiveReady; // Something in the receive buffer that needs to be executed 
-extern volatile uint8_t receiveBuffersFull;
-extern volatile uint8_t receiveBuffersOverflow;
+extern volatile bool receiveReady; // Something in the receive buffer that needs to be executed 
+extern volatile bool receiveBuffersFull;
+extern volatile bool receiveBuffersOverflow;
 
 volatile Command * GetCommandEntryBuffer(void); //Gets an entry in the command buffer or Null if no available
 uint8_t TransmitMessage(Command * newCommand); //Adds to transmit buffer if possible; returns true if added, else false; This is non-blocking
+void CopyToUARTRXBuff(uint8_t * rx_buffer, uint8_t length);
 
-void ReceiveCommandExecutor();
+void ReceiveCommandExecutor(void);
 
 // Comment a function and leverage automatic documentation with slash star star
 /**

@@ -53,8 +53,7 @@
   Section: Macro Declarations
 */
 
-#define EUSART_TX_BUFFER_SIZE 8
-#define EUSART_RX_BUFFER_SIZE 8
+
 
 /**
   Section: Global Variables
@@ -69,7 +68,12 @@ volatile uint8_t eusartRxTail = 0;
 volatile uint8_t eusartRxBuffer[EUSART_RX_BUFFER_SIZE];
 volatile eusart_status_t eusartRxStatusBuffer[EUSART_RX_BUFFER_SIZE];
 volatile uint8_t eusartRxCount;
+volatile uint16_t eusartRxChecksum = 0;
+volatile uint8_t eusartRxChecksumLoc = 0;
+volatile uint16_t eusartCalcChecksum = 0;
+volatile uint8_t eusartRxLength = 0;
 volatile eusart_status_t eusartRxLastError;
+volatile bool eusartRxDone = false;
 
 /**
   Section: EUSART APIs
@@ -237,14 +241,113 @@ void EUSART_Receive_ISR(void)
     // or set custom function using EUSART_SetRxInterruptHandler()
 }
 
+bool IsPacketValid(uint8_t value, uint8_t eusartRxCount)
+{
+    switch(eusartRxCount)
+    {
+        case 0:
+            if (value == 0xFF)
+                return true;
+            else
+                return false;
+            break;
+        case 1:
+            if (value == 0x00)
+                return true;
+            else
+                return false;
+            break;
+        case 2:
+            if (value == 0xFF)
+                return true;
+            else
+                return false;
+            break;
+        case 3:
+            if (value == 0xA5)
+            {
+                eusartCalcChecksum += 0xA5;
+                return true;
+            }
+            else
+                return false;
+            break;
+        case 4:
+        case 5:
+        case 6:
+        case 7:
+            eusartCalcChecksum += value;
+            return true;
+        case 8:
+            eusartRxLength = value;
+            eusartCalcChecksum += value;
+            return true;
+        default:
+            eusartRxLength--;
+            if (eusartRxLength != 0)
+            {
+                eusartCalcChecksum += value;
+            }
+            else
+            {
+                
+                eusartRxChecksum += (eusartRxChecksum << (1 - eusartRxChecksumLoc));
+                if ((1 - eusartRxChecksumLoc) == 0)
+                {
+                    if (eusartRxChecksum != eusartCalcChecksum)
+                    {
+                        eusartRxHead = 0;
+                        eusartRxChecksum = 0;
+                        eusartCalcChecksum = 0;
+                        eusartRxChecksumLoc = 0;
+                        eusartRxDone = false;
+                        return false;
+                    }
+                    else
+                    {
+                        eusartRxHead = 0;
+                        eusartRxChecksum = 0;
+                        eusartCalcChecksum = 0;
+                        eusartRxChecksumLoc = 0;
+                        eusartRxDone = true;
+                    }
+                }
+                else
+                {
+                    eusartRxChecksumLoc++;
+                }
+            }
+            return true;
+    }
+   return false; 
+}
+
 void EUSART_RxDataHandler(void){
     // use this default receive interrupt handler code
-    eusartRxBuffer[eusartRxHead++] = RC1REG;
-    if(sizeof(eusartRxBuffer) <= eusartRxHead)
+    uint8_t temp_reg = RC1REG;
+    if (IsPacketValid(temp_reg, eusartRxHead))
+    {
+        eusartRxBuffer[eusartRxHead++] = temp_reg;
+        if(sizeof(eusartRxBuffer) <= eusartRxHead)
+        {
+            eusartRxHead = 0;
+        }
+        eusartRxCount++;
+    }
+    else
     {
         eusartRxHead = 0;
+        eusartRxCount = 0;
+        eusartRxChecksum = 0;
+        eusartCalcChecksum = 0;
+        eusartRxChecksumLoc = 0;
+        eusartRxDone = false;
     }
-    eusartRxCount++;
+}
+
+uint8_t * GetBuffer(void)
+{
+    return eusartRxBuffer;
 }
 
 void EUSART_DefaultFramingErrorHandler(void){}

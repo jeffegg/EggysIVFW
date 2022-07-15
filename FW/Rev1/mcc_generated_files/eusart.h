@@ -65,7 +65,8 @@
 /**
   Section: Macro Declarations
 */
-
+#define EUSART_TX_BUFFER_SIZE (4 + 1 + 1 + 1 +1 +1 + 0x50 + 2)
+#define EUSART_RX_BUFFER_SIZE (4 + 1 + 1 + 1 +1 +1 + 0x50 + 2)
 #define EUSART_DataReady  (EUSART_is_rx_ready())
 
 /**
@@ -88,11 +89,16 @@ typedef union {
 extern volatile uint8_t eusartTxBufferRemaining;
 extern volatile uint8_t eusartRxCount;
 
+extern volatile bool eusartRxDone;
+
 /**
   Section: EUSART APIs
 */
 extern void (*EUSART_TxDefaultInterruptHandler)(void);
 extern void (*EUSART_RxDefaultInterruptHandler)(void);
+
+uint8_t * GetBuffer(void);
+
 
 /**
   @Summary
