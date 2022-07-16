@@ -78,8 +78,8 @@ typedef enum
     VALVE_FW_UPDATE                 = 0xF3, // Enter FW update on next boot
     VALVE_GET_SETTINGS              = 0xF5, // Returns current valve settings (no state)
     VALVE_SET_SETTINGS              = 0xF6, // Sets valve settings (not state)
-    VALVE_GET_ADDR                  = 0xF7, // Gets the values address (Part of settings but added shortcut)
-    VALVE_SET_ADDR                  = 0xF8, // Sets the values address (Part of settings but added shortcut)
+    VALVE_GET_ADDR                  = 0xF7, // Gets the valves UUID and address (Part of settings but added shortcut)
+    VALVE_SET_ADDR                  = 0xF8, // Sets the valves address, need to pass data as UUID (6 bytes), 0x0, newAddr
     VALVE_GET_EEPROM                = 0xF9, // Gets the EEPROM for backup
     VALVE_SET_EEPROM                = 0xFA, // Use with extreme caution - will overwrite EEPROM      
             

@@ -34,7 +34,7 @@
 #include <xc.h> // include processor files - each processor file is guarded.  
 #include "globals.h"
 extern uint8_t valve_uid[VALVE_EEPROM_SERIAL_LEN];
-
+extern uint8_t updateEEPROM;
 /*
  Settings:
  * Valve Address

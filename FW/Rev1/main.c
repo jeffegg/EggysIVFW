@@ -88,6 +88,7 @@ const uint8_t rid_offset = 71;
 const uint8_t unused_offset = 0x50;
 const uint8_t unused_offset_length = 0x80 - 0x50; // 48 bytes available to us
 
+const uint8_t valve_address_offset = 0x50;
 
 volatile uint8_t eeprom_data[VALVE_EEPROM_SIZE] = {0};
 
@@ -123,7 +124,7 @@ void main(void)
     GetUUID(valve_uid);
     
     nextMode = eeprom_data[mode_offset];
-    SetAddress(0xC);
+    SetAddress(eeprom_data[valve_address_offset]);
     SetLeds();
     volatile Command * newCommand;
     
@@ -176,6 +177,20 @@ void main(void)
             CopyToUARTRXBuff(buffer, eusartRxCount);
             eusartRxDone = false;
             
+        }
+        
+        if (updateEEPROM == 1)
+        {
+            eeprom_data[valve_address_offset] = GetAddress();
+            uint8_t valve_block[6] = {0};
+            valve_block[0] = eeprom_data[valve_address_offset];
+            valve_block[1] = eeprom_data[valve_address_offset + 1];
+            valve_block[2] = eeprom_data[valve_address_offset + 2];
+            valve_block[3] = eeprom_data[valve_address_offset + 3];
+            valve_block[4] = eeprom_data[valve_address_offset + 4];
+            valve_block[5] = eeprom_data[valve_address_offset + 5];
+            WriteEEPROMBuffer(valve_address_offset, valve_block, 6);
+            updateEEPROM = 0;
         }
         
         ReadButtons();
