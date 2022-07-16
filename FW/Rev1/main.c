@@ -90,7 +90,6 @@ const uint8_t unused_offset_length = 0x80 - 0x50; // 48 bytes available to us
 
 
 volatile uint8_t eeprom_data[VALVE_EEPROM_SIZE] = {0};
-volatile uint8_t valve_uid[VALVE_EEPROM_SERIAL_LEN] = {0};
 
 extern volatile bool eusartRxDone;
 

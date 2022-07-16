@@ -1,4 +1,5 @@
 #include "eeprom_controller.h"
+#include "globals.h"
 #include "mcc_generated_files/mcc.h"
 #include "mcc_generated_files/examples/i2c_master_example.h"
 

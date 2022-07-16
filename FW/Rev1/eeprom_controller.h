@@ -33,7 +33,7 @@
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
-enum {VALVE_EEPROM_SIZE = 0x80, VALVE_EEPROM_SERIAL_LEN=0x6, VALVE_EEPROM_SERIAL_ADDR = 0xFA};
+enum {VALVE_EEPROM_SIZE = 0x80, VALVE_EEPROM_SERIAL_ADDR = 0xFA};
 const uint8_t VALVE_EEPROM_ADDRESS = 0xA0;
 const uint8_t VALVE_EEPROM_ADDRESS_SHIFTED = VALVE_EEPROM_ADDRESS >> 1;
 

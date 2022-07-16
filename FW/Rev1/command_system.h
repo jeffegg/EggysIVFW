@@ -77,10 +77,11 @@ typedef enum
     VALVE_RESET                     = 0xF1, // Forces valve to reset; used for FW Update
     VALVE_FW_UPDATE                 = 0xF3, // Enter FW update on next boot
     VALVE_GET_SETTINGS              = 0xF5, // Returns current valve settings (no state)
-    VALVE_SET_SETTINGS              = 0xF7, // Sets valve settings (not state)
-    VALVE_GET_ADDR                  = 0xF9, // Gets the values address (Part of settings but added shortcut)
-    VALVE_GET_EEPROM                = 0xFB, // Gets the EEPROM for backup
-    VALVE_SET_EEPROM                = 0xFD, // Use with extreme caution - will overwrite EEPROM      
+    VALVE_SET_SETTINGS              = 0xF6, // Sets valve settings (not state)
+    VALVE_GET_ADDR                  = 0xF7, // Gets the values address (Part of settings but added shortcut)
+    VALVE_SET_ADDR                  = 0xF8, // Sets the values address (Part of settings but added shortcut)
+    VALVE_GET_EEPROM                = 0xF9, // Gets the EEPROM for backup
+    VALVE_SET_EEPROM                = 0xFA, // Use with extreme caution - will overwrite EEPROM      
             
 } rs485_receive_commands;
 

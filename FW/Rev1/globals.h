@@ -34,11 +34,12 @@
 #include <xc.h> // include processor files - each processor file is guarded. 
 
 // Lazy way, don't worry on the malloc; just set fixed sizes
-#define MAX_DATA_LENGTH 0x50
-#define MAX_PACKET (4 + 1 + 1 + 1 +1 +1 + MAX_DATA_LENGTH + 2)
-#define EUSART_TX_BUFFER_SIZE MAX_PACKET
-#define EUSART_RX_BUFFER_SIZE MAX_PACKET
-#define BROADCAST_ADDRESS 0xF
+#define MAX_DATA_LENGTH             0x50
+#define MAX_PACKET                  (4 + 1 + 1 + 1 +1 +1 + MAX_DATA_LENGTH + 2)
+#define EUSART_TX_BUFFER_SIZE       MAX_PACKET
+#define EUSART_RX_BUFFER_SIZE       MAX_PACKET
+#define BROADCAST_ADDRESS           0xF
+#define VALVE_EEPROM_SERIAL_LEN     0x6
 
 #endif	/* GLOBALS_HEADER_H */
 

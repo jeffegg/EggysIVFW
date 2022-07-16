@@ -32,6 +32,8 @@
 #define	SETTING_STATE_CONTROLLER_H
 
 #include <xc.h> // include processor files - each processor file is guarded.  
+#include "globals.h"
+extern uint8_t valve_uid[VALVE_EEPROM_SERIAL_LEN];
 
 /*
  Settings:

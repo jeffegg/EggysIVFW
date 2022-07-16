@@ -101,8 +101,6 @@ void ReceiveCommandExecutor(void)
     CommandExecutor(&(rs485RXBuffer[0]));
 }
 
-#define VALVE_EEPROM_SERIAL_LEN 0x6
-extern volatile uint8_t valve_uid[VALVE_EEPROM_SERIAL_LEN];
 void CommandExecutor(Command *currentRS485RXBuffer)
 {
     uint8_t command = currentRS485RXBuffer->command;
