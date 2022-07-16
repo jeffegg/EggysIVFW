@@ -65,8 +65,7 @@
 /**
   Section: Macro Declarations
 */
-#define EUSART_TX_BUFFER_SIZE (4 + 1 + 1 + 1 +1 +1 + 0x50 + 2)
-#define EUSART_RX_BUFFER_SIZE (4 + 1 + 1 + 1 +1 +1 + 0x50 + 2)
+
 #define EUSART_DataReady  (EUSART_is_rx_ready())
 
 /**

@@ -58,15 +58,17 @@ void CopyToUARTRXBuff(uint8_t * rx_buffer, uint8_t length)
 {
     for (uint8_t i = 0; i < length; i++)
     {
-        uart_rx_buffer[i] = uart_rx_buffer[i];
+        uart_rx_buffer[i] = rx_buffer[i];
     }
+    
+    receiveReady = true;
 }
 
 void WriteRs485Array(uint8_t * value, uint8_t length)
 {
     uint8_t i = 0;
-    nRE_SetHigh(); 
     DE_SetHigh();
+    nRE_SetHigh(); 
     while(i < length){
         CLRWDT();
         if(EUSART_is_tx_ready())
@@ -79,9 +81,9 @@ void WriteRs485Array(uint8_t * value, uint8_t length)
     {
         CLRWDT();
     }
-    nRE_SetLow();
-    DE_SetLow();
     
+    DE_SetLow();
+    nRE_SetLow();
 }
 
 void ReceiveCommandExecutor(void)
@@ -104,6 +106,7 @@ extern volatile uint8_t valve_uid[VALVE_EEPROM_SERIAL_LEN];
 void CommandExecutor(Command *currentRS485RXBuffer)
 {
     uint8_t command = currentRS485RXBuffer->command;
+    uint8_t source = currentRS485RXBuffer->source;
     Command * newCommand;
     switch (command)
     {
@@ -115,8 +118,8 @@ void CommandExecutor(Command *currentRS485RXBuffer)
             if (newCommand)
             {
                 newCommand->protocal = 0x1;
-                newCommand->source = 99;
-                newCommand->destination = 0x10;
+                newCommand->source = GetAddress();
+                newCommand->destination = source;
                 newCommand->command = (uint8_t)VALVE_ADDR;
                 newCommand->data[0] = valve_uid[0];
                 newCommand->data[1] = valve_uid[1];
@@ -129,6 +132,7 @@ void CommandExecutor(Command *currentRS485RXBuffer)
                 newCommand->data_length = 8;
             }
             TransmitMessage(newCommand);
+            receiveReady = false;
             break;
     }
 }

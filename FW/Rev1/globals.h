@@ -28,20 +28,17 @@
 
 // This is a guard condition so that contents of this file are not included
 // more than once.  
-#ifndef SETTING_STATE_CONTROLLER_H
-#define	SETTING_STATE_CONTROLLER_H
+#ifndef GLOBALS_HEADER_H
+#define	GLOBALS_HEADER_H
 
-#include <xc.h> // include processor files - each processor file is guarded.  
+#include <xc.h> // include processor files - each processor file is guarded. 
 
-/*
- Settings:
- * Valve Address
- * Ignore Relay Input
- * Service Mode remote lockout mode
- */
-void SetAddress(uint8_t newAddress);
-uint8_t GetAddress(void);
+// Lazy way, don't worry on the malloc; just set fixed sizes
+#define MAX_DATA_LENGTH 0x50
+#define MAX_PACKET (4 + 1 + 1 + 1 +1 +1 + MAX_DATA_LENGTH + 2)
+#define EUSART_TX_BUFFER_SIZE MAX_PACKET
+#define EUSART_RX_BUFFER_SIZE MAX_PACKET
+#define BROADCAST_ADDRESS 0xF
 
-
-#endif	/* SETTING_STATE_CONTROLLER_H */
+#endif	/* GLOBALS_HEADER_H */
 

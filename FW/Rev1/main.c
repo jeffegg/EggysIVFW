@@ -40,7 +40,8 @@
     OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS 
     SOFTWARE.
 */
-
+#include <xc.h>
+#include "globals.h"
 #include "mcc_generated_files/mcc.h"
 #include "mcc_generated_files/examples/i2c_master_example.h" 
 #include "command_system.h"
@@ -104,7 +105,6 @@ bool redButtonPushed = false;
 uint8_t nextMode = 0;
 uint8_t nextValveLocation = 0;
 uint8_t currentValveLocation = 23;
-uint8_t currentValveAddress = 0;
 
 void main(void)
 {
@@ -124,7 +124,7 @@ void main(void)
     GetUUID(valve_uid);
     
     nextMode = eeprom_data[mode_offset];
-    currentValveAddress = 0xC;
+    SetAddress(0xC);
     SetLeds();
     volatile Command * newCommand;
     
@@ -133,7 +133,7 @@ void main(void)
     if (newCommand)
     {
         newCommand->protocal = 0x1;
-        newCommand->source = currentValveAddress;
+        newCommand->source = GetAddress();
         newCommand->destination = 0x10;
         newCommand->command = (uint8_t)VALVE_ADDR;
         newCommand->data[0] = valve_uid[0];
@@ -143,7 +143,7 @@ void main(void)
         newCommand->data[4] = valve_uid[4];
         newCommand->data[5] = valve_uid[5];
         newCommand->data[6] = 0;
-        newCommand->data[7] = currentValveAddress;
+        newCommand->data[7] = GetAddress();
         newCommand->data_length = 8;
     }
     TransmitMessage(newCommand);
@@ -154,7 +154,7 @@ void main(void)
     if (newCommand)
     {
         newCommand->protocal = 0x1;
-        newCommand->source = currentValveAddress;
+        newCommand->source = GetAddress();
         newCommand->destination = 0x10;
         newCommand->command = (uint8_t)VALVE_STATE;
         newCommand->data[0] = nextMode;
@@ -176,7 +176,7 @@ void main(void)
             uint8_t * buffer = GetBuffer();
             CopyToUARTRXBuff(buffer, eusartRxCount);
             eusartRxDone = false;
-            receiveReady = true;
+            
         }
         
         ReadButtons();
@@ -200,7 +200,7 @@ void main(void)
             if (newCommand)
             {
                 newCommand->protocal = 0x1;
-                newCommand->source = currentValveAddress;
+                newCommand->source = GetAddress();
                 newCommand->destination = 0x10;
                 newCommand->command = (uint8_t)VALVE_STATE;
                 newCommand->data[0] = nextMode;

@@ -48,7 +48,8 @@
   Section: Included Files
 */
 #include "eusart.h"
-
+#include "../globals.h"
+#include "../settings_state_controller.h"
 /**
   Section: Macro Declarations
 */
@@ -71,7 +72,7 @@ volatile uint8_t eusartRxCount;
 volatile uint16_t eusartRxChecksum = 0;
 volatile uint8_t eusartRxChecksumLoc = 0;
 volatile uint16_t eusartCalcChecksum = 0;
-volatile uint8_t eusartRxLength = 0;
+volatile int8_t eusartRxLength = 0;
 volatile eusart_status_t eusartRxLastError;
 volatile bool eusartRxDone = false;
 
@@ -233,7 +234,8 @@ void EUSART_Receive_ISR(void)
     }
     
     if(eusartRxStatusBuffer[eusartRxHead].status){
-        EUSART_ErrorHandler();
+        //EUSART_ErrorHandler();
+        uint8_t temp_reg = RC1REG;
     } else {
         EUSART_RxDataHandler();
     }
@@ -272,26 +274,33 @@ bool IsPacketValid(uint8_t value, uint8_t eusartRxCount)
             else
                 return false;
             break;
-        case 4:
         case 5:
+            if ((value != GetAddress()) && (value != BROADCAST_ADDRESS))
+            {
+                return false;
+            }
+        case 4:
         case 6:
         case 7:
             eusartCalcChecksum += value;
             return true;
         case 8:
+            if(value > MAX_DATA_LENGTH)
+            {
+                return false;
+            }
             eusartRxLength = value;
             eusartCalcChecksum += value;
             return true;
         default:
             eusartRxLength--;
-            if (eusartRxLength != 0)
+            if (eusartRxLength >= 0)
             {
                 eusartCalcChecksum += value;
             }
             else
             {
-                
-                eusartRxChecksum += (eusartRxChecksum << (1 - eusartRxChecksumLoc));
+                eusartRxChecksum += (uint16_t)((uint16_t)value << (uint16_t)((1 - eusartRxChecksumLoc)* 8));
                 if ((1 - eusartRxChecksumLoc) == 0)
                 {
                     if (eusartRxChecksum != eusartCalcChecksum)
@@ -328,6 +337,10 @@ void EUSART_RxDataHandler(void){
     if (IsPacketValid(temp_reg, eusartRxHead))
     {
         eusartRxBuffer[eusartRxHead++] = temp_reg;
+        if (eusartRxDone == true) // This is a bit odd, but we added to the q and need to move back. If not things get out of wack and next packet will end up getting corrupted.
+        {
+            eusartRxHead = 0;
+        }
         if(sizeof(eusartRxBuffer) <= eusartRxHead)
         {
             eusartRxHead = 0;

@@ -31,7 +31,9 @@
 #ifndef COMMAND_SYSTEM_H
 #define	COMMAND_SYSTEM_H
 
-#include <xc.h> // include processor files - each processor file is guarded.  
+#include <xc.h> // include processor files - each processor file is guarded. 
+#include "globals.h"
+#include "settings_state_controller.h"
 #include "mcc_generated_files/mcc.h"
 #include "mcc_generated_files/examples/i2c_master_example.h"
 // TODO Insert appropriate #include <>
@@ -42,9 +44,7 @@
 
 // Commands sent by the Valve
 
-// Lazy way, don't worry on the malloc; just set fixed sizes
-#define MAX_DATA_LENGTH 0x50
-#define MAX_PACKET (4 + 1 + 1 + 1 +1 +1 + MAX_DATA_LENGTH + 2)
+
 
 typedef enum
 {
