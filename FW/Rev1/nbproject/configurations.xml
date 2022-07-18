@@ -28,6 +28,7 @@
       <itemPath>eeprom_controller.h</itemPath>
       <itemPath>settings_state_controller.h</itemPath>
       <itemPath>globals.h</itemPath>
+      <itemPath>valve_manager.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -60,6 +61,7 @@
       <itemPath>ledcontroller.c</itemPath>
       <itemPath>eeprom_controller.c</itemPath>
       <itemPath>settings_state_controller.c</itemPath>
+      <itemPath>valve_manager.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

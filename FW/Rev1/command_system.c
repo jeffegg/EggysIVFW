@@ -112,19 +112,7 @@ void CommandExecutor(Command *currentRS485RXBuffer)
             newCommand = GetCommandEntryBuffer();
             if (newCommand)
             {
-                newCommand->protocal = 0x1;
-                newCommand->source = GetAddress();
-                newCommand->destination = source;
-                newCommand->command = (uint8_t)VALVE_ADDR;
-                newCommand->data[0] = valve_uid[0];
-                newCommand->data[1] = valve_uid[1];
-                newCommand->data[2] = valve_uid[2];
-                newCommand->data[3] = valve_uid[3];
-                newCommand->data[4] = valve_uid[4];
-                newCommand->data[5] = valve_uid[5];
-                newCommand->data[6] = 0;
-                newCommand->data[7] = GetAddress();
-                newCommand->data_length = 8;
+                SetupValveAddressPackets(newCommand, source);
             }
             TransmitMessage(newCommand);
             receiveReady = false;
@@ -141,22 +129,7 @@ void CommandExecutor(Command *currentRS485RXBuffer)
                 SetAddress(currentRS485RXBuffer->data[7]);  
                 updateEEPROM = 1;
                 newCommand = GetCommandEntryBuffer();
-                if (newCommand)
-                {
-                    newCommand->protocal = 0x1;
-                    newCommand->source = GetAddress();
-                    newCommand->destination = source;
-                    newCommand->command = (uint8_t)VALVE_ADDR;
-                    newCommand->data[0] = valve_uid[0];
-                    newCommand->data[1] = valve_uid[1];
-                    newCommand->data[2] = valve_uid[2];
-                    newCommand->data[3] = valve_uid[3];
-                    newCommand->data[4] = valve_uid[4];
-                    newCommand->data[5] = valve_uid[5];
-                    newCommand->data[6] = 0;
-                    newCommand->data[7] = GetAddress();
-                    newCommand->data_length = 8;
-                }
+                
                 TransmitMessage(newCommand);
             }
             receiveReady = false;
@@ -167,3 +140,22 @@ void CommandExecutor(Command *currentRS485RXBuffer)
     }
 }
 
+void SetupValveAddressPackets(volatile Command * command, uint8_t destination)
+{
+    if (command)
+    {
+        command->protocal = 0x1;
+        command->source = GetAddress();
+        command->destination = destination;
+        command->command = (uint8_t)VALVE_ADDR;
+        command->data[0] = valve_uid[0];
+        command->data[1] = valve_uid[1];
+        command->data[2] = valve_uid[2];
+        command->data[3] = valve_uid[3];
+        command->data[4] = valve_uid[4];
+        command->data[5] = valve_uid[5];
+        command->data[6] = 0;
+        command->data[7] = GetAddress();
+        command->data_length = 8;
+    }
+}

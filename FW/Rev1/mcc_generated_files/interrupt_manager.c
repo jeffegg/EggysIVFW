@@ -48,6 +48,7 @@
 
 #include "interrupt_manager.h"
 #include "mcc.h"
+#include "adc.h"
 void InterruptCallback();
 
 void __interrupt() INTERRUPT_InterruptManager (void)
@@ -80,6 +81,10 @@ void InterruptCallback()
         {
             EUSART_RxDefaultInterruptHandler();
         } 
+        else if(PIE1bits.ADIE == 1 &&  PIR1bits.ADIF)
+        {
+            ADC_InterruptHandler();
+        }
         else
         {
             //Unhandled Interrupt

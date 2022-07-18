@@ -65,6 +65,8 @@
   Section: Data Types Definitions
 */
 
+extern volatile uint8_t conversionInProgress;
+        
 /**
  *  result size of an A/D conversion
  */
@@ -106,6 +108,8 @@ typedef enum
 /**
   Section: ADC Module APIs
 */
+extern void (*ADC_InterruptHandler)(void);
+bool ConversionInProgress(void);
 
 /**
   @Summary

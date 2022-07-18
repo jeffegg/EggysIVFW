@@ -48,7 +48,9 @@
 #include "ledcontroller.h"
 #include "eeprom_controller.h"
 #include "settings_state_controller.h"
+#include "valve_manager.h"
 #include "mcc_generated_files/eusart.h"
+
 /*
                          Main application
  */
@@ -103,8 +105,6 @@ bool yellowButtonPushed = false;
 bool redButtonPushed = false;
 
 uint8_t nextMode = 0;
-uint8_t nextValveLocation = 0;
-uint8_t currentValveLocation = 23;
 
 void main(void)
 {
@@ -132,19 +132,7 @@ void main(void)
        
     if (newCommand)
     {
-        newCommand->protocal = 0x1;
-        newCommand->source = GetAddress();
-        newCommand->destination = 0x10;
-        newCommand->command = (uint8_t)VALVE_ADDR;
-        newCommand->data[0] = valve_uid[0];
-        newCommand->data[1] = valve_uid[1];
-        newCommand->data[2] = valve_uid[2];
-        newCommand->data[3] = valve_uid[3];
-        newCommand->data[4] = valve_uid[4];
-        newCommand->data[5] = valve_uid[5];
-        newCommand->data[6] = 0;
-        newCommand->data[7] = GetAddress();
-        newCommand->data_length = 8;
+        SetupValveAddressPackets(newCommand, BROADCAST_ADDRESS);
     }
     TransmitMessage(newCommand);
     
@@ -162,10 +150,15 @@ void main(void)
         newCommand->data_length = 2;
     }
     TransmitMessage(newCommand);
-    
+    ADC_StartConversion();
     while (1)
     {
-        CLRWDT();     
+        CLRWDT();    
+        if (!ConversionInProgress() && !ADC_IsConversionDone())
+        {
+            ADC_StartConversion();
+        }
+        
         if (receiveReady == true)
         {
             ReceiveCommandExecutor();
@@ -227,6 +220,11 @@ void main(void)
         {
             display.raw_leds = next_display.raw_leds;
             ControlLights(&display);
+        }
+
+        if (!ConversionInProgress() && ADC_IsConversionDone())
+        {
+            valveADCValue = ADC_GetConversionResult();
         }
     }
 }

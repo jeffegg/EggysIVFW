@@ -114,6 +114,8 @@ void CopyToUARTRXBuff(uint8_t * rx_buffer, uint8_t length);
 
 void ReceiveCommandExecutor(void);
 
+void SetupValveAddressPackets(volatile Command * command, uint8_t destination);
+
 // Comment a function and leverage automatic documentation with slash star star
 /**
     <p><b>Function prototype:</b></p>
