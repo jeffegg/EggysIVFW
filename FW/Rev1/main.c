@@ -104,7 +104,7 @@ bool saveButtonPushed = false;
 bool yellowButtonPushed = false;
 bool redButtonPushed = false;
 
-uint8_t nextMode = 0;
+
 
 void main(void)
 {
@@ -119,11 +119,15 @@ void main(void)
     // Enable the Peripheral Interrupts
     INTERRUPT_PeripheralInterruptEnable();
 
+    ADC_SelectChannel(Pot1);
+    
     DumpEEPROMtoMemory(eeprom_data);
     // Get the UID from the EEPROM - this should be unique per valve.
     GetUUID(valve_uid);
     
-    nextMode = eeprom_data[mode_offset];
+    currentValveMode = eeprom_data[mode_offset];
+    nextValveMode = currentValveMode;
+    
     SetAddress(eeprom_data[valve_address_offset]);
     SetLeds();
     volatile Command * newCommand;
@@ -145,17 +149,21 @@ void main(void)
         newCommand->source = GetAddress();
         newCommand->destination = 0x10;
         newCommand->command = (uint8_t)VALVE_STATE;
-        newCommand->data[0] = nextMode;
+        newCommand->data[0] = currentValveMode;
         newCommand->data[1] = currentValveLocation;
         newCommand->data_length = 2;
     }
     TransmitMessage(newCommand);
+            
     ADC_StartConversion();
+    
     while (1)
     {
-        CLRWDT();    
-        if (!ConversionInProgress() && !ADC_IsConversionDone())
+        CLRWDT();  
+        
+        if (ADC_IsConversionDone())
         {
+            valveADCValue = ADC_GetConversionResult();
             ADC_StartConversion();
         }
         
@@ -185,20 +193,26 @@ void main(void)
             WriteEEPROMBuffer(valve_address_offset, valve_block, 6);
             updateEEPROM = 0;
         }
+        else if (updateEEPROM == 2)
+        {
+            eeprom_data[mode_offset] = currentValveMode;
+            //WriteEEPROMBuffer(valve_address_offset, valve_block, 6);
+            updateEEPROM = 0;
+        }
         
         ReadButtons();
         
         if (modeButtonPushed)
         {
-            nextMode++;
-            if (nextMode >= 0x7)
+            nextValveMode++;
+            if (nextValveMode >= 0x7)
             {
-                nextMode = 0x4;
+                nextValveMode = 0x4;
             }
             modeButtonPushed = false;
         }
         
-        if (nextMode != eeprom_data[mode_offset])
+        if (nextValveMode != currentValveMode)
         {
             SetLeds();
             volatile Command * newCommand;
@@ -210,22 +224,19 @@ void main(void)
                 newCommand->source = GetAddress();
                 newCommand->destination = 0x10;
                 newCommand->command = (uint8_t)VALVE_STATE;
-                newCommand->data[0] = nextMode;
+                newCommand->data[0] = nextValveMode;
                 newCommand->data[1] = currentValveLocation;
                 newCommand->data_length = 2;
             }
             TransmitMessage(newCommand);
+            currentValveMode = nextValveMode;
+            updateEEPROM = 2;
         }
         if (next_display.raw_leds != display.raw_leds)
         {
             display.raw_leds = next_display.raw_leds;
             ControlLights(&display);
-        }
-
-        if (!ConversionInProgress() && ADC_IsConversionDone())
-        {
-            valveADCValue = ADC_GetConversionResult();
-        }
+        }        
     }
 }
 
@@ -233,18 +244,18 @@ void main(void)
 
 void SetLeds(void)
 {
-    eeprom_data[mode_offset] = nextMode;
-    if (nextMode == 0x4)
+    eeprom_data[mode_offset] = nextValveMode;
+    if (nextValveMode == 0x4)
         next_display.LEDbits.AUTO_LED = 1;
     else
         next_display.LEDbits.AUTO_LED = 0;
 
-    if (nextMode == 0x6)
+    if (nextValveMode == 0x6)
         next_display.LEDbits.SERVICE_LED = 1;
     else
         next_display.LEDbits.SERVICE_LED = 0;
 
-    if (nextMode == 0x5)
+    if (nextValveMode == 0x5)
         BlueModeLed_SetLow();
     else
         BlueModeLed_SetHigh();

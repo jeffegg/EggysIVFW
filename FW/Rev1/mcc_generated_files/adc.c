@@ -56,34 +56,20 @@
   Section: Macro Declarations
 */
 
-volatile uint8_t conversionInProgress = 0;
-
 #define ACQ_US_DELAY 5
 
 void (*ADC_InterruptHandler)(void);
 
-void ADC_InterruptHandlerFunc(void)
-{
-    conversionInProgress = 0;
-}
-
-
-
 /**
   Section: ADC Module APIs
 */
-
-bool ConversionInProgress(void)
-{
-    return conversionInProgress == 1;
-}
 
 void ADC_Initialize(void)
 {
     // set the ADC to the options selected in the User Interface
     
     // ADFM left; ADNREF VSS; ADPREF VDD; ADCS FOSC/64; 
-    ADCON1 = 0x60;
+    ADCON1 = 0x90;
     
     // TRIGSEL no_auto_trigger; 
     ADCON2 = 0x00;
@@ -96,7 +82,7 @@ void ADC_Initialize(void)
     
     // GO_nDONE stop; ADON enabled; CHS AN0; 
     ADCON0 = 0x01;
-    ADC_InterruptHandler = ADC_InterruptHandlerFunc;
+    
 }
 
 void ADC_SelectChannel(adc_channel_t channel)
@@ -111,7 +97,6 @@ void ADC_StartConversion(void)
 {
     // Start the conversion
     ADCON0bits.GO_nDONE = 1;
-    conversionInProgress = 1;
 }
 
 

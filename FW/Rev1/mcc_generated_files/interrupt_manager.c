@@ -81,10 +81,10 @@ void InterruptCallback()
         {
             EUSART_RxDefaultInterruptHandler();
         } 
-        else if(PIE1bits.ADIE == 1 &&  PIR1bits.ADIF)
-        {
-            ADC_InterruptHandler();
-        }
+        //else if(PIE1bits.ADIE == 1 &&  PIR1bits.ADIF)
+        //{
+            //ADC_InterruptHandler();
+        //}
         else
         {
             //Unhandled Interrupt

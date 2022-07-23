@@ -314,7 +314,7 @@ bool IsPacketValid(uint8_t value, uint8_t eusartRxCount)
                     }
                     else
                     {
-                        eusartRxHead = 0;
+                        //eusartRxHead = 0;
                         eusartRxChecksum = 0;
                         eusartCalcChecksum = 0;
                         eusartRxChecksumLoc = 0;

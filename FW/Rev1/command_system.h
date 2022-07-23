@@ -50,7 +50,7 @@ typedef enum
 {
     VALVE_STATE             = 0x02, // Sent periodically
     VALVE_STATE_CHANGED     = 0x04, // Will Emit when state change finished
-    
+    VALVE_DEGREES           = 0x06,
     VALVE_STARTING_UP       = 0xE0, // Valve is starting up - Done when 1st VALVE_STATE is sent
     VALVE_RESET_START       = 0xE2, // Valve will emit before resetting if reset command sent
     VALVE_SETTINGS          = 0xE4, // These are the valve settings
@@ -68,8 +68,9 @@ typedef enum
     VALVE_GOTO_24_POSITION          = 0x12, // PORT at 24 position is closed
     VALVE_GOTO_MIDDLE_POSITION      = 0x14, // Move valve to middle position (all open)
     VALVE_SET_DEGREES               = 0x16, // Set a specific value (This between 0 and 0x30, so step size is 180/48=> 3.75)
+    VALVE_GET_DEGREES               = 0x17,
     VALVE_SET_DEGREES_FROM_CURRENT  = 0x18,
-    
+       
     VALVE_ENTER_MAINTENACE_MODE     = 0x40, // Valve will move to Yellow Led mode and not respond to remote commands that change state/settings
                                             // !!! No way out remotely - for safety/security, need to exit at pad !!! Can also be set at Pad
                                             // Should still emit VALVE_STATE messages periodically with indication of this mode

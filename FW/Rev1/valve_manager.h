@@ -38,6 +38,8 @@ extern volatile uint16_t valveADCValue;
 extern volatile uint8_t nextValveLocation;
 extern volatile uint8_t currentValveLocation;
 
+extern volatile uint8_t nextValveMode;
+extern volatile uint8_t currentValveMode;
 
 #endif	/* VALVE_MANAGER_H */
 
