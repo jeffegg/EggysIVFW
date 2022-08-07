@@ -67,6 +67,9 @@ void MoveValveToNewPosition(void)
     int16_t tempADCValue = 0;
     uint8_t delayLoop1 = 0x10;
     uint8_t delayLoop2 = 0x20;
+    volatile Command * newCommand;
+    bool valve_ran = false;
+    
     do
     {
         ADC_StartConversion();
@@ -87,8 +90,7 @@ void MoveValveToNewPosition(void)
         
         if (debugLevel > 0x20)
         {
-            volatile Command * newCommand;
-
+            
             newCommand = GetCommandEntryBuffer();
 
             if (newCommand)
@@ -112,8 +114,30 @@ void MoveValveToNewPosition(void)
             MotorA_SetLow();
             MotorB_SetLow();
             currentValveLocation = nextValveLocation;
+            
+            if (valve_ran)
+            {
+                newCommand = GetCommandEntryBuffer();
+
+                if (newCommand)
+                {
+                    newCommand->protocal = 0x1;
+                    newCommand->source = GetAddress();
+                    newCommand->destination = 0x10;
+                    newCommand->command = (uint8_t)VALVE_DEGREES;// Returns Byte(next position), Byte(0 - moving, 1 not moving), WORD(raw ADC read twice), WORD(neededValue);
+                    newCommand->data[0] = nextValveLocation;
+                    newCommand->data[1] = (LATA & (0x30)) != 0; // Motor Location
+                    newCommand->data[2] = (tempADCValue >> (uint16_t)8) & 0xFF;
+                    newCommand->data[3] = tempADCValue & 0xFF;
+                    newCommand->data_length = 4;
+                }
+                TransmitMessage(newCommand);
+                SetLeds();
+            }
+            
             break;
         }
+        valve_ran = true;
         
         SetLeds();
         

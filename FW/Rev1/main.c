@@ -211,7 +211,6 @@ void main(void)
         }
         
         ReadButtons();
-        SetNextValveLocation(0x19);
         if (modeButtonPushed)
         {
             // If we are in remote mode; move from remote mode but move back to original one

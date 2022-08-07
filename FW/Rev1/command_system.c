@@ -171,6 +171,11 @@ void CommandExecutor(Command *currentRS485RXBuffer)
             receiveReady = false;
             break;
             
+        case VALVE_SET_DEGREES:
+            SetNextValveLocation(currentRS485RXBuffer->data[0]);             
+            receiveReady = false;
+            break;
+        
         case VALVE_RESET:
             
             break;
