@@ -35,11 +35,27 @@
 #include "globals.h"
 
 extern volatile uint16_t valveADCValue;
-extern volatile uint8_t nextValveLocation;
-extern volatile uint8_t currentValveLocation;
+
+void SetupValve(uint8_t storedValveLocation, uint8_t storedValveMode);
+
+void SetNextValveLocation(uint8_t newValue);
+uint8_t GetCurrentValveLocation(void);
+
+void SetNextValveMode(uint8_t newMode);
+uint8_t GetCurrentValveMode(void);
 
 extern volatile uint8_t nextValveMode;
 extern volatile uint8_t currentValveMode;
+
+extern volatile uint16_t *ADC_Endstop_24_value;
+extern volatile uint16_t *ADC_Endstop_0_value;
+
+extern volatile uint8_t resetValve;
+
+void CreateADCTable(void);
+
+bool IsRemoteEnabled(void);
+void MoveValveToNewPosition(void);
 
 #endif	/* VALVE_MANAGER_H */
 

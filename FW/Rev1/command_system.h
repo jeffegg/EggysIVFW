@@ -50,7 +50,7 @@ typedef enum
 {
     VALVE_STATE             = 0x02, // Sent periodically
     VALVE_STATE_CHANGED     = 0x04, // Will Emit when state change finished
-    VALVE_DEGREES           = 0x06,
+    VALVE_DEGREES           = 0x06, // Returns Byte(next position), Byte(0 - moving, 1 not moving), WORD(raw ADC)
     VALVE_STARTING_UP       = 0xE0, // Valve is starting up - Done when 1st VALVE_STATE is sent
     VALVE_RESET_START       = 0xE2, // Valve will emit before resetting if reset command sent
     VALVE_SETTINGS          = 0xE4, // These are the valve settings
@@ -70,11 +70,13 @@ typedef enum
     VALVE_SET_DEGREES               = 0x16, // Set a specific value (This between 0 and 0x30, so step size is 180/48=> 3.75)
     VALVE_GET_DEGREES               = 0x17,
     VALVE_SET_DEGREES_FROM_CURRENT  = 0x18,
-       
+    
+    VALVE_REMOTE_CONTROL            = 0x20, // Valve will enter remote control mode and accept commands
+            
     VALVE_ENTER_MAINTENACE_MODE     = 0x40, // Valve will move to Yellow Led mode and not respond to remote commands that change state/settings
                                             // !!! No way out remotely - for safety/security, need to exit at pad !!! Can also be set at Pad
                                             // Should still emit VALVE_STATE messages periodically with indication of this mode
-    
+    VALVE_DEBUG                     = 0xE0, // Enter a debug mode that outputs lots of data -- Use with caution;
     VALVE_RESET                     = 0xF1, // Forces valve to reset; used for FW Update
     VALVE_FW_UPDATE                 = 0xF3, // Enter FW update on next boot
     VALVE_GET_SETTINGS              = 0xF5, // Returns current valve settings (no state)
@@ -108,6 +110,8 @@ extern volatile uint8_t sendBuffersFull;
 extern volatile bool receiveReady; // Something in the receive buffer that needs to be executed 
 extern volatile bool receiveBuffersFull;
 extern volatile bool receiveBuffersOverflow;
+
+extern volatile uint8_t debugLevel;
 
 volatile Command * GetCommandEntryBuffer(void); //Gets an entry in the command buffer or Null if no available
 uint8_t TransmitMessage(Command * newCommand); //Adds to transmit buffer if possible; returns true if added, else false; This is non-blocking

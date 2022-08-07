@@ -41,5 +41,12 @@
 #define BROADCAST_ADDRESS           0xF
 #define VALVE_EEPROM_SERIAL_LEN     0x6
 
+#define VALVE_MODE_NORMAL           0x4
+#define VALVE_MODE_SETTINGS         0x5
+#define VALVE_MODE_MAINTAINENCE     0x6
+#define VALVE_MODE_REMOTE           0x20
+
+#define DEBUG_MODE                  0
+
 #endif	/* GLOBALS_HEADER_H */
 

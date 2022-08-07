@@ -1,4 +1,11 @@
+#include <xc.h>
+#include <stdbool.h>
 #include "ledcontroller.h"
+#include "globals.h"
+#include "mcc_generated_files/mcc.h"
+#include "command_system.h"
+#include "eeprom_controller.h"
+#include "valve_manager.h"
 // 0 -> AUTO
 // 1 -> OFF
 // 2 -> 10
@@ -15,6 +22,9 @@
 // 13 -> 14
 // 14 -> 12
 // 15 -> Service
+
+volatile LEDS display;
+volatile LEDS next_display;
 
 void ControlLights(LEDS *param_0)
 {
@@ -87,3 +97,139 @@ void ControlLights(LEDS *param_0)
 
     return;
 }
+
+void SetLeds(void)
+{
+    
+    if (nextValveMode == VALVE_MODE_NORMAL)
+        next_display.LEDbits.AUTO_LED = 1;
+    else
+        next_display.LEDbits.AUTO_LED = 0;
+
+    if (nextValveMode == VALVE_MODE_MAINTAINENCE)
+        next_display.LEDbits.SERVICE_LED = 1;
+    else
+        next_display.LEDbits.SERVICE_LED = 0;
+
+    if (nextValveMode == VALVE_MODE_SETTINGS)
+        BlueModeLed_SetLow();
+    else
+        BlueModeLed_SetHigh();
+    
+    // If we are in remote mode (look only at remote bit since we keep track of the last setting)
+    if ((nextValveMode & VALVE_MODE_REMOTE) == VALVE_MODE_REMOTE)
+    {
+        next_display.LEDbits.AUTO_LED = 1;
+        next_display.LEDbits.SERVICE_LED = 0;
+        BlueModeLed_SetLow();
+    }
+    
+    uint8_t valveLocation = GetCurrentValveLocation();
+    uint8_t ledToLight = valveLocation >> 2;
+    uint8_t between2Lights = valveLocation & 0x1;
+    
+    switch(valveLocation)
+    {
+        case 0:
+            if (!between2Lights)
+            {
+                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+            }
+            next_display.LEDbits.LED0 = 1; 
+            break;
+        case 2:
+            if (!between2Lights)
+            {
+                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+            }
+            next_display.LEDbits.LED2 = 1; 
+            break;
+        case 4:
+            if (!between2Lights)
+            {
+                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+            }
+            next_display.LEDbits.LED4 = 1; 
+            break;
+        case 6:
+            if (!between2Lights)
+            {
+                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+            }
+            next_display.LEDbits.LED6 = 1;     
+            break;
+        case 8:
+            if (!between2Lights)
+            {
+                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+            }
+            next_display.LEDbits.LED8 = 1; 
+            break;
+        case 10:
+            if (!between2Lights)
+            {
+                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+            }
+            next_display.LEDbits.LED10 = 1; 
+            break;
+        case 12:
+            if (!between2Lights)
+            {
+                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+            }
+            next_display.LEDbits.LED12 = 1; 
+            break;
+        case 14:
+            if (!between2Lights)
+            {
+                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+            }
+            next_display.LEDbits.LED14 = 1;     
+            break;
+        case 16:
+            if (!between2Lights)
+            {
+                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+            }
+            next_display.LEDbits.LED16 = 1; 
+            break;
+        case 18:
+            if (!between2Lights)
+            {
+                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+            }
+            next_display.LEDbits.LED18 = 1; 
+            break;
+        case 20:
+            if (!between2Lights)
+            {
+                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+            }
+            next_display.LEDbits.LED20 = 1; 
+            break;
+        case 22:
+            if (!between2Lights)
+            {
+                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+            }
+            next_display.LEDbits.LED22 = 1;   
+            break;            
+        case 24:
+         if (!between2Lights)
+         {
+             next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+         }
+         next_display.LEDbits.LED22 = 1;  
+         break;
+    }
+}
+
+void SetBlueModeLed(bool led_on)
+{
+  if (led_on != false)
+      LATA &= 0x7f;
+  else
+      LATA |= 0x80;
+  return;
+}
+

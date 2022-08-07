@@ -16,6 +16,8 @@ volatile bool receiveReady; // Something in the receive buffer that needs to be 
 volatile bool receiveBuffersFull;
 volatile bool receiveBuffersOverflow;
 
+extern volatile uint8_t debugLevel = 0;
+
 volatile uint8_t transmitBuffer[MAX_PACKET] = {0};
 
 volatile Command * GetCommandEntryBuffer(void)
@@ -138,8 +140,14 @@ void CommandExecutor(Command *currentRS485RXBuffer)
             }
             receiveReady = false;
             break;
+        
+        case VALVE_REMOTE_CONTROL:
+            nextValveMode |= VALVE_MODE_REMOTE;
+            receiveReady = false;
+            break;
+            
         case VALVE_ENTER_MAINTENACE_MODE:
-            nextValveMode = 6;
+            nextValveMode = VALVE_MODE_MAINTAINENCE;
             receiveReady = false;
             break;
         
@@ -152,15 +160,20 @@ void CommandExecutor(Command *currentRS485RXBuffer)
                 newCommand->source = GetAddress();
                 newCommand->destination = 0x10;
                 newCommand->command = (uint8_t)VALVE_DEGREES;
-                newCommand->data[0] = (uint16_t)((uint16_t)valveADCValue >> (uint16_t)8) & (uint16_t)0xFF ;
-                newCommand->data[1] = (uint16_t)((uint16_t)valveADCValue >> (uint16_t)0) & (uint16_t)0xFF ;
-                newCommand->data_length = 2;
+                newCommand->data[0] = GetCurrentValveLocation();
+                newCommand->data[1] = 0 ;
+                newCommand->data[2] = (uint16_t)((uint16_t)valveADCValue >> (uint16_t)8) & (uint16_t)0xFF ;
+                newCommand->data[3] = (uint16_t)((uint16_t)valveADCValue >> (uint16_t)0) & (uint16_t)0xFF ;
+                newCommand->data_length = 4;
                 TransmitMessage(newCommand);
             }
             
             receiveReady = false;
             break;
             
+        case VALVE_RESET:
+            
+            break;
         default:
             receiveReady = false;
     }

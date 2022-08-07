@@ -55,7 +55,12 @@ typedef union {
     } LEDbits;
 } LEDS;
 
+extern volatile LEDS display;
+extern volatile LEDS next_display;
+
 void ControlLights(LEDS *param_0);
+void SetLeds(void);
+void SetBlueModeLed(bool led_on);
 
 
 #endif	/* LEDCONTROLLER_H */
