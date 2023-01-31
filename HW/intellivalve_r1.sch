@@ -4558,7 +4558,7 @@ package type OT</description>
 <junction x="121.92" y="27.94"/>
 </segment>
 </net>
-<net name="D8" class="0">
+<net name="D8(24)" class="0">
 <segment>
 <pinref part="D8" gate="G$1" pin="C"/>
 <wire x1="38.1" y1="17.78" x2="38.1" y2="10.16" width="0.1524" layer="91"/>
@@ -4702,7 +4702,7 @@ package type OT</description>
 <label x="66.04" y="45.72" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="D20" class="0">
+<net name="D20(0)" class="0">
 <segment>
 <pinref part="D20" gate="G$1" pin="C"/>
 <wire x1="129.54" y1="17.78" x2="129.54" y2="10.16" width="0.1524" layer="91"/>
@@ -4714,7 +4714,7 @@ package type OT</description>
 <label x="66.04" y="43.18" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="D5_1" class="0">
+<net name="D5_1(AUTO_OFF)" class="0">
 <segment>
 <pinref part="D5" gate="G$1" pin="RC"/>
 <wire x1="162.56" y1="33.02" x2="162.56" y2="25.4" width="0.1524" layer="91"/>
@@ -4726,7 +4726,7 @@ package type OT</description>
 <label x="63.5" y="60.96" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="D5_2" class="0">
+<net name="D5_2(AUTO_OFF)" class="0">
 <segment>
 <pinref part="D5" gate="G$1" pin="GC"/>
 <wire x1="170.18" y1="33.02" x2="170.18" y2="25.4" width="0.1524" layer="91"/>
@@ -4738,7 +4738,7 @@ package type OT</description>
 <label x="63.5" y="58.42" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="D7" class="0">
+<net name="D7(SERVICE)" class="0">
 <segment>
 <pinref part="D7" gate="G$1" pin="C"/>
 <wire x1="142.24" y1="35.56" x2="142.24" y2="25.4" width="0.1524" layer="91"/>
@@ -4750,11 +4750,16 @@ package type OT</description>
 <label x="109.22" y="60.96" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="D6" class="0">
+<net name="D6(MODE)" class="0">
 <segment>
 <pinref part="D6" gate="G$1" pin="C"/>
 <wire x1="149.86" y1="35.56" x2="149.86" y2="25.4" width="0.1524" layer="91"/>
 <label x="149.86" y="27.94" size="1.778" layer="95" rot="R90"/>
+</segment>
+<segment>
+<pinref part="U4" gate="G$1" pin="RA7"/>
+<wire x1="73.66" y1="116.84" x2="60.96" y2="116.84" width="0.1524" layer="91"/>
+<label x="53.34" y="116.84" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="N$9" class="0">
@@ -4871,13 +4876,6 @@ package type OT</description>
 <pinref part="U4" gate="G$1" pin="RB2"/>
 <wire x1="114.3" y1="124.46" x2="124.46" y2="124.46" width="0.1524" layer="91"/>
 <label x="116.84" y="124.46" size="1.778" layer="95"/>
-</segment>
-</net>
-<net name="BLUE_MODE_LED" class="0">
-<segment>
-<pinref part="U4" gate="G$1" pin="RA7"/>
-<wire x1="73.66" y1="116.84" x2="60.96" y2="116.84" width="0.1524" layer="91"/>
-<label x="53.34" y="116.84" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="RED" class="0">

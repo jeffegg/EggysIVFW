@@ -51,6 +51,7 @@ typedef enum
     VALVE_STATE             = 0x02, // Sent periodically
     VALVE_STATE_CHANGED     = 0x04, // Will Emit when state change finished
     VALVE_DEGREES           = 0x06, // Returns Byte(next position), Byte(0 - moving, 1 not moving), WORD(raw ADC)
+    VALVE_DEBUG_DEGREES     = 0x08, // Returns Byte(next position), Byte(0 - moving, 1 not moving), WORD(raw ADC read twice), WORD(neededValue);
     VALVE_STARTING_UP       = 0xE0, // Valve is starting up - Done when 1st VALVE_STATE is sent
     VALVE_RESET_START       = 0xE2, // Valve will emit before resetting if reset command sent
     VALVE_SETTINGS          = 0xE4, // These are the valve settings
@@ -71,7 +72,7 @@ typedef enum
     VALVE_GET_DEGREES               = 0x17,
     VALVE_SET_DEGREES_FROM_CURRENT  = 0x18,
     
-    VALVE_REMOTE_CONTROL            = 0x20, // Valve will enter remote control mode and accept commands
+    VALVE_REMOTE_CONTROL            = 0x20, // Valve will enter remote control mode and accept commands if 1st packet is 1; else exit remote mode
             
     VALVE_ENTER_MAINTENACE_MODE     = 0x40, // Valve will move to Yellow Led mode and not respond to remote commands that change state/settings
                                             // !!! No way out remotely - for safety/security, need to exit at pad !!! Can also be set at Pad

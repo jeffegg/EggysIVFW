@@ -69,6 +69,7 @@ void MoveValveToNewPosition(void)
     uint8_t delayLoop2 = 0x20;
     volatile Command * newCommand;
     bool valve_ran = false;
+    uint8_t direction_change = 0; // This is how many times we changed direction, will be at least 1; using this to prevent bouncing from close by values
     
     do
     {
@@ -98,9 +99,9 @@ void MoveValveToNewPosition(void)
                 newCommand->protocal = 0x1;
                 newCommand->source = GetAddress();
                 newCommand->destination = 0x10;
-                newCommand->command = (uint8_t)VALVE_DEGREES;// Returns Byte(next position), Byte(0 - moving, 1 not moving), WORD(raw ADC read twice), WORD(neededValue);
+                newCommand->command = (uint8_t)VALVE_DEBUG_DEGREES;// Returns Byte(next position), Byte(0 - moving, 1 not moving), WORD(raw ADC read twice), WORD(neededValue);
                 newCommand->data[0] = nextValveLocation;
-                newCommand->data[1] = (LATA & (0x30)) != 0; // Motor Location
+                newCommand->data[1] = MotorB_LAT | MotorA_LAT; // Motor Location
                 newCommand->data[2] = (tempADCValue >> (uint16_t)8) & 0xFF;
                 newCommand->data[3] = tempADCValue & 0xFF;
                 newCommand->data[4] = (neededADCValue >> (uint16_t)8) & 0xFF;
@@ -109,6 +110,8 @@ void MoveValveToNewPosition(void)
             }
             TransmitMessage(newCommand);
         }
+        // If we are within +/- 2of the ADCValue, we can stop. Each stop is about 0x1C off so this isn't much
+        // There will be some skid, this seems to help...
         if ((tempADCValue >= (neededADCValue - 2)) && (tempADCValue <= (neededADCValue + 2)))
         {
             MotorA_SetLow();
@@ -126,7 +129,7 @@ void MoveValveToNewPosition(void)
                     newCommand->destination = 0x10;
                     newCommand->command = (uint8_t)VALVE_DEGREES;// Returns Byte(next position), Byte(0 - moving, 1 not moving), WORD(raw ADC read twice), WORD(neededValue);
                     newCommand->data[0] = nextValveLocation;
-                    newCommand->data[1] = (LATA & (0x30)) != 0; // Motor Location
+                    newCommand->data[1] = MotorB_LAT | MotorA_LAT; // Motor Location
                     newCommand->data[2] = (tempADCValue >> (uint16_t)8) & 0xFF;
                     newCommand->data[3] = tempADCValue & 0xFF;
                     newCommand->data_length = 4;
@@ -137,31 +140,69 @@ void MoveValveToNewPosition(void)
             
             break;
         }
+        
+        if (direction_change >= MAX_DIRECTION_CHANGE)
+        {
+            MotorA_SetLow();
+            MotorB_SetLow();
+            currentValveLocation = nextValveLocation;
+            
+            if (valve_ran)
+            {
+                newCommand = GetCommandEntryBuffer();
+
+                if (newCommand)
+                {
+                    newCommand->protocal = 0x1;
+                    newCommand->source = GetAddress();
+                    newCommand->destination = 0x10;
+                    newCommand->command = (uint8_t)VALVE_DEGREES;// Returns Byte(next position), Byte(0 - moving, 1 not moving), WORD(raw ADC read twice), WORD(neededValue);
+                    newCommand->data[0] = nextValveLocation;
+                    newCommand->data[1] = MotorB_LAT | MotorA_LAT; // Motor Location
+                    newCommand->data[2] = (tempADCValue >> (uint16_t)8) & 0xFF;
+                    newCommand->data[3] = tempADCValue & 0xFF;
+                    newCommand->data_length = 4;
+                }
+                TransmitMessage(newCommand);
+                SetLeds();
+            }
+            
+            break;
+        }
+        
         valve_ran = true;
         
         SetLeds();
-        
+                
         if(neededADCValue < tempADCValue)
-        {
-            MotorA_SetLow();
-            do {
+        {   
+            if ((MotorB_LAT != 1) || (MotorA_LAT == 1))
+            {
+                MotorA_SetLow();
                 do {
-                    delayLoop2 -= 1;
-                } while (delayLoop2 != 0);
-                delayLoop1 -= 1;
-            } while (delayLoop1 != 0);
-            MotorB_SetHigh();
+                    do {
+                        delayLoop2 -= 1;
+                    } while (delayLoop2 != 0);
+                    delayLoop1 -= 1;
+                } while (delayLoop1 != 0);
+                MotorB_SetHigh();
+                direction_change++;
+            }
         }
         else
         {
-            MotorB_SetLow();
-            do {
+            if ((MotorA_LAT != 1) || (MotorB_LAT == 1))
+            {
+                MotorB_SetLow();
                 do {
-                    delayLoop2 -= 1;
-                } while (delayLoop2 != 0);
-                delayLoop1 -= 1;
-            } while (delayLoop1 != 0);
-            MotorA_SetHigh();
+                    do {
+                        delayLoop2 -= 1;
+                    } while (delayLoop2 != 0);
+                    delayLoop1 -= 1;
+                } while (delayLoop1 != 0);
+                MotorA_SetHigh();
+                direction_change++;
+            }
         }   
     }   
     while(1);

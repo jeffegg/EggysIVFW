@@ -46,7 +46,10 @@
 #define VALVE_MODE_MAINTAINENCE     0x6
 #define VALVE_MODE_REMOTE           0x20
 
+#define MAX_DIRECTION_CHANGE        10
+
 #define DEBUG_MODE                  0
+
 
 #endif	/* GLOBALS_HEADER_H */
 
