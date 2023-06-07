@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=main.c led_controller.c
+SOURCEFILES_QUOTED_IF_SPACED=main.c led_controller.c valve_manager.c settings_state_controller.c eeprom_controller.c command_system.c mcu_setup.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.p1 ${OBJECTDIR}/led_controller.p1
-POSSIBLE_DEPFILES=${OBJECTDIR}/main.p1.d ${OBJECTDIR}/led_controller.p1.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.p1 ${OBJECTDIR}/led_controller.p1 ${OBJECTDIR}/valve_manager.p1 ${OBJECTDIR}/settings_state_controller.p1 ${OBJECTDIR}/eeprom_controller.p1 ${OBJECTDIR}/command_system.p1 ${OBJECTDIR}/mcu_setup.p1
+POSSIBLE_DEPFILES=${OBJECTDIR}/main.p1.d ${OBJECTDIR}/led_controller.p1.d ${OBJECTDIR}/valve_manager.p1.d ${OBJECTDIR}/settings_state_controller.p1.d ${OBJECTDIR}/eeprom_controller.p1.d ${OBJECTDIR}/command_system.p1.d ${OBJECTDIR}/mcu_setup.p1.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/main.p1 ${OBJECTDIR}/led_controller.p1
+OBJECTFILES=${OBJECTDIR}/main.p1 ${OBJECTDIR}/led_controller.p1 ${OBJECTDIR}/valve_manager.p1 ${OBJECTDIR}/settings_state_controller.p1 ${OBJECTDIR}/eeprom_controller.p1 ${OBJECTDIR}/command_system.p1 ${OBJECTDIR}/mcu_setup.p1
 
 # Source Files
-SOURCEFILES=main.c led_controller.c
+SOURCEFILES=main.c led_controller.c valve_manager.c settings_state_controller.c eeprom_controller.c command_system.c mcu_setup.c
 
 
 
@@ -110,6 +110,46 @@ ${OBJECTDIR}/led_controller.p1: led_controller.c  nbproject/Makefile-${CND_CONF}
 	@-${MV} ${OBJECTDIR}/led_controller.d ${OBJECTDIR}/led_controller.p1.d 
 	@${FIXDEPS} ${OBJECTDIR}/led_controller.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
+${OBJECTDIR}/valve_manager.p1: valve_manager.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/valve_manager.p1.d 
+	@${RM} ${OBJECTDIR}/valve_manager.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=icd4   -mdfp="${DFP_DIR}/xc8"  -fno-short-double -fno-short-float -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-osccal -mno-resetbits -mno-save-resetbits -mno-download -mno-stackcall -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto     -o ${OBJECTDIR}/valve_manager.p1 valve_manager.c 
+	@-${MV} ${OBJECTDIR}/valve_manager.d ${OBJECTDIR}/valve_manager.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/valve_manager.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/settings_state_controller.p1: settings_state_controller.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/settings_state_controller.p1.d 
+	@${RM} ${OBJECTDIR}/settings_state_controller.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=icd4   -mdfp="${DFP_DIR}/xc8"  -fno-short-double -fno-short-float -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-osccal -mno-resetbits -mno-save-resetbits -mno-download -mno-stackcall -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto     -o ${OBJECTDIR}/settings_state_controller.p1 settings_state_controller.c 
+	@-${MV} ${OBJECTDIR}/settings_state_controller.d ${OBJECTDIR}/settings_state_controller.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/settings_state_controller.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/eeprom_controller.p1: eeprom_controller.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/eeprom_controller.p1.d 
+	@${RM} ${OBJECTDIR}/eeprom_controller.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=icd4   -mdfp="${DFP_DIR}/xc8"  -fno-short-double -fno-short-float -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-osccal -mno-resetbits -mno-save-resetbits -mno-download -mno-stackcall -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto     -o ${OBJECTDIR}/eeprom_controller.p1 eeprom_controller.c 
+	@-${MV} ${OBJECTDIR}/eeprom_controller.d ${OBJECTDIR}/eeprom_controller.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/eeprom_controller.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/command_system.p1: command_system.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/command_system.p1.d 
+	@${RM} ${OBJECTDIR}/command_system.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=icd4   -mdfp="${DFP_DIR}/xc8"  -fno-short-double -fno-short-float -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-osccal -mno-resetbits -mno-save-resetbits -mno-download -mno-stackcall -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto     -o ${OBJECTDIR}/command_system.p1 command_system.c 
+	@-${MV} ${OBJECTDIR}/command_system.d ${OBJECTDIR}/command_system.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/command_system.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/mcu_setup.p1: mcu_setup.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/mcu_setup.p1.d 
+	@${RM} ${OBJECTDIR}/mcu_setup.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1  -mdebugger=icd4   -mdfp="${DFP_DIR}/xc8"  -fno-short-double -fno-short-float -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-osccal -mno-resetbits -mno-save-resetbits -mno-download -mno-stackcall -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto     -o ${OBJECTDIR}/mcu_setup.p1 mcu_setup.c 
+	@-${MV} ${OBJECTDIR}/mcu_setup.d ${OBJECTDIR}/mcu_setup.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/mcu_setup.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
 else
 ${OBJECTDIR}/main.p1: main.c  nbproject/Makefile-${CND_CONF}.mk 
 	@${MKDIR} "${OBJECTDIR}" 
@@ -126,6 +166,46 @@ ${OBJECTDIR}/led_controller.p1: led_controller.c  nbproject/Makefile-${CND_CONF}
 	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -fno-short-double -fno-short-float -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-osccal -mno-resetbits -mno-save-resetbits -mno-download -mno-stackcall -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto     -o ${OBJECTDIR}/led_controller.p1 led_controller.c 
 	@-${MV} ${OBJECTDIR}/led_controller.d ${OBJECTDIR}/led_controller.p1.d 
 	@${FIXDEPS} ${OBJECTDIR}/led_controller.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/valve_manager.p1: valve_manager.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/valve_manager.p1.d 
+	@${RM} ${OBJECTDIR}/valve_manager.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -fno-short-double -fno-short-float -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-osccal -mno-resetbits -mno-save-resetbits -mno-download -mno-stackcall -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto     -o ${OBJECTDIR}/valve_manager.p1 valve_manager.c 
+	@-${MV} ${OBJECTDIR}/valve_manager.d ${OBJECTDIR}/valve_manager.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/valve_manager.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/settings_state_controller.p1: settings_state_controller.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/settings_state_controller.p1.d 
+	@${RM} ${OBJECTDIR}/settings_state_controller.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -fno-short-double -fno-short-float -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-osccal -mno-resetbits -mno-save-resetbits -mno-download -mno-stackcall -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto     -o ${OBJECTDIR}/settings_state_controller.p1 settings_state_controller.c 
+	@-${MV} ${OBJECTDIR}/settings_state_controller.d ${OBJECTDIR}/settings_state_controller.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/settings_state_controller.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/eeprom_controller.p1: eeprom_controller.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/eeprom_controller.p1.d 
+	@${RM} ${OBJECTDIR}/eeprom_controller.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -fno-short-double -fno-short-float -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-osccal -mno-resetbits -mno-save-resetbits -mno-download -mno-stackcall -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto     -o ${OBJECTDIR}/eeprom_controller.p1 eeprom_controller.c 
+	@-${MV} ${OBJECTDIR}/eeprom_controller.d ${OBJECTDIR}/eeprom_controller.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/eeprom_controller.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/command_system.p1: command_system.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/command_system.p1.d 
+	@${RM} ${OBJECTDIR}/command_system.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -fno-short-double -fno-short-float -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-osccal -mno-resetbits -mno-save-resetbits -mno-download -mno-stackcall -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto     -o ${OBJECTDIR}/command_system.p1 command_system.c 
+	@-${MV} ${OBJECTDIR}/command_system.d ${OBJECTDIR}/command_system.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/command_system.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
+	
+${OBJECTDIR}/mcu_setup.p1: mcu_setup.c  nbproject/Makefile-${CND_CONF}.mk 
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/mcu_setup.p1.d 
+	@${RM} ${OBJECTDIR}/mcu_setup.p1 
+	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c   -mdfp="${DFP_DIR}/xc8"  -fno-short-double -fno-short-float -O0 -fasmfile -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -DXPRJ_default=$(CND_CONF)  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-osccal -mno-resetbits -mno-save-resetbits -mno-download -mno-stackcall -mdefault-config-bits $(COMPARISON_BUILD)  -std=c99 -gdwarf-3 -mstack=compiled:auto:auto     -o ${OBJECTDIR}/mcu_setup.p1 mcu_setup.c 
+	@-${MV} ${OBJECTDIR}/mcu_setup.d ${OBJECTDIR}/mcu_setup.p1.d 
+	@${FIXDEPS} ${OBJECTDIR}/mcu_setup.p1.d $(SILENT) -rsi ${MP_CC_DIR}../  
 	
 endif
 
