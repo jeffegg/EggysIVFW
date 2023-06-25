@@ -3,13 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/command_system.h</file>
-            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/ledcontroller.h</file>
-            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/mcc_generated_files/pin_manager.h</file>
-            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/ledcontroller.c</file>
             <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/main.c</file>
-            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/command_system.c</file>
-            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/mcc_generated_files/pin_manager.c</file>
+            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/mcc_generated_files/mcc.h</file>
+            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/mcc_generated_files/i2c_master.c</file>
+            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/command_system.h</file>
         </group>
     </open-files>
 </project-private>
