@@ -16,6 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
    
  */
+
 #include "eeprom_controller.h"
 #include "globals.h"
 #include "mcc_generated_files/mcc.h"
