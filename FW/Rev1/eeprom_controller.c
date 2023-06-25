@@ -1,7 +1,45 @@
+/*
+    EggysIVFW - Custom Firmware for Pentair's Intellivalve (TM)
+    Copyright (C) 2021-2023  Jeff "Eggy" Eglinger
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+   
+ */
+
 #include "eeprom_controller.h"
 #include "globals.h"
 #include "mcc_generated_files/mcc.h"
 #include "mcc_generated_files/examples/i2c_master_example.h"
+
+// Backup EEPROM Values for checking
+const uint8_t BACKUP_VALVE_EEPROM_RS485_ADDRESS =               VALVE_EEPROM_RS485_ADDRESS + 0x10;              // RS485 valve address location 1 byte
+const uint8_t BACKUP_VALVE_EEPROM_MODE_ADDRESS =                VALVE_EEPROM_MODE_ADDRESS + 0x10;               // Current Valve Mode 1 byte
+const uint8_t BACKUP_VALVE_EEPROM_0_END_STOP_ADDRESS =          VALVE_EEPROM_0_END_STOP_ADDRESS + 0x10;         // Current Valve Mode 2 bytes
+const uint8_t BACKUP_VALVE_EEPROM_24_END_STOP_ADDRESS =         VALVE_EEPROM_24_END_STOP_ADDRESS + 0x10;        // Current Valve Mode 2 bytes
+const uint8_t BACKUP_VALVE_EEPROM_SELECTED_END_STOP_ADDRESS =   VALVE_EEPROM_SELECTED_END_STOP_ADDRESS + 0x10;  // Current endstop selected 1 byte
+const uint8_t BACKUP_VALVE_EEPROM_DEBUG_LEVEL_ADDRESS =         VALVE_EEPROM_DEBUG_LEVEL_ADDRESS + 0x10;        // Current debug level 4 bytes
+
+const uint8_t VALVE_EEPROM_UUID_ADDRESS = 0xFA;
+const uint8_t VALVE_EEPROM_ADDRESS = 0xA0;
+const uint8_t VALVE_EEPROM_ADDRESS_SHIFTED = VALVE_EEPROM_ADDRESS >> 1;
+const uint8_t VALVE_EEPROM_SIZE = 0x80;
+
+
+volatile uint8_t eepromData[VALVE_EEPROM_SIZE] = {0};
+volatile bool eepromDataValid = false;
+
+void EEPROM_OP_Delay_Loop(void);
 
 uint16_t CheckSumMaker(uint8_t *buffer, uint8_t size)
 {
@@ -19,18 +57,23 @@ uint16_t CheckSumMaker(uint8_t *buffer, uint8_t size)
     return ~((uint16_t)sum);
 }
 
-void DumpEEPROMtoMemory(uint8_t *eeprom_data)
+void DumpEEPROMtoMemory()
 {
     for (uint8_t i= 0; i < VALVE_EEPROM_SIZE; i++)
     {
-        eeprom_data[i] = I2C_Read1ByteRegister(VALVE_EEPROM_ADDRESS_SHIFTED, i);
+        eepromData[i] = I2C_Read1ByteRegister(VALVE_EEPROM_ADDRESS_SHIFTED, i);
         CLRWDT();
     } 
+    eepromDataValid = true;
 }
 
 void WriteEEPROM(uint8_t addr, uint8_t value)
 {
     I2C_Write1ByteRegister(VALVE_EEPROM_ADDRESS_SHIFTED, addr, value);
+    if(eepromDataValid)
+    {
+        eepromData[addr] = value;
+    }
 }
 
 void WriteEEPROMBuffer(uint8_t eeprom_addr, uint8_t *buffer, uint8_t length)
@@ -38,22 +81,50 @@ void WriteEEPROMBuffer(uint8_t eeprom_addr, uint8_t *buffer, uint8_t length)
     for (uint8_t i = 0; i < length; i++)
     {
         WriteEEPROM(eeprom_addr + i, *(buffer + i));
-        uint8_t delayLoop1 = 30;
-        uint8_t delayLoop2 = 0x30;
-        do {
-            do {
-                delayLoop2 -= 1;
-            } while (delayLoop2 != 0);
-            delayLoop1 -= 1;
-        } while (delayLoop1 != 0);
+        EEPROM_OP_Delay_Loop();
     }
 }
 
 void GetUUID(uint8_t *valve_uid)
 {
-    I2C_ReadDataBlock(VALVE_EEPROM_ADDRESS_SHIFTED, VALVE_EEPROM_SERIAL_ADDR, valve_uid, VALVE_EEPROM_SERIAL_LEN); 
+    if(eepromDataValid)
+    {
+        for(uint8_t i = 0; i < VALVE_EEPROM_SERIAL_LEN; ++i)
+        {
+            valve_uid[i] = eepromData[VALVE_EEPROM_UUID_ADDRESS + i]; 
+        }
+    }
+    else
+    {  
+        I2C_ReadDataBlock(VALVE_EEPROM_ADDRESS_SHIFTED, VALVE_EEPROM_UUID_ADDRESS, valve_uid, VALVE_EEPROM_SERIAL_LEN); 
+    }
 }
 
+void ReadEEPROM(uint8_t *data, uint8_t address, uint8_t length)
+{
+    if(eepromDataValid)
+    {
+        for(uint8_t j = 0; j < length; ++j)
+        {
+            data[j] = eepromData[address + j]; 
+        }
+    }
+    else
+    {  
+        I2C_ReadDataBlock(VALVE_EEPROM_ADDRESS_SHIFTED, address, data, length); 
+}
+    
+void EEPROM_OP_Delay_Loop(void)
+{
+    uint8_t delayLoop1 = 30;
+    uint8_t delayLoop2 = 0x30;
+    do {
+        do {
+            delayLoop2 -= 1;
+        } while (delayLoop2 != 0);
+        delayLoop1 -= 1;
+    } while (delayLoop1 != 0);
+}
 
 /*int new_value = 0;
     eeprom_data[first_stop_offset] = new_value;

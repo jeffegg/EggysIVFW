@@ -1,8 +1,28 @@
+/*
+    EggysIVFW - Custom Firmware for Pentair's Intellivalve (TM)
+    Copyright (C) 2021-2023  Jeff "Eggy" Eglinger
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+   
+ */
+
 #include "command_system.h"
 #include "valve_manager.h"
 
 void WriteRs485Array(uint8_t * value, uint8_t length);
 void CommandExecutor(Command *currentRS485RXBuffer);
+void SendMessage(Command * command_struct, uint8_t valve_address, uint8_t dest, uint8_t command, uint8_t * data, uint8_t data_length);
 
 #define TX_COMMAND_BUFFER_SIZE 3 
 volatile Command rs485TXBuffer [TX_COMMAND_BUFFER_SIZE];
@@ -17,6 +37,7 @@ volatile bool receiveBuffersFull;
 volatile bool receiveBuffersOverflow;
 
 extern volatile uint8_t debugLevel = 0;
+volatile uint8_t uart_rx_buffer[MAX_DATA_LENGTH] = {0};
 
 volatile uint8_t transmitBuffer[MAX_PACKET] = {0};
 
@@ -54,8 +75,6 @@ uint8_t TransmitMessage(Command * newCommand)
     
     return 0;
 }
-
-volatile uint8_t uart_rx_buffer[MAX_DATA_LENGTH] = {0};
 
 void CopyToUARTRXBuff(uint8_t * rx_buffer, uint8_t length)
 {
@@ -110,116 +129,124 @@ void CommandExecutor(Command *currentRS485RXBuffer)
     uint8_t source = currentRS485RXBuffer->source;
     Command * newCommand;
     
-    if (IsRemoteEnabled() || (command == VALVE_REMOTE_CONTROL))
-    {
-        switch (command)
-        {        
-            case VALVE_GOTO_0_POSITION:
-                SetNextValveLocation(0x0);             
-                receiveReady = false;
-                break;
-            case VALVE_GOTO_24_POSITION:
-                SetNextValveLocation(0x30);             
-                receiveReady = false;
-                break;
-            case VALVE_GOTO_MIDDLE_POSITION:
-                SetNextValveLocation(0x18);             
-                receiveReady = false;   
-                break;  
-            case VALVE_SET_DEGREES:
-                SetNextValveLocation(currentRS485RXBuffer->data[0]);             
-                receiveReady = false;
-                break;
-            case VALVE_GET_DEGREES:
-                newCommand = GetCommandEntryBuffer();
-                valveADCValue = ADC_GetConversionResult();
-                if (newCommand)
-                {
-                    newCommand->protocal = 0x1;
-                    newCommand->source = GetAddress();
-                    newCommand->destination = 0x10;
-                    newCommand->command = (uint8_t)VALVE_DEGREES;
-                    newCommand->data[0] = GetCurrentValveLocation();
-                    newCommand->data[1] = 0 ;
-                    newCommand->data[2] = (uint16_t)((uint16_t)valveADCValue >> (uint16_t)8) & (uint16_t)0xFF ;
-                    newCommand->data[3] = (uint16_t)((uint16_t)valveADCValue >> (uint16_t)0) & (uint16_t)0xFF ;
-                    newCommand->data_length = 4;
-                    TransmitMessage(newCommand);
-                }
-                receiveReady = false;
-                break;
-            case VALVE_REMOTE_CONTROL:
-                if(currentRS485RXBuffer->data[0] == 1)
-                    nextValveMode |= VALVE_MODE_REMOTE;
-                else
-                    nextValveMode &= ~VALVE_MODE_REMOTE;
-                receiveReady = false;
-                break;
-            case VALVE_ENTER_MAINTENACE_MODE:
-                nextValveMode = VALVE_MODE_MAINTAINENCE;
-                receiveReady = false;
-                break;
+    switch (command)
+    {   
+        case VALVE_IDENTIFY_UUID:
+        case VALVE_IDENTIFY_ADDR:
+        case VALVE_SET_ADDR:
+        case VALVE_GET_ADDR:
+        case VALVE_GET_UUID:
+        case VALVE_SET_ENDSTOPS:
+        case VALVE_GET_ENDSTOPS:
+        case VALVE_SET_SETTINGS:
+        case VALVE_GET_SETTINGS:
+        case VALVE_GET_EEPROM:
+        case VALVE_SET_EEPROM:
+        case VALVE_GET_MODE:
+        case VALVE_SET_MODE:
+            break;
+        case VALVE_DEBUG:
+            debugLevel = currentRS485RXBuffer->data[0];
+            break;
+        case VALVE_RESET:
+            RESET();
+            break;
+        case VALVE_FW_UPDATE:
+            break;
+        /*
+        case VALVE_GET_DEGREES:
+            newCommand = GetCommandEntryBuffer();
+            valveADCValue = ADC_GetConversionResult();
+            if (newCommand)
+            {
+                newCommand->protocal = 0x1;
+                newCommand->source = GetAddress();
+                newCommand->destination = 0x10;
+                newCommand->command = (uint8_t)VALVE_DEGREES;
+                newCommand->data[0] = GetCurrentValveLocation();
+                newCommand->data[1] = 0 ;
+                newCommand->data[2] = (uint16_t)((uint16_t)valveADCValue >> (uint16_t)8) & (uint16_t)0xFF ;
+                newCommand->data[3] = (uint16_t)((uint16_t)valveADCValue >> (uint16_t)0) & (uint16_t)0xFF ;
+                newCommand->data_length = 4;
+                TransmitMessage(newCommand);
+            }
+            receiveReady = false;
+            break;
+        case VALVE_REMOTE_CONTROL:
+            if(currentRS485RXBuffer->data[0] == 1)
+                nextValveMode |= VALVE_MODE_REMOTE;
+            else
+                nextValveMode &= ~VALVE_MODE_REMOTE;
+            receiveReady = false;
+            break;
+        case VALVE_ENTER_MAINTENACE_MODE:
+            nextValveMode = VALVE_MODE_MAINTAINENCE;
+            receiveReady = false;
+            break;
 
-            case VALVE_DEBUG:
-                debugLevel = currentRS485RXBuffer->data[0];
-                break;
-            case VALVE_RESET:
-                RESET();
-                break;
-
-            case VALVE_GET_ADDR:
+        case VALVE_GET_ADDR:
+            newCommand = GetCommandEntryBuffer();
+            if (newCommand)
+            {
+                SetupValveAddressPackets(newCommand, source);
+                TransmitMessage(newCommand);
+            }
+            receiveReady = false;
+            break;
+        case VALVE_SET_ADDR:
+            if (currentRS485RXBuffer->data[0] == valve_uid[0] &&
+                    currentRS485RXBuffer->data[1] == valve_uid[1]&&
+                    currentRS485RXBuffer->data[2] == valve_uid[2] &&
+                    currentRS485RXBuffer->data[3] == valve_uid[3]&& 
+                    currentRS485RXBuffer->data[4] == valve_uid[4]&&
+                    currentRS485RXBuffer->data[5] == valve_uid[5] &&
+                    currentRS485RXBuffer->data[6] == 0)
+            {
+                SetAddress(currentRS485RXBuffer->data[7]);  
+                updateEEPROM = 1;
                 newCommand = GetCommandEntryBuffer();
                 if (newCommand)
                 {
                     SetupValveAddressPackets(newCommand, source);
                     TransmitMessage(newCommand);
                 }
-                receiveReady = false;
-                break;
-            case VALVE_SET_ADDR:
-                if (currentRS485RXBuffer->data[0] == valve_uid[0] &&
-                        currentRS485RXBuffer->data[1] == valve_uid[1]&&
-                        currentRS485RXBuffer->data[2] == valve_uid[2] &&
-                        currentRS485RXBuffer->data[3] == valve_uid[3]&& 
-                        currentRS485RXBuffer->data[4] == valve_uid[4]&&
-                        currentRS485RXBuffer->data[5] == valve_uid[5] &&
-                        currentRS485RXBuffer->data[6] == 0)
-                {
-                    SetAddress(currentRS485RXBuffer->data[7]);  
-                    updateEEPROM = 1;
-                    newCommand = GetCommandEntryBuffer();
-                    if (newCommand)
-                    {
-                        SetupValveAddressPackets(newCommand, source);
-                        TransmitMessage(newCommand);
-                    }
-                }
-                receiveReady = false;
-                break;
+            }
+            receiveReady = false;
+            break;*/
 
 
-            default:
-                receiveReady = false;
-        }
+        default:
+            receiveReady = false;
     }
 }
 
-void SetupValveAddressPackets(volatile Command * command, uint8_t destination)
+void SendMessage(volatile Command * command_struct, uint8_t valve_address, uint8_t dest, uint8_t command, uint8_t * data, uint8_t data_length)
 {
     if (command)
     {
-        command->protocal = 0x1;
-        command->source = GetAddress();
-        command->destination = destination;
-        command->command = (uint8_t)VALVE_ADDR;
-        command->data[0] = valve_uid[0];
-        command->data[1] = valve_uid[1];
-        command->data[2] = valve_uid[2];
-        command->data[3] = valve_uid[3];
-        command->data[4] = valve_uid[4];
-        command->data[5] = valve_uid[5];
-        command->data[6] = 0;
-        command->data[7] = GetAddress();
-        command->data_length = 8;
+        command_struct->protocal = 0x1;
+        command_struct->source = valve_address;
+        command_struct->destination = dest;
+        command_struct->command = command;
+        for (uint8_t i = 0; i < data_length; i++)
+        {
+            command_struct->data[i] = data[i];
+        }
+        command_struct->data_length = data_length;
     }
+}
+
+void SendValveHailMessage(volatile Command * command, uint8_t valve_address, uint8_t* valve_uid)
+{
+    SendMessage(command, valve_address, 0xF, VALVE_HAIL_MESSAGE, valve_uid, 6);
+}
+
+void SendValveAddress(volatile Command * command, uint8_t valve_address)
+{
+    SendMessage(command, valve_address, 0xF, VALVE_ADDR, valve_address, 1);
+}
+
+void SendValveUUID(volatile Command * command, uint8_t valve_address, uint8_t* valve_uid)
+{
+    SendMessage(command, valve_address, 0xF, VALVE_UUID, valve_uid, 6);
 }

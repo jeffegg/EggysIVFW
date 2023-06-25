@@ -1,89 +1,73 @@
-/* Microchip Technology Inc. and its subsidiaries.  You may use this software 
- * and any derivatives exclusively with Microchip products. 
- * 
- * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS".  NO WARRANTIES, WHETHER 
- * EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED 
- * WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS FOR A 
- * PARTICULAR PURPOSE, OR ITS INTERACTION WITH MICROCHIP PRODUCTS, COMBINATION 
- * WITH ANY OTHER PRODUCTS, OR USE IN ANY APPLICATION. 
- *
- * IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, 
- * INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND 
- * WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP HAS 
- * BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE.  TO THE 
- * FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS 
- * IN ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF 
- * ANY, THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
- *
- * MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE 
- * TERMS. 
- */
+/*
+    EggysIVFW - Custom Firmware for Pentair's Intellivalve (TM)
+    Copyright (C) 2021-2023  Jeff "Eggy" Eglinger
 
-/* 
- * File:   
- * Author: 
- * Comments:
- * Revision history: 
- */
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
 
-// This is a guard condition so that contents of this file are not included
-// more than once.  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+   
+ */
 #ifndef EEPROM_CONTROLLER_H
 #define	EEPROM_CONTROLLER_H
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
-enum {VALVE_EEPROM_SIZE = 0x80, VALVE_EEPROM_SERIAL_ADDR = 0xFA};
-const uint8_t VALVE_EEPROM_ADDRESS = 0xA0;
-const uint8_t VALVE_EEPROM_ADDRESS_SHIFTED = VALVE_EEPROM_ADDRESS >> 1;
+// Custom FW EEPROM
+const uint8_t VALVE_EEPROM_RS485_ADDRESS =              0x60;  // RS485 valve address location 1 byte
+const uint8_t VALVE_EEPROM_MODE_ADDRESS =               0x61;  // Current Valve Mode 1 byte
+const uint8_t VALVE_EEPROM_0_END_STOP_ADDRESS =         0x62;  // Current Valve Mode 2 bytes
+const uint8_t VALVE_EEPROM_24_END_STOP_ADDRESS =        0x64;  // Current Valve Mode 2 bytes
+const uint8_t VALVE_EEPROM_SELECTED_END_STOP_ADDRESS =  0x66;  // Current endstop selected 1 byte
+const uint8_t VALVE_EEPROM_DEBUG_LEVEL_ADDRESS =        0x68;  // Current debug level 4 bytes
 
-void DumpEEPROMtoMemory(uint8_t *eeprom_data);
+// Production FW EEPROM Location - 
+// No plans to use outside of:  VALVE_EEPROM_PROD_FIRMWARE_UPDATE_ADDRESS (Enter FW update)
+//                              VALVE_EEPROM_PROD_DEVICE_DID_ADDRESS (Device ID )
+//                              VALVE_EEPROM_PROD_DEVICE_RID_ADDRESS (Revision ID)
+const uint8_t VALVE_EEPROM_PROD_0_ENDSTOP_ADDRESS = 0x1;
+const uint8_t VALVE_EEPROM_PROD_24_ENDSTOP_ADDRESS = 0x3;
+const uint8_t VALVE_EEPROM_PROD_BACKUP_0_ENDSTOP_ADDRESS = 0x20;
+const uint8_t VALVE_EEPROM_PROD_BACKUP_24_ENDSTOP_ADDRESS = 0x22;
+
+const uint8_t VALVE_EEPROM_PROD_SELECTED_ENDSTOP_ADDRESS = 0x4;
+const uint8_t VALVE_EEPROM_PROD_BACKUP_SELECTED_ENDSTOP_ADDRESS = 0x23;
+
+const uint8_t VALVE_EEPROM_PROD_MODE_ADDRESS = 0x5; // Maintence mode = 6; Blue Led mode = 5;Green Led Mode = 4
+
+const uint8_t VALVE_EEPROM_PROD_ADC_ENDSTOP_24_ADDRESS = 0x12;
+const uint8_t VALVE_EEPROM_PROD_ADC_ENDSTOP_0_ADDRESS = 0x14;
+const uint8_t VALVE_EEPROM_PROD_BACKUP_ADC_ENDSTOP_24_ADDRESS = 0x28;
+const uint8_t VALVE_EEPROM_PROD_BACKUP_ADC_ENDSTOP_0_ADDRESS = 0x2A;
+
+const uint8_t VALVE_EEPROM_PROD_FIRMWARE_UPDATE_ADDRESS = 0x41;
+const uint8_t VALVE_EEPROM_PROD_DEVICE_DID_ADDRESS = 0x45;
+const uint8_t  VALVE_EEPROM_PROD_DEVICE_RID_ADDRESS= 0x47;
+
+// Pulls EEPROM from memory to cache
+void DumpEEPROMtoMemory();
+
+// Gets Valve unique ID from either EEPROM or local cache
 void GetUUID(uint8_t *valve_uid);
 
+// Writes EEPROM and Cache with new value at address
 void WriteEEPROM(uint8_t addr, uint8_t value);
+
+// Writes EEPROM and Cache with new value of length at address
 void WriteEEPROMBuffer(uint8_t eeprom_addr, uint8_t *buffer, uint8_t length);
+
+// Generate Checksum
 uint16_t CheckSumMaker(uint8_t *buffer, uint8_t size);
 
-// TODO Insert appropriate #include <>
-
-// TODO Insert C++ class definitions if appropriate
-
-// TODO Insert declarations
-
-// Comment a function and leverage automatic documentation with slash star star
-/**
-    <p><b>Function prototype:</b></p>
-  
-    <p><b>Summary:</b></p>
-
-    <p><b>Description:</b></p>
-
-    <p><b>Precondition:</b></p>
-
-    <p><b>Parameters:</b></p>
-
-    <p><b>Returns:</b></p>
-
-    <p><b>Example:</b></p>
-    <code>
- 
-    </code>
-
-    <p><b>Remarks:</b></p>
- */
-// TODO Insert declarations or function prototypes (right here) to leverage 
-// live documentation
-
-#ifdef	__cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
-    // TODO If C++ is being used, regular C code needs function names to have C 
-    // linkage so the functions can be used by the c code. 
-
-#ifdef	__cplusplus
-}
-#endif /* __cplusplus */
+// Reads EEPROM into data at address of size length
+void ReadEEPROM(uint8_t *data, uint8_t address, uint8_t length);
 
 #endif	/* EEPROM_CONTROLLER_H */
-

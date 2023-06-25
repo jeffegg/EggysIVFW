@@ -1,45 +1,22 @@
-/**
-  Generated Main Source File
-
-  Company:
-    Microchip Technology Inc.
-
-  File Name:
-    main.c
-
-  Summary:
-    This is the main file generated using PIC10 / PIC12 / PIC16 / PIC18 MCUs
-
-  Description:
-    This header file provides implementations for driver APIs for all modules selected in the GUI.
-    Generation Information :
-        Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.8
-        Device            :  PIC16F1718
-        Driver Version    :  2.00
-*/
-
 /*
-    (c) 2018 Microchip Technology Inc. and its subsidiaries. 
-    
-    Subject to your compliance with these terms, you may use Microchip software and any 
-    derivatives exclusively with Microchip products. It is your responsibility to comply with third party 
-    license terms applicable to your use of third party software (including open source software) that 
-    may accompany Microchip software.
-    
-    THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES, WHETHER 
-    EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY 
-    IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS 
-    FOR A PARTICULAR PURPOSE.
-    
-    IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, 
-    INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND 
-    WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP 
-    HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO 
-    THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL 
-    CLAIMS IN ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT 
-    OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS 
-    SOFTWARE.
-*/
+    EggysIVFW - Custom Firmware for Pentair's Intellivalve (TM)
+    Copyright (C) 2021-2023  Jeff "Eggy" Eglinger
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+   
+ */
+
 #include <xc.h>
 #include "globals.h"
 #include "mcc_generated_files/mcc.h"
@@ -51,53 +28,9 @@
 #include "valve_manager.h"
 #include "mcc_generated_files/eusart.h"
 
-/*
-                         Main application
- */
 
 void WriteRs485Array(uint8_t * value, uint8_t length);
 void ReadButtons(void);
-
-enum
-{
-    POR         = 0x1,
-    ILLEGAL     = 0x2,
-    BOR         = 0x3,
-    WDT_RESET   = 0x4,
-    WDT_WAKE    = 0x5,
-    INT_WAKE    = 0x6,
-    MCLR        = 0x7,
-    MCLR_SLEEP  = 0x8,
-    RESET       = 0x9,
-    STACK_OVER  = 0xA,
-    STACK_UNDER = 0xB,
-    BAD_VAL     = 0xC
-} Reset_Reason;
-
-
-
-const uint8_t first_stop_offset = 1;
-const uint8_t first_stop_backup_offset = 32;
-const uint8_t second_stop_offset = 3;
-const uint8_t second_stop_backup_offset = 34;
-const uint8_t mode_offset = 5;
-const uint8_t current_position_offset = 8;
-
-const uint8_t ADC_Endstop_24_offset = 18;
-const uint8_t ADC_Endstop_0_offset = 20;
-
-const uint8_t firmware_update_mode_offset = 65;
-
-
-const uint8_t did_offset = 69;
-const uint8_t rid_offset = 71;
-
-const uint8_t unused_offset = 0x50;
-const uint8_t unused_offset_length = 0x80 - 0x50; // 48 bytes available to us
-
-const uint8_t valve_address_offset = 0x50;
-
-volatile uint8_t eeprom_data[VALVE_EEPROM_SIZE] = {0};
 
 extern volatile bool eusartRxDone;
 
@@ -107,39 +40,34 @@ bool yellowButtonPushed = false;
 bool redButtonPushed = false;
 
 
+extern volatile bool eepromDataValid; // Invalidate eeprom cache
+extern volatile uint8_t debugLevel = 0; // Debug l
 
 void main(void)
 {
+    eepromDataValid = false;
     display.raw_leds = 0;
     next_display.raw_leds = display.raw_leds;
     // initialize the device
     SYSTEM_Initialize();
-    debugLevel = 0;
+    
     // Enable the Global Interrupts
     INTERRUPT_GlobalInterruptEnable();
-
     // Enable the Peripheral Interrupts
     INTERRUPT_PeripheralInterruptEnable();
-
     ADC_SelectChannel(Pot1);
     
-    DumpEEPROMtoMemory(eeprom_data);
+    // Read EEPROM to local memory
+    DumpEEPROMtoMemory();
+    // Get Debug Level
+    ReadEEPROM(&debugLevel, VALVE_EEPROM_DEBUG_LEVEL_ADDRESS, 1);
     // Get the UID from the EEPROM - this should be unique per valve.
-    GetUUID(valve_uid);
-    
-    uint8_t storedValveMode = eeprom_data[mode_offset];
-    uint8_t storedValveLocation = eeprom_data[current_position_offset];
-    
-    ADC_Endstop_24_value = (uint16_t *)&(eeprom_data[ADC_Endstop_24_offset]);
-    ADC_Endstop_0_value  = (uint16_t *)&(eeprom_data[ADC_Endstop_0_offset]);
-    
+    GetUUID(valve_uid);   
     
     SetupValve(storedValveLocation, storedValveMode);
     
-    
-    SetAddress(eeprom_data[valve_address_offset]);
     SetLeds();
-    eeprom_data[mode_offset] = nextValveMode;
+    eepromData[mode_offset] = nextValveMode;
     volatile Command * newCommand;
     
     newCommand = GetCommandEntryBuffer();
@@ -192,20 +120,20 @@ void main(void)
         
         if (updateEEPROM == 1)
         {
-            eeprom_data[valve_address_offset] = GetAddress();
+            eepromData[valve_address_offset] = GetAddress();
             uint8_t valve_block[6] = {0};
-            valve_block[0] = eeprom_data[valve_address_offset];
-            valve_block[1] = eeprom_data[valve_address_offset + 1];
-            valve_block[2] = eeprom_data[valve_address_offset + 2];
-            valve_block[3] = eeprom_data[valve_address_offset + 3];
-            valve_block[4] = eeprom_data[valve_address_offset + 4];
-            valve_block[5] = eeprom_data[valve_address_offset + 5];
+            valve_block[0] = eepromData[valve_address_offset];
+            valve_block[1] = eepromData[valve_address_offset + 1];
+            valve_block[2] = eepromData[valve_address_offset + 2];
+            valve_block[3] = eepromData[valve_address_offset + 3];
+            valve_block[4] = eepromData[valve_address_offset + 4];
+            valve_block[5] = eepromData[valve_address_offset + 5];
             WriteEEPROMBuffer(valve_address_offset, valve_block, 6);
             updateEEPROM = 0;
         }
         else if (updateEEPROM == 2)
         {
-            eeprom_data[mode_offset] = currentValveMode;
+            eepromData[mode_offset] = currentValveMode;
             //WriteEEPROMBuffer(valve_address_offset, valve_block, 6);
             updateEEPROM = 0;
         }
@@ -235,7 +163,7 @@ void main(void)
                 nextValveMode = VALVE_MODE_MAINTAINENCE;
             } 
             SetLeds();
-            eeprom_data[mode_offset] = nextValveMode;
+            eepromData[mode_offset] = nextValveMode;
             volatile Command * newCommand;
             newCommand = GetCommandEntryBuffer();
 
