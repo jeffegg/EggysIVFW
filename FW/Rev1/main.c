@@ -68,19 +68,9 @@ void main(void)
     
     SetLeds();
     eepromData[mode_offset] = nextValveMode;
-    volatile Command * newCommand;
+    volatile Command * newCommand;  
     
-    newCommand = GetCommandEntryBuffer();
-       
-    if (newCommand)
-    {
-        SetupValveAddressPackets(newCommand, BROADCAST_ADDRESS);
-    }
-    TransmitMessage(newCommand);
-    
-    
-    newCommand = GetCommandEntryBuffer();
-       
+    /*newCommand = GetCommandEntryBuffer();    
     if (newCommand)
     {
         newCommand->protocal = 0x1;
@@ -91,7 +81,7 @@ void main(void)
         newCommand->data[1] = GetCurrentValveLocation();
         newCommand->data_length = 2;
     }
-    TransmitMessage(newCommand);
+    TransmitMessage(newCommand);*/
             
     ADC_StartConversion();    
     

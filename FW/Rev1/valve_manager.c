@@ -19,70 +19,199 @@
 
 #include <xc.h> 
 #include <stdbool.h>
-#include "valve_manager.h"
 #include "globals.h"
+#include "valve_manager.h"
+#include "eeprom_controller.h"
 #include "mcc_generated_files/mcc.h"
 #include "command_system.h"
 #include "ledcontroller.h"
 
-volatile uint16_t valveADCValue = 0xFFFF;
-volatile uint8_t nextValveLocation = 5;
-volatile uint8_t currentValveLocation = 5;
-extern volatile uint8_t nextValveMode = 0;
-extern volatile uint8_t currentValveMode = 0;
-extern volatile uint8_t resetValve = 0;
-
-extern volatile uint16_t *ADC_Endstop_24_value = 0; //0x160 on my valve
-extern volatile uint16_t *ADC_Endstop_0_value = 0;  //0x6BE on my valve
+uint8_t MoveValveToNewPosition(void);
+void CopyValveInfoBToA(ValveInfo *valveInfoA, ValveInfo *valveInfoB);
+void CreateADCTable(ValveSettings *currentValveSettings);
 
 // This will give the ADC value for each entry
-uint16_t positionToADCTable[0x31] = {0};
+int16_t positionToADCTable[0x31] = {0};
+ValveInfo currentValveInfo;
+ValveInfo nextValveInfo;
 
-void SetNextValveLocation(uint8_t newValue)
+uint8_t currentMaintenceOverridePosition = 0;
+uint8_t nextMaintenceOverridePosition = 0;
+
+volatile uint16_t valveADCValue = 0xFFFF;
+
+//extern volatile uint16_t *ADC_Endstop_24_value = 0; //0x160 on my valve
+//extern volatile uint16_t *ADC_Endstop_0_value = 0;  //0x6BE on my valve
+
+
+void SetupValve(ValveSettings *newValveSettings, ValveInfo *newValveInfo, uint8_t newMainPosition)
 {
-    if ((newValue >= 0) && (newValue <= 0x30))
-        nextValveLocation = newValue;
+    CreateADCTable(newValveSettings);
+    CopyValveInfoBToA(&nextValveInfo, newValveInfo);
+    // We will Assume EEPROM is setup correctly for now
+    CopyValveInfoBToA(&currentValveInfo, newValveInfo);
+    nextMaintenceOverridePosition = newMainPosition;
+    currentMaintenceOverridePosition = newMainPosition;
 }
 
-uint8_t GetCurrentValveLocation(void)
+ValveMode SetNextValveMode(ValveMode newMode)
 {
-    return currentValveLocation;
-}
-
-void SetNextValveMode(uint8_t newMode)
-{
-    if ((newMode >= VALVE_MODE_NORMAL) && (newMode <= VALVE_MODE_MAINTAINENCE))
-        nextValveMode = newMode;
-}
-
-uint8_t GetCurrentValveMode(void)
-{
-    return currentValveMode;
-}
-
-void SetupValve(uint8_t storedValveLocation, uint8_t storedValveMode)
-{
-    CreateADCTable();
-    
-    if ((storedValveLocation >= 0) && (storedValveLocation <= 0x30))
-        nextValveLocation = storedValveLocation;
+    if (currentValveInfo->valveMode != VALVE_MODE_MAINTAINENC)
+    {
+        nextValveInfo->valveMode = newMode;
+        WriteEEPROM(VALVE_EEPROM_MODE_ADDRESS, (uint8_t)newMode);
+        // Only move valve to end stop when going to Normal version
+        if (nextValveInfo->valveMode == VALVE_MODE_NORMAL)
+        {
+            MoveValveToNewPosition();
+        }
+        currentValveInfo->valveMode = nextValveInfo->valveMode;
+    }
     else
-        nextValveLocation = 0x18; // Open fully up if there is a problem
-    MoveValveToNewPosition();
-    if ((storedValveMode >= VALVE_MODE_NORMAL) && (storedValveMode <= VALVE_MODE_MAINTAINENCE))
-        nextValveMode = storedValveMode;
+    {
+        uint8_t currentPosition = 0;
+        if (currentValveInfo->enstop0Selected)
+        {
+            currentPosition = currentValveInfo->endstop0Value;
+        }
+        else
+        {
+            currentPosition = currentValveInfo->endstop24Value;
+        }
+        nextMaintenceOverridePosition = currentPosition;
+        WriteEEPROM(VALVE_EEPROM_MAINTENCE_POSITION, currentPosition);
+        currentMaintenceOverridePosition = currentPosition;
+    }
+    return currentValveInfo->valveMode;
+}
+
+ValveMode GetCurrentValveMode(void)
+{
+    return currentValveInfo->valveMode;
+}
+
+uint8_t SetEndstop0Value(uint8_t newEndstopValue)
+{
+    if (currentValveInfo->valveMode != VALVE_MODE_MAINTAINENC)
+    {
+        nextValveInfo->endstop0Value = newEndstopValue;
+        WriteEEPROM(VALVE_EEPROM_0_END_STOP_ADDRESS, (uint8_t)newEndstopValue);
+        // Only move valve to end stop when going to Normal version; settings mode just updates
+        if (nextValveInfo->valveMode == VALVE_MODE_NORMAL)
+        {
+            MoveValveToNewPosition();
+        }
+        currentValveInfo->endstop0Value = nextValveInfo->endstop0Value;
+    }
+    return currentValveInfo->endstop0Value;
+}
+
+uint8_t GetEndstop0Value(void)
+{
+    return currentValveInfo->endstop0Value;
+}
+
+uint8_t SetEndstop24Value(uint8_t newEndstopValue)
+{
+    if (currentValveInfo->valveMode != VALVE_MODE_MAINTAINENC)
+    {
+        nextValveInfo->endstop24Value = newEndstopValue;
+        WriteEEPROM(VALVE_EEPROM_24_END_STOP_ADDRESS, (uint8_t)newEndstopValue);
+        // Only move valve to end stop when going to Normal version; settings mode just updates
+        if (nextValveInfo->valveMode == VALVE_MODE_NORMAL)
+        {
+            MoveValveToNewPosition();
+        }
+        currentValveInfo->endstop24Value = nextValveInfo->endstop24Value;
+    }
+    return currentValveInfo->endstop24Value;    
+}
+
+uint8_t GetEndstop24Value(void)
+{
+    return currentValveInfo->endstop24Value;
+}
+
+uint8_t SetSelectedEndstop0(void)
+{
+    if (currentValveInfo->valveMode != VALVE_MODE_MAINTAINENC)
+    {
+        if (currentValveInfo->enstop0Selected)
+        {
+            return currentValveInfo->endstop0Value;
+        }
+        else
+        {
+            nextValveInfo->enstop0Selected = true;
+            WriteEEPROM(VALVE_EEPROM_SELECTED_END_STOP_ADDRESS, (uint8_t)nextValveInfo->enstop0Selected);
+            MoveValveToNewPosition();
+            currentValveInfo->enstop0Selected = nextValveInfo->enstop0Selected;
+            return currentValveInfo->endstop0Value;
+        }
+    }
+}
+uint8_t SetSelectedEndstop24(void)
+{
+    if (currentValveInfo->valveMode != VALVE_MODE_MAINTAINENC)
+    {
+        if (!currentValveInfo->enstop0Selected)
+        {
+            return currentValveInfo->endstop24Value;
+        }
+        else
+        {
+            nextValveInfo->enstop0Selected = false;
+            WriteEEPROM(VALVE_EEPROM_SELECTED_END_STOP_ADDRESS, (uint8_t)nextValveInfo->enstop0Selected);
+            MoveValveToNewPosition();
+            currentValveInfo->enstop0Selected = nextValveInfo->enstop0Selected;
+            return currentValveInfo->endstop24Value;
+        }
+    }
+}
+uint8_t GetSelectedEndstopValue(void)
+{
+    if (currentValveInfo->enstop0Selected)
+    {
+        return currentValveInfo->endstop0Value;
+    }
     else
-        nextValveMode = VALVE_MODE_NORMAL;
+    {
+        return currentValveInfo->endstop24Value;
+    }
 }
 
-bool IsRemoteEnabled(void)
+uint8_t PeriodicVerifyPosition(uint8_t overridePosition)
 {
-    return (currentValveMode & VALVE_MODE_REMOTE) == VALVE_MODE_REMOTE;
+    if (currentValveInfo->valveMode == VALVE_MODE_MAINTAINENC)
+    {
+        nextMaintenceOverridePosition = overridePosition;
+        WriteEEPROM(VALVE_EEPROM_MAINTENCE_POSITION, nextMaintenceOverridePosition);
+        MoveValveToNewPosition()
+        currentMaintenceOverridePosition = nextMaintenceOverridePosition;
+        return currentMaintenceOverridePosition;
+    }
+    else
+    {
+        return MoveValveToNewPosition();
+    }
 }
 
-void MoveValveToNewPosition(void)
+uint8_t MoveValveToNewPosition(void)
 {
-    int16_t neededADCValue = positionToADCTable[nextValveLocation];
+    int16_t neededADCValue = 0; 
+    if (nextValveInfo->valveMode == VALVE_MODE_MAINTAINENC)
+    {
+        neededADCValue = positionToADCTable[nextMaintenceOverridePosition];
+    }
+    else if (nextValveInfo->enstop0Selected)
+    {
+        neededADCValue = positionToADCTable[nextValveInfo->endstop0Value];
+    }
+    else
+    {
+        neededADCValue = positionToADCTable[nextValveInfo->endstop24Value];
+    }
+        
     int16_t tempADCValue = 0;
     uint8_t delayLoop1 = 0x10;
     uint8_t delayLoop2 = 0x20;
@@ -229,11 +358,22 @@ void MoveValveToNewPosition(void)
     
 }
 
-void CreateADCTable(void)
+void CopyValveInfoBToA(ValveInfo *valveInfoA, ValveInfo *valveInfoB)
 {
-    positionToADCTable[0] = *ADC_Endstop_0_value; 
-    positionToADCTable[31] = *ADC_Endstop_24_value;
-    float adder = (float)(*ADC_Endstop_0_value - *ADC_Endstop_24_value) / (float)0x30; // 0x62 here is 0x31 << Q; since this may be in Q format
+    valveInfoA->endstop0Value = valveInfoB->endstop0Value;
+    valveInfoA->endstop24Value = valveInfoB->endstop24Value;
+    valveInfoA->enstop0Selected = valveInfoB->enstop0Selected;
+    valveInfoA->valveMode = valveInfoB->valveMode;
+}
+
+void CreateADCTable(ValveSettings *currentValveSettings)
+{
+    uint16_t ADC_Endstop_0_value = currentValveSettings->endstop0ValueADC; 
+    uint16_t ADC_Endstop_24_value = currentValveSettings->endstop24ValueADC;
+    
+    positionToADCTable[0] = ADC_Endstop_0_value; 
+    positionToADCTable[31] = ADC_Endstop_24_value;
+    float adder = (float)(ADC_Endstop_0_value - ADC_Endstop_24_value) / (float)0x30; // 0x62 here is 0x31 << Q; since this may be in Q format
     float temp_adder = positionToADCTable[31];
 
     for (int i = 0x30; i >= 0; i--)

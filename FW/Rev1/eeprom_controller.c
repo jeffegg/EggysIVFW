@@ -35,7 +35,6 @@ const uint8_t VALVE_EEPROM_ADDRESS = 0xA0;
 const uint8_t VALVE_EEPROM_ADDRESS_SHIFTED = VALVE_EEPROM_ADDRESS >> 1;
 const uint8_t VALVE_EEPROM_SIZE = 0x80;
 
-
 volatile uint8_t eepromData[VALVE_EEPROM_SIZE] = {0};
 volatile bool eepromDataValid = false;
 

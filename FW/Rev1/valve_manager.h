@@ -21,30 +21,49 @@
 #define	VALVE_MANAGER_H
 
 #include <xc.h> 
+#include <stdbool.h>
 #include "globals.h"
 
+
+typedef enum
+{
+    VALVE_MODE_NORMAL       = 0x4,
+    VALVE_MODE_SETTINGS     = 0x5,
+    VALVE_MODE_MAINTAINENC  = 0x6
+} ValveMode;
+
+struct ValveSettings
+{
+    uint16_t endstop0ValueADC;
+    uint16_t endstop24ValueADC;
+};
+
+struct ValveInfo
+{
+    ValveMode valveMode;
+    bool enstop0Selected;
+    uint8_t endstop0Value;
+    uint8_t endstop24Value;
+};
+
+// Setup Valve
+void SetupValve(ValveSettings *newValveSettings, ValveInfo *newValveInfo, uint8_t newMainPosition);
+
+ValveMode SetNextValveMode(ValveMode newMode);
+ValveMode GetCurrentValveMode(void);
+
+uint8_t SetEndstop0Value(uint8_t newEndstopValue);
+uint8_t GetEndstop0Value(void);
+uint8_t SetEndstop24Value(uint8_t newEndstopValue);
+uint8_t GetEndstop24Value(void);
+
+uint8_t SetSelectedEndstop0(void);
+uint8_t SetSelectedEndstop24(void);
+uint8_t GetSelectedEndstopValue(void);
+
+uint8_t PeriodicVerifyPosition(uint8_t overridePosition);
+
 extern volatile uint16_t valveADCValue;
-
-void SetupValve(uint8_t storedValveLocation, uint8_t storedValveMode);
-
-void SetNextValveLocation(uint8_t newValue);
-uint8_t GetCurrentValveLocation(void);
-
-void SetNextValveMode(uint8_t newMode);
-uint8_t GetCurrentValveMode(void);
-
-extern volatile uint8_t nextValveMode;
-extern volatile uint8_t currentValveMode;
-
-extern volatile uint16_t *ADC_Endstop_24_value;
-extern volatile uint16_t *ADC_Endstop_0_value;
-
-extern volatile uint8_t resetValve;
-
-void CreateADCTable(void);
-
-bool IsRemoteEnabled(void);
-void MoveValveToNewPosition(void);
 
 #endif	/* VALVE_MANAGER_H */
 

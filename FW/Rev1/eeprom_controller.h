@@ -22,35 +22,32 @@
 #include <xc.h> // include processor files - each processor file is guarded.  
 
 // Custom FW EEPROM
-const uint8_t VALVE_EEPROM_RS485_ADDRESS =              0x60;  // RS485 valve address location 1 byte
-const uint8_t VALVE_EEPROM_MODE_ADDRESS =               0x61;  // Current Valve Mode 1 byte
-const uint8_t VALVE_EEPROM_0_END_STOP_ADDRESS =         0x62;  // Current Valve Mode 2 bytes
-const uint8_t VALVE_EEPROM_24_END_STOP_ADDRESS =        0x64;  // Current Valve Mode 2 bytes
-const uint8_t VALVE_EEPROM_SELECTED_END_STOP_ADDRESS =  0x66;  // Current endstop selected 1 byte
-const uint8_t VALVE_EEPROM_DEBUG_LEVEL_ADDRESS =        0x68;  // Current debug level 4 bytes
+const uint8_t VALVE_EEPROM_RS485_ADDRESS                        = 0x60;  // RS485 valve address location 1 byte
+const uint8_t VALVE_EEPROM_MODE_ADDRESS                         = 0x61;  // Current Valve Mode 1 byte
+const uint8_t VALVE_EEPROM_0_END_STOP_ADDRESS                   = 0x62;  // Current Valve Mode 1 bytes + Reserve 1 byte
+const uint8_t VALVE_EEPROM_24_END_STOP_ADDRESS                  = 0x64;  // Current Valve Mode 1 bytes + Reserve 1 byte
+const uint8_t VALVE_EEPROM_SELECTED_END_STOP_ADDRESS            = 0x66;  // Current endstop selected 1 byte
+const uint8_t VALVE_EEPROM_MAINTENCE_POSITION                   = 0x67;  // Current endstop selected 1 byte
+const uint8_t VALVE_EEPROM_DEBUG_LEVEL_ADDRESS                  = 0x68;  // Current debug level 4 bytes
 
 // Production FW EEPROM Location - 
 // No plans to use outside of:  VALVE_EEPROM_PROD_FIRMWARE_UPDATE_ADDRESS (Enter FW update)
 //                              VALVE_EEPROM_PROD_DEVICE_DID_ADDRESS (Device ID )
 //                              VALVE_EEPROM_PROD_DEVICE_RID_ADDRESS (Revision ID)
-const uint8_t VALVE_EEPROM_PROD_0_ENDSTOP_ADDRESS = 0x1;
-const uint8_t VALVE_EEPROM_PROD_24_ENDSTOP_ADDRESS = 0x3;
-const uint8_t VALVE_EEPROM_PROD_BACKUP_0_ENDSTOP_ADDRESS = 0x20;
-const uint8_t VALVE_EEPROM_PROD_BACKUP_24_ENDSTOP_ADDRESS = 0x22;
-
-const uint8_t VALVE_EEPROM_PROD_SELECTED_ENDSTOP_ADDRESS = 0x4;
+const uint8_t VALVE_EEPROM_PROD_0_ENDSTOP_ADDRESS               = 0x1;
+const uint8_t VALVE_EEPROM_PROD_24_ENDSTOP_ADDRESS              = 0x3;
+const uint8_t VALVE_EEPROM_PROD_BACKUP_0_ENDSTOP_ADDRESS        = 0x20;
+const uint8_t VALVE_EEPROM_PROD_BACKUP_24_ENDSTOP_ADDRESS       = 0x22;
+const uint8_t VALVE_EEPROM_PROD_SELECTED_ENDSTOP_ADDRESS        = 0x4;
 const uint8_t VALVE_EEPROM_PROD_BACKUP_SELECTED_ENDSTOP_ADDRESS = 0x23;
-
-const uint8_t VALVE_EEPROM_PROD_MODE_ADDRESS = 0x5; // Maintence mode = 6; Blue Led mode = 5;Green Led Mode = 4
-
-const uint8_t VALVE_EEPROM_PROD_ADC_ENDSTOP_24_ADDRESS = 0x12;
-const uint8_t VALVE_EEPROM_PROD_ADC_ENDSTOP_0_ADDRESS = 0x14;
-const uint8_t VALVE_EEPROM_PROD_BACKUP_ADC_ENDSTOP_24_ADDRESS = 0x28;
-const uint8_t VALVE_EEPROM_PROD_BACKUP_ADC_ENDSTOP_0_ADDRESS = 0x2A;
-
-const uint8_t VALVE_EEPROM_PROD_FIRMWARE_UPDATE_ADDRESS = 0x41;
-const uint8_t VALVE_EEPROM_PROD_DEVICE_DID_ADDRESS = 0x45;
-const uint8_t  VALVE_EEPROM_PROD_DEVICE_RID_ADDRESS= 0x47;
+const uint8_t VALVE_EEPROM_PROD_MODE_ADDRESS                    = 0x5; // Maint ence mode = 6; Blue Led mode = 5;Green Led Mode = 4
+const uint8_t VALVE_EEPROM_PROD_ADC_ENDSTOP_24_ADDRESS          = 0x12;
+const uint8_t VALVE_EEPROM_PROD_ADC_ENDSTOP_0_ADDRESS           = 0x14;
+const uint8_t VALVE_EEPROM_PROD_BACKUP_ADC_ENDSTOP_24_ADDRESS   = 0x28;
+const uint8_t VALVE_EEPROM_PROD_BACKUP_ADC_ENDSTOP_0_ADDRESS    = 0x2A;
+const uint8_t VALVE_EEPROM_PROD_FIRMWARE_UPDATE_ADDRESS         = 0x41;
+const uint8_t VALVE_EEPROM_PROD_DEVICE_DID_ADDRESS              = 0x45;
+const uint8_t VALVE_EEPROM_PROD_DEVICE_RID_ADDRESS              = 0x47;
 
 // Pulls EEPROM from memory to cache
 void DumpEEPROMtoMemory();
