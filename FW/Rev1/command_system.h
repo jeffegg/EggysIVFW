@@ -83,6 +83,7 @@ extern volatile bool receiveReady; // Something in the receive buffer that needs
 extern volatile bool receiveBuffersFull;
 extern volatile bool receiveBuffersOverflow;
 extern volatile uint8_t debugLevel;
+extern volatile bool resetValve;
 
 uint8_t TransmitMessage(Command * newCommand); //Adds to transmit buffer if possible; returns true if added, else false; This is non-blocking
 

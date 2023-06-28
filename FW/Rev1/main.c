@@ -38,7 +38,7 @@ bool modeButtonPushed = false;
 bool saveButtonPushed = false;
 bool yellowButtonPushed = false;
 bool redButtonPushed = false;
-
+uint8_t overridePosition = 0;
 
 extern volatile bool eepromDataValid; // Invalidate eeprom cache
 extern volatile uint8_t debugLevel = 0; // Debug l
@@ -62,12 +62,10 @@ void main(void)
     // Get Debug Level
     ReadEEPROM(&debugLevel, VALVE_EEPROM_DEBUG_LEVEL_ADDRESS, 1);
     // Get the UID from the EEPROM - this should be unique per valve.
-    GetUUID(valve_uid);   
-    
-    SetupValve(storedValveLocation, storedValveMode);
-    
+    GetUUID(valve_uid);       
+    SetupValve(); 
     SetLeds();
-    eepromData[mode_offset] = nextValveMode;
+    
     volatile Command * newCommand;  
     
     /*newCommand = GetCommandEntryBuffer();    
@@ -82,19 +80,10 @@ void main(void)
         newCommand->data_length = 2;
     }
     TransmitMessage(newCommand);*/
-            
-    ADC_StartConversion();    
-    
+
     while (1)
     {
-        CLRWDT();  
-        
-        if (ADC_IsConversionDone())
-        {
-            valveADCValue = ADC_GetConversionResult();
-            ADC_StartConversion();
-        }
-        
+        CLRWDT();         
         if (receiveReady == true)
         {
             ReceiveCommandExecutor();
@@ -107,82 +96,20 @@ void main(void)
             eusartRxDone = false;
             
         }
-        
-        if (updateEEPROM == 1)
-        {
-            eepromData[valve_address_offset] = GetAddress();
-            uint8_t valve_block[6] = {0};
-            valve_block[0] = eepromData[valve_address_offset];
-            valve_block[1] = eepromData[valve_address_offset + 1];
-            valve_block[2] = eepromData[valve_address_offset + 2];
-            valve_block[3] = eepromData[valve_address_offset + 3];
-            valve_block[4] = eepromData[valve_address_offset + 4];
-            valve_block[5] = eepromData[valve_address_offset + 5];
-            WriteEEPROMBuffer(valve_address_offset, valve_block, 6);
-            updateEEPROM = 0;
-        }
-        else if (updateEEPROM == 2)
-        {
-            eepromData[mode_offset] = currentValveMode;
-            //WriteEEPROMBuffer(valve_address_offset, valve_block, 6);
-            updateEEPROM = 0;
-        }
-        
+               
         ReadButtons();
         if (modeButtonPushed)
-        {
-            // If we are in remote mode; move from remote mode but move back to original one
-            if ((nextValveMode & VALVE_MODE_REMOTE) == VALVE_MODE_REMOTE)
-            {
-                nextValveMode -= VALVE_MODE_REMOTE;
-            }
-            
-            nextValveMode++;
-            if (nextValveMode > VALVE_MODE_MAINTAINENCE)
-            {
-                nextValveMode = VALVE_MODE_NORMAL;
-            }
-            modeButtonPushed = false;
-        }
-        
-        if (nextValveMode != currentValveMode)
         {   
-            // If we are in maintaience mode; stay there
-            if (IsRemoteEnabled() && (currentValveMode == VALVE_MODE_MAINTAINENCE))
-            {
-                nextValveMode = VALVE_MODE_MAINTAINENCE;
-            } 
-            SetLeds();
-            eepromData[mode_offset] = nextValveMode;
-            volatile Command * newCommand;
-            newCommand = GetCommandEntryBuffer();
-
-            if (newCommand)
-            {
-                newCommand->protocal = 0x1;
-                newCommand->source = GetAddress();
-                newCommand->destination = 0x10;
-                newCommand->command = (uint8_t)VALVE_STATE;
-                newCommand->data[0] = nextValveMode;
-                newCommand->data[1] = GetCurrentValveLocation();
-                newCommand->data_length = 2;
-            }
-            TransmitMessage(newCommand);
-            currentValveMode = nextValveMode;
-            updateEEPROM = 2;
-        }
-        if (next_display.raw_leds != display.raw_leds)
-        {
-            display.raw_leds = next_display.raw_leds;
-            ControlLights(&display);
-        }   
+            IncrementValveMode();
+            modeButtonPushed = false;
+        }      
         
         if (resetValve != 0)
         {
             RESET();
         }
-        
-        MoveValveToNewPosition();
+        SetLeds(); // Is this needed
+        PeriodicVerifyPosition(overridePosition);
     }
 }
 

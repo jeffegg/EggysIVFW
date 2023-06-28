@@ -118,14 +118,14 @@ void ControlLights(LEDS *param_0)
 }
 
 void SetLeds(void)
-{
-    
+{    
+    ValveMode nextValveMode = GetCurrentValveMode();
     if (nextValveMode == VALVE_MODE_NORMAL)
         next_display.LEDbits.AUTO_LED = 1;
     else
         next_display.LEDbits.AUTO_LED = 0;
 
-    if (nextValveMode == VALVE_MODE_MAINTAINENCE)
+    if (nextValveMode == VALVE_MODE_MAINTAINENC)
         next_display.LEDbits.SERVICE_LED = 1;
     else
         next_display.LEDbits.SERVICE_LED = 0;
@@ -135,15 +135,8 @@ void SetLeds(void)
     else
         BlueModeLed_SetHigh();
     
-    // If we are in remote mode (look only at remote bit since we keep track of the last setting)
-    if ((nextValveMode & VALVE_MODE_REMOTE) == VALVE_MODE_REMOTE)
-    {
-        next_display.LEDbits.AUTO_LED = 1;
-        next_display.LEDbits.SERVICE_LED = 0;
-        BlueModeLed_SetLow();
-    }
     
-    uint8_t valveLocation = GetCurrentValveLocation();
+    uint8_t valveLocation = GetCurrentPosition();
     uint8_t ledToLight = valveLocation >> 2;
     uint8_t between2Lights = valveLocation & 0x1;
     

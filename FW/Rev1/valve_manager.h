@@ -46,10 +46,17 @@ struct ValveInfo
     uint8_t endstop24Value;
 };
 
+typedef enum
+{
+    ENDSTOP_0_SELECTED,
+    ENDSTOP_24_SELECTED
+} SelectedEndstop;
+
 // Setup Valve
-void SetupValve(ValveSettings *newValveSettings, ValveInfo *newValveInfo, uint8_t newMainPosition);
+void SetupValve();
 
 ValveMode SetNextValveMode(ValveMode newMode);
+ValveMode IncrementValveMode(void);
 ValveMode GetCurrentValveMode(void);
 
 uint8_t SetEndstop0Value(uint8_t newEndstopValue);
@@ -59,11 +66,11 @@ uint8_t GetEndstop24Value(void);
 
 uint8_t SetSelectedEndstop0(void);
 uint8_t SetSelectedEndstop24(void);
+SelectedEndstop GetSelectedEndstop(void);
 uint8_t GetSelectedEndstopValue(void);
+uint8_t GetCurrentPosition(void);
 
 uint8_t PeriodicVerifyPosition(uint8_t overridePosition);
-
-extern volatile uint16_t valveADCValue;
 
 #endif	/* VALVE_MANAGER_H */
 

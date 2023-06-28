@@ -37,6 +37,7 @@ volatile bool receiveBuffersFull;
 volatile bool receiveBuffersOverflow;
 
 extern volatile uint8_t debugLevel = 0;
+extern volatile bool resetValve = false;
 volatile uint8_t uart_rx_buffer[MAX_DATA_LENGTH] = {0};
 
 volatile uint8_t transmitBuffer[MAX_PACKET] = {0};

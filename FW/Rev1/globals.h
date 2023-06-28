@@ -29,11 +29,7 @@
 #define EUSART_RX_BUFFER_SIZE       MAX_PACKET
 #define BROADCAST_ADDRESS           0xF
 #define VALVE_EEPROM_SERIAL_LEN     0x6
-
-
-
 #define MAX_DIRECTION_CHANGE        10
-
 #define DEBUG_MODE                  0
 
 

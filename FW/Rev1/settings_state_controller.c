@@ -22,7 +22,6 @@
 #include "settings_state_controller.h"
 
 uint8_t valve_uid[VALVE_EEPROM_SERIAL_LEN] = {0};
-uint8_t updateEEPROM = 0;
 
 volatile uint8_t currentValveAddress = 0;
 

@@ -33,7 +33,7 @@ const uint8_t BACKUP_VALVE_EEPROM_DEBUG_LEVEL_ADDRESS =         VALVE_EEPROM_DEB
 const uint8_t VALVE_EEPROM_UUID_ADDRESS = 0xFA;
 const uint8_t VALVE_EEPROM_ADDRESS = 0xA0;
 const uint8_t VALVE_EEPROM_ADDRESS_SHIFTED = VALVE_EEPROM_ADDRESS >> 1;
-const uint8_t VALVE_EEPROM_SIZE = 0x80;
+#define VALVE_EEPROM_SIZE 0x80
 
 volatile uint8_t eepromData[VALVE_EEPROM_SIZE] = {0};
 volatile bool eepromDataValid = false;
@@ -111,6 +111,7 @@ void ReadEEPROM(uint8_t *data, uint8_t address, uint8_t length)
     else
     {  
         I2C_ReadDataBlock(VALVE_EEPROM_ADDRESS_SHIFTED, address, data, length); 
+    }
 }
     
 void EEPROM_OP_Delay_Loop(void)
@@ -132,13 +133,10 @@ void EEPROM_OP_Delay_Loop(void)
     new_value = 0x30;
     eeprom_data[second_stop_offset] = new_value;
     eeprom_data[second_stop_backup_offset] = new_value; 
-    *(uint16_t *)(eeprom_data + 30) = CheckSumMaker(eeprom_data, 30);
-    *(uint16_t *)(eeprom_data + 38) = CheckSumMaker(eeprom_data+ 32, 6);
-     * WriteEEPROMBuffer(0, eeprom_data, 40);
-     * */
-    
-    
-    /*
+    (uint16_t *)(eeprom_data + 30) = CheckSumMaker(eeprom_data, 30);
+    (uint16_t *)(eeprom_data + 38) = CheckSumMaker(eeprom_data+ 32, 6);
+     WriteEEPROMBuffer(0, eeprom_data, 40);
+     
     eeprom_data[0] = 0x00;
     eeprom_data[1] = 0x18;
     eeprom_data[2] = 0x18;
@@ -219,5 +217,5 @@ void EEPROM_OP_Delay_Loop(void)
     eeprom_data[77] = 0xFF;
     eeprom_data[78] = 0x53;
     eeprom_data[79] = 0xFA;
-     * WriteEEPROMBuffer(0, eeprom_data, 80);
+    WriteEEPROMBuffer(0, eeprom_data, 80);
         */
