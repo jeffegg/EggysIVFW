@@ -41,6 +41,8 @@ struct ValveInfo nextValveInfo;
 uint8_t currentMaintenceOverridePosition = 0;
 uint8_t nextMaintenceOverridePosition = 0;
 
+uint8_t nextValveLocation = 0;
+
 uint16_t valveADCValue = 0xFFFF;
 
 //extern volatile uint16_t *ADC_Endstop_24_value = 0; //0x160 on my valve
@@ -88,7 +90,7 @@ ValveMode SetNextValveMode(ValveMode newMode)
             currentPosition = currentValveInfo.endstop24Value;
         }
         nextMaintenceOverridePosition = currentPosition;
-        WriteEEPROM(VALVE_EEPROM_MAINTENCE_POSITION, currentPosition);
+        WriteEEPROM(VALVE_EEPROM_MAINTENCE_POSITION, nextMaintenceOverridePosition);
         currentMaintenceOverridePosition = currentPosition;
     }
     return currentValveInfo.valveMode;
@@ -96,7 +98,7 @@ ValveMode SetNextValveMode(ValveMode newMode)
 
 ValveMode IncrementValveMode(void)
 {
-    ValveMode nextValveMode = GetCurrentValveMode()
+    ValveMode nextValveMode = GetCurrentValveMode();
     nextValveMode++;
     if (nextValveMode > VALVE_MODE_MAINTAINENC)
     {
@@ -323,7 +325,7 @@ uint8_t MoveValveToNewPosition(void)
         if (debugLevel > 0x20)
         {
             
-            newCommand = GetCommandEntryBuffer();
+            /*newCommand = GetCommandEntryBuffer();
 
             if (newCommand)
             {
@@ -339,19 +341,19 @@ uint8_t MoveValveToNewPosition(void)
                 newCommand->data[5] = neededADCValue & 0xFF;
                 newCommand->data_length = 6;
             }
-            TransmitMessage(newCommand);
+            TransmitMessage(newCommand);*/
         }
         // If we are within +/- 2of the ADCValue, we can stop. Each stop is about 0x1C off so this isn't much
         // There will be some skid, this seems to help...
-        if ((tempADCValue >= (neededADCValue - 2)) && (tempADCValue <= (neededADCValue + 2)))
+        if (((tempADCValue >= (neededADCValue - 2)) && (tempADCValue <= (neededADCValue + 2))) || (direction_change >= MAX_DIRECTION_CHANGE))
         {
             MotorA_SetLow();
             MotorB_SetLow();
-            currentValveLocation = nextValveLocation;
+            //currentValveLocation = nextValveLocation;
             
             if (valve_ran)
             {
-                newCommand = GetCommandEntryBuffer();
+               /* newCommand = GetCommandEntryBuffer();
 
                 if (newCommand)
                 {
@@ -365,44 +367,14 @@ uint8_t MoveValveToNewPosition(void)
                     newCommand->data[3] = tempADCValue & 0xFF;
                     newCommand->data_length = 4;
                 }
-                TransmitMessage(newCommand);
+                TransmitMessage(newCommand);*/
                 SetLeds();
             }
             
             break;
         }
         
-        if (direction_change >= MAX_DIRECTION_CHANGE)
-        {
-            MotorA_SetLow();
-            MotorB_SetLow();
-            currentValveLocation = nextValveLocation;
-            
-            if (valve_ran)
-            {
-                newCommand = GetCommandEntryBuffer();
-
-                if (newCommand)
-                {
-                    newCommand->protocal = 0x1;
-                    newCommand->source = GetAddress();
-                    newCommand->destination = 0x10;
-                    newCommand->command = (uint8_t)VALVE_DEGREES;// Returns Byte(next position), Byte(0 - moving, 1 not moving), WORD(raw ADC read twice), WORD(neededValue);
-                    newCommand->data[0] = nextValveLocation;
-                    newCommand->data[1] = MotorB_LAT | MotorA_LAT; // Motor Location
-                    newCommand->data[2] = (tempADCValue >> (uint16_t)8) & 0xFF;
-                    newCommand->data[3] = tempADCValue & 0xFF;
-                    newCommand->data_length = 4;
-                }
-                TransmitMessage(newCommand);
-                SetLeds();
-            }
-            
-            break;
-        }
-        
-        valve_ran = true;
-        
+        valve_ran = true;  
         SetLeds();
                 
         if(neededADCValue < tempADCValue)
@@ -438,7 +410,7 @@ uint8_t MoveValveToNewPosition(void)
     }   
     while(1);
     
-    
+    return GetCurrentPosition();
 }
 
 void CopyValveInfoBToA(struct ValveInfo *valveInfoA, struct ValveInfo *valveInfoB)
