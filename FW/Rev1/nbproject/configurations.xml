@@ -29,6 +29,7 @@
       <itemPath>settings_state_controller.h</itemPath>
       <itemPath>globals.h</itemPath>
       <itemPath>valve_manager.h</itemPath>
+      <itemPath>button_manager.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -62,6 +63,7 @@
       <itemPath>eeprom_controller.c</itemPath>
       <itemPath>settings_state_controller.c</itemPath>
       <itemPath>valve_manager.c</itemPath>
+      <itemPath>button_manager.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -96,9 +98,8 @@
         <archiverTool>
         </archiverTool>
         <loading>
-          <loadableFile>../../../IntellivalveFW/bootloader.hex</loadableFile>
           <useAlternateLoadableFile>false</useAlternateLoadableFile>
-          <parseOnProdLoad>true</parseOnProdLoad>
+          <parseOnProdLoad>false</parseOnProdLoad>
           <alternateLoadableFile></alternateLoadableFile>
         </loading>
         <subordinates>
@@ -127,7 +128,7 @@
         <property key="garbage-collect-data" value="true"/>
         <property key="garbage-collect-functions" value="true"/>
         <property key="identifier-length" value="255"/>
-        <property key="local-generation" value="false"/>
+        <property key="local-generation" value="true"/>
         <property key="operation-mode" value="free"/>
         <property key="opt-xc8-compiler-strict_ansi" value="false"/>
         <property key="optimization-assembler" value="true"/>
@@ -153,7 +154,7 @@
         <property key="additional-options-code-offset" value="0x7C0"/>
         <property key="additional-options-command-line" value=""/>
         <property key="additional-options-errata" value=""/>
-        <property key="additional-options-extend-address" value="false"/>
+        <property key="additional-options-extend-address" value="true"/>
         <property key="additional-options-trace-type" value=""/>
         <property key="additional-options-use-response-files" value="false"/>
         <property key="backup-reset-condition-flags" value="false"/>
@@ -187,7 +188,7 @@
         <property key="link-in-c-library" value="true"/>
         <property key="link-in-c-library-gcc" value=""/>
         <property key="link-in-peripheral-library" value="false"/>
-        <property key="managed-stack" value="false"/>
+        <property key="managed-stack" value="true"/>
         <property key="opt-xc8-linker-file" value="true"/>
         <property key="opt-xc8-linker-link_startup" value="false"/>
         <property key="opt-xc8-linker-serial" value=""/>

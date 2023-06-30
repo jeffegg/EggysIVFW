@@ -31,23 +31,21 @@ void LoadValveInfoFromEEPROM(struct ValveInfo *newValveInfo);
 void LoadMaintencePositionFromEEPROM(uint8_t *position);
 uint8_t MoveValveToNewPosition(void);
 void CopyValveInfoBToA(struct ValveInfo *valveInfoA, struct ValveInfo *valveInfoB);
+void ValvePosition0InterruptHandler(void);
+void ValvePosition24InterruptHandler(void);
+uint16_t GetCurrentADC(void);
+uint8_t ADCValueToPosition(uint16_t currentDoubledADCValue);
 void CreateADCTable(struct ValveSettings *currentValveSettings);
 
 // This will give the ADC value for each entry
 uint16_t positionToADCTable[0x31] = {0};
 struct ValveInfo currentValveInfo;
 struct ValveInfo nextValveInfo;
-
 uint8_t currentMaintenceOverridePosition = 0;
 uint8_t nextMaintenceOverridePosition = 0;
-
 uint8_t nextValveLocation = 0;
-
 uint16_t valveADCValue = 0xFFFF;
-
-//extern volatile uint16_t *ADC_Endstop_24_value = 0; //0x160 on my valve
-//extern volatile uint16_t *ADC_Endstop_0_value = 0;  //0x6BE on my valve
-
+uint16_t adderADC = 0;
 
 void SetupValve(void)
 {
@@ -58,11 +56,18 @@ void SetupValve(void)
     uint8_t newMaintencePosition = 0;
     LoadMaintencePositionFromEEPROM(&newMaintencePosition);
     
+    valveADCValue = GetCurrentADC();
+    
     CreateADCTable(&newValveSettings);
     CopyValveInfoBToA(&nextValveInfo, &newValveInfo);
     CopyValveInfoBToA(&currentValveInfo, &newValveInfo);
     nextMaintenceOverridePosition = newMaintencePosition;
     currentMaintenceOverridePosition = newMaintencePosition;
+    
+    // Handle White Wires
+    IOCAF0_SetInterruptHandler(ValvePosition0InterruptHandler);
+    // Handle Red Wires
+    IOCAF1_SetInterruptHandler(ValvePosition24InterruptHandler);
 }
 
 ValveMode SetNextValveMode(ValveMode newMode)
@@ -233,14 +238,15 @@ uint8_t GetSelectedEndstopValue(void)
 
 uint8_t GetCurrentPosition(void)
 {
-    if (currentValveInfo.valveMode != VALVE_MODE_MAINTAINENC)
+    return ADCValueToPosition(valveADCValue);
+    /*if (currentValveInfo.valveMode != VALVE_MODE_MAINTAINENC)
     {
         return currentMaintenceOverridePosition;
     }
     else
     {
         return GetSelectedEndstopValue();
-    }
+    }*/
 }
 
 uint8_t PeriodicVerifyPosition(uint8_t overridePosition)
@@ -264,21 +270,70 @@ uint8_t PeriodicVerifyPosition(uint8_t overridePosition)
 
 void LoadValveSettingsFromEEPROM(struct ValveSettings *newValveSettings)
 {
+    uint16_t tempADC = 0;
     ReadEEPROM((uint8_t*)&newValveSettings->endstop0ValueADC, VALVE_EEPROM_PROD_ADC_ENDSTOP_0_ADDRESS, 2);
     ReadEEPROM((uint8_t*)&newValveSettings->endstop24ValueADC, VALVE_EEPROM_PROD_ADC_ENDSTOP_24_ADDRESS, 2);
+    //ReadEEPROM((uint8_t*)&newValveSettings->endstop0ValueADC, VALVE_EEPROM_PROD_BACKUP_ADC_ENDSTOP_0_ADDRESS, 2);
+    //ReadEEPROM((uint8_t*)&newValveSettings->endstop24ValueADC, VALVE_EEPROM_PROD_BACKUP_ADC_ENDSTOP_24_ADDRESS, 2);
+    //extern volatile uint16_t *ADC_Endstop_24_value = 0; //0x160 on my valve
+    //extern volatile uint16_t *ADC_Endstop_0_value = 0;  //0x6BE on my valve
+
 }
 
 void LoadValveInfoFromEEPROM(struct ValveInfo *newValveInfo)
 {
-    ReadEEPROM(&newValveInfo->endstop0Value, VALVE_EEPROM_0_END_STOP_ADDRESS, 1);
-    ReadEEPROM(&newValveInfo->endstop24Value, VALVE_EEPROM_24_END_STOP_ADDRESS, 1);
-    ReadEEPROM((uint8_t*)&newValveInfo->enstop0Selected, VALVE_EEPROM_SELECTED_END_STOP_ADDRESS, 1);
-    ReadEEPROM((uint8_t*)&newValveInfo->valveMode, VALVE_EEPROM_MODE_ADDRESS, 1);
+    uint8_t tempValue = 0;
+    ReadEEPROM(&tempValue, VALVE_EEPROM_0_END_STOP_ADDRESS, 1);
+    if (tempValue == 0xFF)
+    {
+        ReadEEPROM(&tempValue, VALVE_EEPROM_PROD_0_ENDSTOP_ADDRESS, 1);
+        WriteEEPROM(VALVE_EEPROM_0_END_STOP_ADDRESS, tempValue);
+    }
+    newValveInfo->endstop0Value = tempValue;
+    
+    ReadEEPROM(&tempValue, VALVE_EEPROM_24_END_STOP_ADDRESS, 1);
+    if (tempValue == 0xFF)
+    {
+        ReadEEPROM(&tempValue, VALVE_EEPROM_PROD_24_ENDSTOP_ADDRESS, 1);
+        WriteEEPROM(VALVE_EEPROM_24_END_STOP_ADDRESS, tempValue);
+    }
+    newValveInfo->endstop24Value = tempValue;
+    
+    ReadEEPROM(&tempValue, VALVE_EEPROM_SELECTED_END_STOP_ADDRESS, 1);
+    if (tempValue == 0xFF)
+    {
+        ReadEEPROM(&tempValue, VALVE_EEPROM_PROD_SELECTED_ENDSTOP_ADDRESS, 1);
+        WriteEEPROM(VALVE_EEPROM_SELECTED_END_STOP_ADDRESS, tempValue);
+    }
+    newValveInfo->enstop0Selected = tempValue;
+    ReadEEPROM(&tempValue, VALVE_EEPROM_MODE_ADDRESS, 1);
+    if (tempValue == 0xFF)
+    {
+        ReadEEPROM(&tempValue, VALVE_EEPROM_PROD_MODE_ADDRESS, 1);
+        WriteEEPROM(VALVE_EEPROM_MODE_ADDRESS, tempValue);
+    }
+    newValveInfo->valveMode = (ValveMode)tempValue;
 }
 
 void LoadMaintencePositionFromEEPROM(uint8_t *position)
 {
-    ReadEEPROM(position, VALVE_EEPROM_MAINTENCE_POSITION, 1);
+    uint8_t tempValue = 0;
+    ReadEEPROM(&tempValue, VALVE_EEPROM_MAINTENCE_POSITION, 1);
+    if (tempValue == 0xFF)
+    {
+        tempValue = currentValveInfo.endstop0Value;
+    }
+    *position = tempValue;
+}
+
+uint16_t GetCurrentADC(void)
+{
+    ADC_StartConversion();
+    while (!ADC_IsConversionDone())
+    {
+        CLRWDT();
+    }
+    return ADC_GetConversionResult();
 }
 
 uint8_t MoveValveToNewPosition(void)
@@ -306,23 +361,12 @@ uint8_t MoveValveToNewPosition(void)
     
     do
     {
-        ADC_StartConversion();
-        CLRWDT();
-        while (!ADC_IsConversionDone())
-        {
-            
-        }
-        valveADCValue = ADC_GetConversionResult();
-        ADC_StartConversion();
+        valveADCValue = GetCurrentADC();
         tempADCValue = valveADCValue;
-        while (!ADC_IsConversionDone())
-        {
-            
-        }
         valveADCValue = ADC_GetConversionResult();
         tempADCValue += valveADCValue;
         
-        if (debugLevel > 0x20)
+        if (GetDebugLevel() > 0x20)
         {
             
             /*newCommand = GetCommandEntryBuffer();
@@ -369,6 +413,7 @@ uint8_t MoveValveToNewPosition(void)
                 }
                 TransmitMessage(newCommand);*/
                 SetLeds();
+                UpdateLeds();
             }
             
             break;
@@ -376,6 +421,7 @@ uint8_t MoveValveToNewPosition(void)
         
         valve_ran = true;  
         SetLeds();
+        UpdateLeds();
                 
         if(neededADCValue < tempADCValue)
         {   
@@ -421,15 +467,27 @@ void CopyValveInfoBToA(struct ValveInfo *valveInfoA, struct ValveInfo *valveInfo
     valveInfoA->valveMode = valveInfoB->valveMode;
 }
 
+void ValvePosition0InterruptHandler(void)
+{
+    
+    SetSelectedEndstop0();
+}
+
+void ValvePosition24InterruptHandler(void)
+{
+    SetSelectedEndstop24();
+}
+
 void CreateADCTable(struct ValveSettings *currentValveSettings)
 {
     uint16_t ADC_Endstop_0_value = currentValveSettings->endstop0ValueADC; 
     uint16_t ADC_Endstop_24_value = currentValveSettings->endstop24ValueADC;
     
     positionToADCTable[0] = ADC_Endstop_0_value; 
-    positionToADCTable[31] = ADC_Endstop_24_value;
+    positionToADCTable[0x30] = ADC_Endstop_24_value;
     float adder = (float)(ADC_Endstop_0_value - ADC_Endstop_24_value) / (float)0x30; // 0x62 here is 0x31 << Q; since this may be in Q format
-    float temp_adder = positionToADCTable[31];
+    adderADC = (uint16_t)adder;
+    float temp_adder = positionToADCTable[0x30];
 
     for (int i = 0x30; i >= 0; i--)
     {
@@ -437,6 +495,45 @@ void CreateADCTable(struct ValveSettings *currentValveSettings)
         
         temp_adder = (float)adder + (float)temp_adder;
     }
+}
+
+uint8_t ADCValueToPosition(uint16_t currentDoubledADCValue)
+{
+    uint16_t adcValueFromTable = 0;
+    uint16_t prevAdcValueFromTable = positionToADCTable[0x30];
+    uint8_t current_pos = 0xFF; // 0xFF value not found
+    uint16_t midpoint = 0;
+    
+    if ((currentDoubledADCValue < prevAdcValueFromTable) || (currentDoubledADCValue > positionToADCTable[0x0]))
+    {
+        return 0xFF;
+    }
+    
+    for (int i = 0x30; i >= 0; i--)
+    {
+        adcValueFromTable = positionToADCTable[i];
+        if (currentDoubledADCValue == adcValueFromTable)
+        {
+            current_pos = (uint8_t)i;
+            break;
+        }
+        else if (currentDoubledADCValue < adcValueFromTable)
+        {
+            midpoint = (uint16_t)(adcValueFromTable - prevAdcValueFromTable) >> (uint16_t)0x1;
+            if ((adcValueFromTable - midpoint) >= currentDoubledADCValue)
+            {
+                current_pos = (uint8_t)(i--);
+            }
+            else
+            {
+                current_pos = (uint8_t)i;
+            }
+            break;
+        }
+        prevAdcValueFromTable = adcValueFromTable;
+    }
+    
+    return current_pos;
 }
 
 /*

@@ -26,28 +26,19 @@
 #include "eeprom_controller.h"
 #include "settings_state_controller.h"
 #include "valve_manager.h"
+#include "button_manager.h"
 #include "mcc_generated_files/eusart.h"
 
 
 void WriteRs485Array(uint8_t * value, uint8_t length);
-void ReadButtons(void);
 
 extern volatile bool eusartRxDone;
-
-bool modeButtonPushed = false;
-bool saveButtonPushed = false;
-bool yellowButtonPushed = false;
-bool redButtonPushed = false;
 uint8_t overridePosition = 0;
-
-extern volatile bool eepromDataValid; // Invalidate eeprom cache
-extern volatile uint8_t debugLevel = 0; // Debug l
 
 void main(void)
 {
-    eepromDataValid = false;
-    display.raw_leds = 0;
-    next_display.raw_leds = display.raw_leds;
+    SetupEEPROM();
+    SetupLeds();
     // initialize the device
     SYSTEM_Initialize();
     
@@ -59,12 +50,11 @@ void main(void)
     
     // Read EEPROM to local memory
     DumpEEPROMtoMemory();
-    // Get Debug Level
-    ReadEEPROM(&debugLevel, VALVE_EEPROM_DEBUG_LEVEL_ADDRESS, 1);
-    // Get the UID from the EEPROM - this should be unique per valve.
-    GetUUID(valve_uid);       
+    LoadValveSettings();
     SetupValve(); 
     SetLeds();
+    UpdateLeds();
+    SetupCommandManager();
     
     volatile Command * newCommand;  
     
@@ -98,75 +88,21 @@ void main(void)
         }
                
         ReadButtons();
-        if (modeButtonPushed)
-        {   
-            IncrementValveMode();
-            modeButtonPushed = false;
-        }      
+            
         
-        if (resetValve != 0)
+        if(fwUpdateValue)
+        {
+
+        }
+        
+        if (resetValve)
         {
             RESET();
         }
-        SetLeds(); // Is this needed
+        SetLeds();
+        UpdateLeds();
         PeriodicVerifyPosition(overridePosition);
-    }
-}
-
-void ReadButtons(void)
-{
-    bool modeButtonPushedFirst = false;
-    bool saveButtonPushedFirst = false;
-    bool yellowButtonPushedFirst = false;
-    bool redButtonPushedFirst = false;
-
-    modeButtonPushedFirst |= (ModeButton_GetValue() == 0);
-    saveButtonPushedFirst |= (SaveButton_GetValue() == 0);
-    yellowButtonPushedFirst |= (YellowButton_GetValue() == 0);
-    redButtonPushedFirst |= (RedButton_GetValue() == 0);
-    
-    // TODO - needs to move to a timer
-    // Delay for about 50 mS-100mS
-    uint8_t delayLoop1 = 0xF0;
-    uint8_t delayLoop2 = 0xF0;
-    do {
-        do {
-            delayLoop2 -= 1;
-        } while (delayLoop2 != 0);
-        delayLoop1 -= 1;
-    } while (delayLoop1 != 0);
-
-    if(modeButtonPushedFirst)
-    {
-        if (ModeButton_GetValue() == 0)
-            modeButtonPushed |= true;
-        else
-            modeButtonPushed = false;
-        modeButtonPushedFirst = false;
-    }
-    if(saveButtonPushedFirst)
-    {
-        if(SaveButton_GetValue() == 0)
-            saveButtonPushed |= true;
-        else
-            saveButtonPushed = false;
-        saveButtonPushedFirst = false;
-    }
-    if(yellowButtonPushedFirst)
-    {
-        if(YellowButton_GetValue() == 0)
-            yellowButtonPushed |= true;
-        else
-            yellowButtonPushed = false;
-        yellowButtonPushedFirst = false;
-    }
-    if(redButtonPushedFirst)
-    {
-        if(RedButton_GetValue() == 0)
-            redButtonPushed |= true;
-        else
-            redButtonPushed = false;
-        redButtonPushedFirst = false;
+        SettingsManagerRun();
     }
 }
 

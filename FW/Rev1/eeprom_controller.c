@@ -23,22 +23,27 @@
 #include "mcc_generated_files/examples/i2c_master_example.h"
 
 // Backup EEPROM Values for checking
-const uint8_t BACKUP_VALVE_EEPROM_RS485_ADDRESS =               VALVE_EEPROM_RS485_ADDRESS + 0x10;              // RS485 valve address location 1 byte
-const uint8_t BACKUP_VALVE_EEPROM_MODE_ADDRESS =                VALVE_EEPROM_MODE_ADDRESS + 0x10;               // Current Valve Mode 1 byte
-const uint8_t BACKUP_VALVE_EEPROM_0_END_STOP_ADDRESS =          VALVE_EEPROM_0_END_STOP_ADDRESS + 0x10;         // Current Valve Mode 2 bytes
-const uint8_t BACKUP_VALVE_EEPROM_24_END_STOP_ADDRESS =         VALVE_EEPROM_24_END_STOP_ADDRESS + 0x10;        // Current Valve Mode 2 bytes
-const uint8_t BACKUP_VALVE_EEPROM_SELECTED_END_STOP_ADDRESS =   VALVE_EEPROM_SELECTED_END_STOP_ADDRESS + 0x10;  // Current endstop selected 1 byte
-const uint8_t BACKUP_VALVE_EEPROM_DEBUG_LEVEL_ADDRESS =         VALVE_EEPROM_DEBUG_LEVEL_ADDRESS + 0x10;        // Current debug level 4 bytes
+#define BACKUP_VALVE_EEPROM_RS485_ADDRESS                 (VALVE_EEPROM_RS485_ADDRESS + 0x10)              // RS485 valve address location 1 byte
+#define BACKUP_VALVE_EEPROM_MODE_ADDRESS                  (VALVE_EEPROM_MODE_ADDRESS + 0x10)               // Current Valve Mode 1 byte
+#define BACKUP_VALVE_EEPROM_0_END_STOP_ADDRESS            (VALVE_EEPROM_0_END_STOP_ADDRESS + 0x10)        // Current Valve Mode 2 bytes
+#define BACKUP_VALVE_EEPROM_24_END_STOP_ADDRESS           (VALVE_EEPROM_24_END_STOP_ADDRESS + 0x10)       // Current Valve Mode 2 bytes
+#define BACKUP_VALVE_EEPROM_SELECTED_END_STOP_ADDRESS     (VALVE_EEPROM_SELECTED_END_STOP_ADDRESS + 0x10)  // Current endstop selected 1 byte
+#define BACKUP_VALVE_EEPROM_DEBUG_LEVEL_ADDRESS           (VALVE_EEPROM_DEBUG_LEVEL_ADDRESS + 0x10)        // Current debug level 4 bytes
 
-const uint8_t VALVE_EEPROM_UUID_ADDRESS = 0xFA;
-const uint8_t VALVE_EEPROM_ADDRESS = 0xA0;
-const uint8_t VALVE_EEPROM_ADDRESS_SHIFTED = VALVE_EEPROM_ADDRESS >> 1;
-#define VALVE_EEPROM_SIZE 0x80
+
+#define VALVE_EEPROM_ADDRESS            0xA0
+#define VALVE_EEPROM_ADDRESS_SHIFTED    (VALVE_EEPROM_ADDRESS >> 1)
+#define VALVE_EEPROM_SIZE               0x80
 
 volatile uint8_t eepromData[VALVE_EEPROM_SIZE] = {0};
-volatile bool eepromDataValid = false;
+bool eepromDataValid = false;
 
 void EEPROM_OP_Delay_Loop(void);
+
+void SetupEEPROM(void)
+{
+    eepromDataValid = false;
+}
 
 uint16_t CheckSumMaker(uint8_t *buffer, uint8_t size)
 {
@@ -56,7 +61,7 @@ uint16_t CheckSumMaker(uint8_t *buffer, uint8_t size)
     return ~((uint16_t)sum);
 }
 
-void DumpEEPROMtoMemory()
+void DumpEEPROMtoMemory(void)
 {
     for (uint8_t i= 0; i < VALVE_EEPROM_SIZE; i++)
     {
@@ -84,20 +89,7 @@ void WriteEEPROMBuffer(uint8_t eeprom_addr, uint8_t *buffer, uint8_t length)
     }
 }
 
-void GetUUID(uint8_t *valve_uid)
-{
-    if(eepromDataValid)
-    {
-        for(uint8_t i = 0; i < VALVE_EEPROM_SERIAL_LEN; ++i)
-        {
-            valve_uid[i] = eepromData[VALVE_EEPROM_UUID_ADDRESS + i]; 
-        }
-    }
-    else
-    {  
-        I2C_ReadDataBlock(VALVE_EEPROM_ADDRESS_SHIFTED, VALVE_EEPROM_UUID_ADDRESS, valve_uid, VALVE_EEPROM_SERIAL_LEN); 
-    }
-}
+
 
 void ReadEEPROM(uint8_t *data, uint8_t address, uint8_t length)
 {

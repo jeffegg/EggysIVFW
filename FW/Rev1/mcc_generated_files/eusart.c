@@ -275,7 +275,7 @@ bool IsPacketValid(uint8_t value, uint8_t eusartRxCount)
                 return false;
             break;
         case 5:
-            if ((value != GetAddress()) && (value != BROADCAST_ADDRESS))
+            if ((value != GetValveRs485Address()) && (value != BROADCAST_ADDRESS))
             {
                 return false;
             }

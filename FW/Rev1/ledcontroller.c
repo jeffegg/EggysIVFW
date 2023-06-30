@@ -42,47 +42,34 @@
 // 14 -> 12
 // 15 -> Service
 
-volatile LEDS display;
-volatile LEDS next_display;
+volatile LEDS currentDisplay;
+volatile LEDS nextDisplay;
 
-void ControlLights(LEDS *param_0)
+bool nextIDValve = false;
+bool currentIDValve = false;
+
+void SetupLeds(void)
+{    
+    nextDisplay.raw_leds = 0;
+    currentDisplay.raw_leds = nextDisplay.raw_leds;
+}
+
+void UpdateLeds(void)
 {
-    uint8_t delayLoop1 = 0;
-    uint8_t delayLoop2 = 0;
-    uint16_t ledValue = param_0->raw_leds;
-    
-    SSP1CON1 = 8;
-    RC3PPS = RC3PPS & 0xe0;
-    RC4PPS = RC4PPS & 0xe0;
-    SSPCLKPPS = 0;
-    SSPDATPPS = 0;
-    TRISC &= 0xef;
-    TRISC &= 0xf7;
-    LATC &= 0xf7;
+    if (currentDisplay.raw_leds != nextDisplay.raw_leds)
+    {
+        uint8_t delayLoop1 = 0;
+        uint8_t delayLoop2 = 0;
+        uint16_t ledValue = nextDisplay.raw_leds;
 
-    delayLoop1 = 6;
-    delayLoop2 = 0x30;
-    do {
-        do {
-            delayLoop2 -= 1;
-        } while (delayLoop2 != 0);
-        delayLoop1 -= 1;
-    } while (delayLoop1 != 0);
-
-    for (uint8_t i = 0; i < 0x10; i += 1) {
-        if ((( ledValue >> i) & 0x1) == 0) {
-            LATC &= 0xef;
-        }
-        else {
-            LATC |= 0x10;
-        }
-
-        delayLoop1 = 0x1a;
-        do {
-            delayLoop1 -= 1;
-        } while (delayLoop1 != 0);
-
-        LATC |= 8;
+        SSP1CON1 = 8;
+        RC3PPS = RC3PPS & 0xe0;
+        RC4PPS = RC4PPS & 0xe0;
+        SSPCLKPPS = 0;
+        SSPDATPPS = 0;
+        TRISC &= 0xef;
+        TRISC &= 0xf7;
+        LATC &= 0xf7;
 
         delayLoop1 = 6;
         delayLoop2 = 0x30;
@@ -93,27 +80,53 @@ void ControlLights(LEDS *param_0)
             delayLoop1 -= 1;
         } while (delayLoop1 != 0);
 
-        LATC &= 0xf7;
+        for (uint8_t i = 0; i < 0x10; i += 1) {
+            if ((( ledValue >> i) & 0x1) == 0) {
+                LATC &= 0xef;
+            }
+            else {
+                LATC |= 0x10;
+            }
+
+            delayLoop1 = 0x1a;
+            do {
+                delayLoop1 -= 1;
+            } while (delayLoop1 != 0);
+
+            LATC |= 8;
+
+            delayLoop1 = 6;
+            delayLoop2 = 0x30;
+            do {
+                do {
+                    delayLoop2 -= 1;
+                } while (delayLoop2 != 0);
+                delayLoop1 -= 1;
+            } while (delayLoop1 != 0);
+
+            LATC &= 0xf7;
+        }
+
+        LATC &= 0xef;
+        LATC |= 0x20;
+
+        delayLoop1 = 0x1a;
+        do {
+            delayLoop1 -= 1;
+        } while (delayLoop1 != 0);
+
+        LATC &= 0xdf;
+        RC3PPS = (RC3PPS & 0xe0) | 0x10;
+        RC4PPS = (RC4PPS & 0xe0) | 0x11;
+        SSPCLKPPS = 0x13;
+        SSPDATPPS = 0x14;
+
+        TRISC |= 0x10;
+        TRISC |= 8;
+        SSP1CON1 = 0x28;
+
+        currentDisplay.raw_leds =  nextDisplay.raw_leds;
     }
-
-    LATC &= 0xef;
-    LATC |= 0x20;
-
-    delayLoop1 = 0x1a;
-    do {
-        delayLoop1 -= 1;
-    } while (delayLoop1 != 0);
-
-    LATC &= 0xdf;
-    RC3PPS = (RC3PPS & 0xe0) | 0x10;
-    RC4PPS = (RC4PPS & 0xe0) | 0x11;
-    SSPCLKPPS = 0x13;
-    SSPDATPPS = 0x14;
-
-    TRISC |= 0x10;
-    TRISC |= 8;
-    SSP1CON1 = 0x28;
-
     return;
 }
 
@@ -121,14 +134,14 @@ void SetLeds(void)
 {    
     ValveMode nextValveMode = GetCurrentValveMode();
     if (nextValveMode == VALVE_MODE_NORMAL)
-        next_display.LEDbits.AUTO_LED = 1;
+        nextDisplay.LEDbits.AUTO_LED = 1;
     else
-        next_display.LEDbits.AUTO_LED = 0;
+        nextDisplay.LEDbits.AUTO_LED = 0;
 
     if (nextValveMode == VALVE_MODE_MAINTAINENC)
-        next_display.LEDbits.SERVICE_LED = 1;
+        nextDisplay.LEDbits.SERVICE_LED = 1;
     else
-        next_display.LEDbits.SERVICE_LED = 0;
+        nextDisplay.LEDbits.SERVICE_LED = 0;
 
     if (nextValveMode == VALVE_MODE_SETTINGS)
         BlueModeLed_SetLow();
@@ -145,103 +158,99 @@ void SetLeds(void)
         case 0:
             if (!between2Lights)
             {
-                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
             }
-            next_display.LEDbits.LED0 = 1; 
+            nextDisplay.LEDbits.LED0 = 1; 
             break;
         case 2:
             if (!between2Lights)
             {
-                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
             }
-            next_display.LEDbits.LED2 = 1; 
+            nextDisplay.LEDbits.LED2 = 1; 
             break;
         case 4:
             if (!between2Lights)
             {
-                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
             }
-            next_display.LEDbits.LED4 = 1; 
+            nextDisplay.LEDbits.LED4 = 1; 
             break;
         case 6:
             if (!between2Lights)
             {
-                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
             }
-            next_display.LEDbits.LED6 = 1;     
+            nextDisplay.LEDbits.LED6 = 1;     
             break;
         case 8:
             if (!between2Lights)
             {
-                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
             }
-            next_display.LEDbits.LED8 = 1; 
+            nextDisplay.LEDbits.LED8 = 1; 
             break;
         case 10:
             if (!between2Lights)
             {
-                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
             }
-            next_display.LEDbits.LED10 = 1; 
+            nextDisplay.LEDbits.LED10 = 1; 
             break;
         case 12:
             if (!between2Lights)
             {
-                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
             }
-            next_display.LEDbits.LED12 = 1; 
+            nextDisplay.LEDbits.LED12 = 1; 
             break;
         case 14:
             if (!between2Lights)
             {
-                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
             }
-            next_display.LEDbits.LED14 = 1;     
+            nextDisplay.LEDbits.LED14 = 1;     
             break;
         case 16:
             if (!between2Lights)
             {
-                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
             }
-            next_display.LEDbits.LED16 = 1; 
+            nextDisplay.LEDbits.LED16 = 1; 
             break;
         case 18:
             if (!between2Lights)
             {
-                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
             }
-            next_display.LEDbits.LED18 = 1; 
+            nextDisplay.LEDbits.LED18 = 1; 
             break;
         case 20:
             if (!between2Lights)
             {
-                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
             }
-            next_display.LEDbits.LED20 = 1; 
+            nextDisplay.LEDbits.LED20 = 1; 
             break;
         case 22:
             if (!between2Lights)
             {
-                next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
             }
-            next_display.LEDbits.LED22 = 1;   
+            nextDisplay.LEDbits.LED22 = 1;   
             break;            
         case 24:
          if (!between2Lights)
          {
-             next_display.raw_leds = next_display.raw_leds & 0x7FFC;
+             nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
          }
-         next_display.LEDbits.LED22 = 1;  
+         nextDisplay.LEDbits.LED22 = 1;  
          break;
     }
 }
 
-void SetBlueModeLed(bool led_on)
+void IdentifyValve(void)
 {
-  if (led_on != false)
-      LATA &= 0x7f;
-  else
-      LATA |= 0x80;
-  return;
+    nextIDValve = true;
 }
 

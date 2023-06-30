@@ -17,37 +17,12 @@
    
  */
 
-#ifndef LEDCONTROLLER_H
-#define	LEDCONTROLLER_H
+#ifndef XC_HEADER_TEMPLATE_H
+#define	XC_HEADER_TEMPLATE_H
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
-typedef union {
-    uint16_t raw_leds;
-    struct {
-        unsigned SERVICE_LED    :1;
-        unsigned LED12          :1;
-        unsigned LED14          :1;
-        unsigned LED16          :1;
-        unsigned LED18          :1;
-        unsigned LED20          :1;
-        unsigned LED22          :1;
-        unsigned LED24          :1;
-        unsigned LED0           :1; 
-        unsigned LED2           :1;
-        unsigned LED4           :1;
-        unsigned LED6           :1;
-        unsigned LED8           :1;
-        unsigned LED10          :1;
-        unsigned AUTO_LED       :1;
-        unsigned OFF_LED        :1;
-    } LEDbits;
-} LEDS;
-void SetupLeds(void);
-void UpdateLeds(void);
-void SetLeds(void);
-void IdentifyValve(void);
+void ReadButtons(void);
 
-
-#endif	/* LEDCONTROLLER_H */
+#endif	/* XC_HEADER_TEMPLATE_H */
 

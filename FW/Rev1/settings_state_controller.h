@@ -20,19 +20,24 @@
 #ifndef SETTING_STATE_CONTROLLER_H
 #define	SETTING_STATE_CONTROLLER_H
 
-#include <xc.h> // include processor files - each processor file is guarded.  
+#include <xc.h> // include processor files - each processor file is guarded.   
+#include <stdbool.h>
 #include "globals.h"
+
 extern uint8_t valve_uid[VALVE_EEPROM_SERIAL_LEN];
 extern uint8_t updateEEPROM;
-/*
- Settings:
- * Valve Address
- * Ignore Relay Input
- * Service Mode remote lockout mode
- */
-void SetAddress(uint8_t newAddress);
-uint8_t GetAddress(void);
 
+void LoadValveSettings(void);
+void SetValveRs485Address(uint8_t newAddress);
+uint8_t GetValveRs485Address(void);
+
+void SetDebugLevel(uint8_t value);
+uint8_t GetDebugLevel(void);
+
+void ProvisionValve(bool provisioned);
+bool IsProvisioned(void);
+
+void SettingsManagerRun(void);
 
 #endif	/* SETTING_STATE_CONTROLLER_H */
 

@@ -53,7 +53,7 @@ typedef enum
 } SelectedEndstop;
 
 // Setup Valve
-void SetupValve();
+void SetupValve(void);
 
 ValveMode SetNextValveMode(ValveMode newMode);
 ValveMode IncrementValveMode(void);

@@ -17,22 +17,107 @@
    
  */
 
-#include <xc.h> // include processor files - each processor file is guarded.  
+#include <xc.h> // include processor files - each processor file is guarded. 
 #include "globals.h"
 #include "settings_state_controller.h"
+#include "eeprom_controller.h"
+
+void GetUUIDFromEEPROM(void);
+
 
 uint8_t valve_uid[VALVE_EEPROM_SERIAL_LEN] = {0};
+uint8_t nextDebugLevel = 0;
+uint8_t currentDebugLevel = 0;
+uint8_t nextValveAddress = 0xB3;
+uint8_t currentValveAddress = 0;
+bool nextValveProvisioned = false;
+bool currentValveProvisioned = false;
 
-volatile uint8_t currentValveAddress = 0;
-
-void SetAddress(uint8_t newAddress)
+void LoadValveSettings(void)
 {
-    currentValveAddress = newAddress;
+    GetUUIDFromEEPROM();
+    ReadEEPROM(&nextDebugLevel, VALVE_EEPROM_DEBUG_LEVEL_ADDRESS, 1);
+    if (nextDebugLevel == 0xFF)
+    {
+        nextDebugLevel = 0;
+        WriteEEPROM(VALVE_EEPROM_DEBUG_LEVEL_ADDRESS, nextDebugLevel);
+    }
+    currentDebugLevel = nextDebugLevel;
+    
+    ReadEEPROM(&nextValveAddress, VALVE_EEPROM_RS485_ADDRESS, 1);
+    if (nextValveAddress == 0xFF)
+    {
+        nextValveAddress = 0xB3;
+        WriteEEPROM(VALVE_EEPROM_RS485_ADDRESS, nextValveAddress);
+    }
+    currentValveAddress = nextValveAddress;
+            
+    uint8_t tempValue = 0;
+    ReadEEPROM(&tempValue, VALVE_EEPROM_PROVISONED_ADDRESS, 1);
+    if (tempValue == 0xFF)
+    {
+        nextValveProvisioned = false;
+        WriteEEPROM(VALVE_EEPROM_PROVISONED_ADDRESS, (uint8_t)nextValveProvisioned);
+    }  
+    else
+    {
+        nextValveProvisioned = (bool)tempValue;
+    }
+    currentValveProvisioned = nextValveProvisioned;
 }
 
-uint8_t GetAddress(void)
+void SetValveRs485Address(uint8_t newAddress)
+{
+    nextValveAddress = newAddress;
+}
+
+uint8_t GetValveRs485Address(void)
 {
     return currentValveAddress;
 }
 
+void GetUUIDFromEEPROM(void)
+{
+    ReadEEPROM(valve_uid, VALVE_EEPROM_UUID_ADDRESS, VALVE_EEPROM_SERIAL_LEN);
+}
 
+void SetDebugLevel(uint8_t value)
+{
+    nextDebugLevel = value;
+}
+
+uint8_t GetDebugLevel(void)
+{
+    return currentDebugLevel;
+}
+
+void ProvisionValve(bool provisioned)
+{
+    nextValveAddress = provisioned;
+}
+
+bool IsProvisioned(void)
+{
+    return currentValveProvisioned;
+}
+
+void SettingsManagerRun(void)
+{    
+    if (nextDebugLevel != currentDebugLevel)
+    {
+        WriteEEPROM(VALVE_EEPROM_DEBUG_LEVEL_ADDRESS, nextDebugLevel);
+        currentDebugLevel = nextDebugLevel;
+    }
+    
+    if (nextValveAddress != currentValveAddress)
+    {
+        WriteEEPROM(VALVE_EEPROM_RS485_ADDRESS, nextValveAddress);
+        currentValveAddress = nextValveAddress;
+    }
+            
+    if (nextValveProvisioned != currentValveProvisioned)
+    {
+        WriteEEPROM(VALVE_EEPROM_PROVISONED_ADDRESS, (uint8_t)nextValveProvisioned);
+        currentValveProvisioned = nextValveProvisioned;
+    }
+}
