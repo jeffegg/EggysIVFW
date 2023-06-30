@@ -37,11 +37,10 @@ uint8_t overridePosition = 0;
 
 void main(void)
 {
-    SetupEEPROM();
-    SetupLeds();
     // initialize the device
     SYSTEM_Initialize();
-    
+    SetupEEPROM();
+    SetupLeds();
     // Enable the Global Interrupts
     INTERRUPT_GlobalInterruptEnable();
     // Enable the Peripheral Interrupts
@@ -89,7 +88,6 @@ void main(void)
                
         ReadButtons();
             
-        
         if(fwUpdateValue)
         {
 

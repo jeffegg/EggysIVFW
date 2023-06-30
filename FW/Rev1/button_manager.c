@@ -22,11 +22,15 @@
 #include "mcc_generated_files/mcc.h"
 #include "button_manager.h"
 #include "valve_manager.h"
+#include "settings_state_controller.h"
+#include "command_system.h"
 
 bool modeButtonPushed = false;
 bool saveButtonPushed = false;
 bool yellowButtonPushed = false;
 bool redButtonPushed = false;
+bool redAndYellowButtonPushed = false;
+bool redAndSaveButtonPushed = false;
 
 void HandleButtons(void);
 
@@ -61,7 +65,41 @@ void ReadButtons(void)
             modeButtonPushed = false;
         modeButtonPushedFirst = false;
     }
-    if(saveButtonPushedFirst)
+    else if (yellowButtonPushedFirst && redButtonPushedFirst)
+    {
+        if(YellowButton_GetValue() == 0)
+            yellowButtonPushed |= true;
+        else
+            yellowButtonPushed = false;
+        if(RedButton_GetValue() == 0)
+            redButtonPushed |= true;
+        else
+            redButtonPushed = false;
+        if (yellowButtonPushed && redButtonPushed)
+            redAndYellowButtonPushed = true;
+        yellowButtonPushedFirst = false;
+        redButtonPushedFirst = false; 
+        yellowButtonPushed = false;
+        redButtonPushed = false;
+    }
+    else if (saveButtonPushedFirst && redButtonPushedFirst)
+    {
+        if(SaveButton_GetValue() == 0)
+            saveButtonPushed |= true;
+        else
+            saveButtonPushed = false;
+        if(RedButton_GetValue() == 0)
+            redButtonPushed |= true;
+        else
+            redButtonPushed = false;
+        if (saveButtonPushed && redButtonPushed)
+            redAndSaveButtonPushed = true;
+        saveButtonPushedFirst = false;
+        redButtonPushedFirst = false; 
+        saveButtonPushed = false;
+        redButtonPushed = false;
+    }
+    else if(saveButtonPushedFirst)
     {
         if(SaveButton_GetValue() == 0)
             saveButtonPushed |= true;
@@ -69,7 +107,7 @@ void ReadButtons(void)
             saveButtonPushed = false;
         saveButtonPushedFirst = false;
     }
-    if(yellowButtonPushedFirst)
+    else if(yellowButtonPushedFirst)
     {
         if(YellowButton_GetValue() == 0)
             yellowButtonPushed |= true;
@@ -77,7 +115,7 @@ void ReadButtons(void)
             yellowButtonPushed = false;
         yellowButtonPushedFirst = false;
     }
-    if(redButtonPushedFirst)
+    else if(redButtonPushedFirst)
     {
         if(RedButton_GetValue() == 0)
             redButtonPushed |= true;
@@ -96,4 +134,23 @@ void HandleButtons(void)
         IncrementValveMode();
         modeButtonPushed = false;
     }  
+    if (redAndYellowButtonPushed)
+    {
+        SelectedEndstop currentEndStop = GetSelectedEndstop();
+        if (currentEndStop == ENDSTOP_0_SELECTED)
+            SetSelectedEndstop24();
+        else
+            SetSelectedEndstop0();
+        redAndYellowButtonPushed = false;
+    }
+    if(redAndSaveButtonPushed)
+    {
+        volatile Command * newCommand;          
+        newCommand = GetCommandEntryBuffer();    
+        if (newCommand)
+        {
+            SendValveHailMessage(newCommand, GetValveRs485Address(), valve_uid);
+        }
+        TransmitMessage(newCommand);        
+    }
 }
