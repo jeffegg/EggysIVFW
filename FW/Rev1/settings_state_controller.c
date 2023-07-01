@@ -23,8 +23,10 @@
 #include "eeprom_controller.h"
 
 void GetUUIDFromEEPROM(void);
+void GetDID_RIDFromEEPROM(void);
 
-
+volatile uint16_t localDeviceID = 0;
+volatile uint16_t localRevisionID = 0;
 uint8_t valve_uid[VALVE_EEPROM_SERIAL_LEN] = {0};
 uint8_t nextDebugLevel = 0;
 uint8_t currentDebugLevel = 0;
@@ -32,10 +34,16 @@ uint8_t nextValveAddress = 0xB3;
 uint8_t currentValveAddress = 0;
 bool nextValveProvisioned = false;
 bool currentValveProvisioned = false;
+extern uint8_t *deviceID = (uint8_t *)&localDeviceID;
+extern uint8_t *revisionID = (uint8_t *)&localRevisionID;
+
+
 
 void LoadValveSettings(void)
 {
     GetUUIDFromEEPROM();
+    GetDID_RIDFromEEPROM();
+    
     ReadEEPROM(&nextDebugLevel, VALVE_EEPROM_DEBUG_LEVEL_ADDRESS, 1);
     if (nextDebugLevel == 0xFF)
     {
@@ -80,6 +88,14 @@ void GetUUIDFromEEPROM(void)
 {
     ReadEEPROM(valve_uid, VALVE_EEPROM_UUID_ADDRESS, VALVE_EEPROM_SERIAL_LEN);
 }
+
+void GetDID_RIDFromEEPROM(void)
+{
+    ReadEEPROM((uint8_t *)&localDeviceID, VALVE_EEPROM_PROD_DEVICE_DID_ADDRESS, 2);
+    ReadEEPROM((uint8_t *)&localRevisionID, VALVE_EEPROM_PROD_DEVICE_RID_ADDRESS, 2);
+}
+
+
 
 void SetDebugLevel(uint8_t value)
 {

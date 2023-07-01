@@ -49,7 +49,7 @@
 #include "interrupt_manager.h"
 #include "mcc.h"
 #include "adc.h"
-void InterruptCallback();
+void InterruptCallback(void);
 
 void __interrupt() INTERRUPT_InterruptManager (void)
 {

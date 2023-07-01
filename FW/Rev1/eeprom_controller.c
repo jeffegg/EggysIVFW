@@ -21,6 +21,7 @@
 #include "globals.h"
 #include "mcc_generated_files/mcc.h"
 #include "mcc_generated_files/examples/i2c_master_example.h"
+#include "command_system.h"
 
 // Backup EEPROM Values for checking
 #define BACKUP_VALVE_EEPROM_RS485_ADDRESS                 (VALVE_EEPROM_RS485_ADDRESS + 0x10)              // RS485 valve address location 1 byte
@@ -38,11 +39,85 @@
 volatile uint8_t eepromData[VALVE_EEPROM_SIZE] = {0};
 bool eepromDataValid = false;
 
+uint8_t sendEEPROMLength;
+uint8_t sendEEPROMSource;
+uint8_t sendEEPROMAddress;
+uint8_t sendEEPRPMCurrentLenght = 0;
+bool sendEEPROM;
+
+bool writeEEPROM;
+uint8_t writeEEPROMSource;
+uint8_t writeEEPROMAddress;
+uint8_t writeEEPROMLength;
+uint32_t writeEEPROMValue;
+
 void EEPROM_OP_Delay_Loop(void);
 
 void SetupEEPROM(void)
 {
     eepromDataValid = false;
+}
+
+void PeriodicEEPROM(void)
+{
+    if(sendEEPROM)
+    {
+        uint8_t sendLength = 0;        
+        volatile Command * newCommand = GetCommandEntryBuffer();    
+        if (newCommand)
+        {
+            if (sendEEPROMLength <= 0x20)
+            {
+                sendLength = sendEEPROMLength;
+                sendEEPROM = false;
+            }
+            else
+            {
+                sendEEPROMLength -= 0x20;
+                sendLength = 0x20;
+            }
+            newCommand->protocal = 0x1;
+            newCommand->source = GetValveRs485Address();
+            newCommand->destination = sendEEPROMSource;
+            newCommand->command = (uint8_t)VALVE_EEPROM;
+            ReadEEPROM(newCommand->data, sendEEPROMAddress + sendEEPRPMCurrentLenght, sendLength);                 
+            newCommand->data_length = sendLength;
+            
+            if (!sendEEPROM)
+            {
+                sendEEPRPMCurrentLenght = 0;
+                sendEEPROMLength = 0;
+                sendEEPROM = false;
+            }   
+            else
+            {
+                sendEEPRPMCurrentLenght += 0x20;
+            }
+        }
+        TransmitMessage(newCommand);
+    }
+    
+    if (writeEEPROM)
+    {
+        WriteEEPROMBuffer(writeEEPROMAddress, (uint8_t *)&writeEEPROMValue, writeEEPROMLength);
+        
+        volatile Command * newCommand = GetCommandEntryBuffer();    
+        if (newCommand)
+        {
+            newCommand->protocal = 0x1;
+            newCommand->source = GetValveRs485Address();
+            newCommand->destination = writeEEPROMSource;
+            newCommand->command = (uint8_t)VALVE_EEPROM_SET_DONE;
+            newCommand->data[0] = writeEEPROMLength;       
+            newCommand->data_length = 1;
+            writeEEPROM = false;
+            writeEEPROMSource = 0;
+            writeEEPROMAddress = 0;
+            writeEEPROMLength = 0;
+            writeEEPROMValue = 0;   
+        }
+        TransmitMessage(newCommand);
+    }
 }
 
 uint16_t CheckSumMaker(uint8_t *buffer, uint8_t size)
@@ -89,8 +164,6 @@ void WriteEEPROMBuffer(uint8_t eeprom_addr, uint8_t *buffer, uint8_t length)
     }
 }
 
-
-
 void ReadEEPROM(uint8_t *data, uint8_t address, uint8_t length)
 {
     if(eepromDataValid)
@@ -117,6 +190,8 @@ void EEPROM_OP_Delay_Loop(void)
         delayLoop1 -= 1;
     } while (delayLoop1 != 0);
 }
+
+
 
 /*int new_value = 0;
     eeprom_data[first_stop_offset] = new_value;

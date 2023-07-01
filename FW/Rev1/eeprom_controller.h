@@ -52,6 +52,7 @@
 #define VALVE_EEPROM_PROD_DEVICE_RID_ADDRESS              0x47
 
 void SetupEEPROM(void);
+void PeriodicEEPROM(void);
 
 // Pulls EEPROM from memory to cache
 void DumpEEPROMtoMemory(void);

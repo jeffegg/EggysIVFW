@@ -289,7 +289,7 @@ bool IsPacketValid(uint8_t value, uint8_t eusartRxCount)
             {
                 return false;
             }
-            eusartRxLength = value;
+            eusartRxLength = (int8_t)value; // This is to prevent a warning. Since MAX_DATA_LENGTH should be less than 0x7F this is ok
             eusartCalcChecksum += value;
             return true;
         default:

@@ -37,7 +37,6 @@ uint8_t overridePosition = 0;
 
 void main(void)
 {
-    // initialize the device
     SYSTEM_Initialize();
     SetupEEPROM();
     SetupLeds();
@@ -87,20 +86,24 @@ void main(void)
         }
                
         ReadButtons();
-            
         if(fwUpdateValue)
         {
-
+            WriteEEPROM(VALVE_EEPROM_PROD_FIRMWARE_UPDATE_ADDRESS, 0xFE);  
         }
         
         if (resetValve)
         {
             RESET();
+            NOP();
+            NOP();
+            NOP();
+            NOP();
         }
         SetLeds();
         UpdateLeds();
         PeriodicVerifyPosition(overridePosition);
         SettingsManagerRun();
+        PeriodicEEPROM();
     }
 }
 

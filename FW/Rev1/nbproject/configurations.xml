@@ -30,6 +30,7 @@
       <itemPath>globals.h</itemPath>
       <itemPath>valve_manager.h</itemPath>
       <itemPath>button_manager.h</itemPath>
+      <itemPath>version.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -64,6 +65,7 @@
       <itemPath>settings_state_controller.c</itemPath>
       <itemPath>valve_manager.c</itemPath>
       <itemPath>button_manager.c</itemPath>
+      <itemPath>version.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
