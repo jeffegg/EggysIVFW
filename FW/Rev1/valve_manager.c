@@ -49,6 +49,8 @@ uint16_t adderADC = 0;
 
 bool lastInterruptValue = false;
 
+const uint16_t allowedADCValueOverage = 2;
+
 void SetupValve(void)
 {
     struct ValveSettings newValveSettings;
@@ -218,7 +220,7 @@ uint8_t GetCurrentPosition(void)
 {
     valveADCValue = GetCurrentADC();
     uint16_t tempADCValue = valveADCValue;
-    valveADCValue = ADC_GetConversionResult();
+    valveADCValue = GetCurrentADC();
     tempADCValue += valveADCValue;
         
     return ADCValueToPosition(tempADCValue);
@@ -379,7 +381,7 @@ uint8_t MoveValveToNewPosition(void)
         }
         // If we are within +/- 2of the ADCValue, we can stop. Each stop is about 0x1C off so this isn't much
         // There will be some skid, this seems to help...
-        if (((tempADCValue >= (neededADCValue - 2)) && (tempADCValue <= (neededADCValue + 2))) || (direction_change >= MAX_DIRECTION_CHANGE))
+        if (((tempADCValue >= (neededADCValue - allowedADCValueOverage)) && (tempADCValue <= (neededADCValue + allowedADCValueOverage))) || (direction_change >= MAX_DIRECTION_CHANGE))
         {
             MotorA_SetLow();
             MotorB_SetLow();
@@ -498,7 +500,7 @@ uint8_t ADCValueToPosition(uint16_t currentDoubledADCValue)
     uint8_t current_pos = 0xFF; // 0xFF value not found
     uint16_t midpoint = 0;
     
-    if ((currentDoubledADCValue < prevAdcValueFromTable) || (currentDoubledADCValue > positionToADCTable[0x0]))
+    if ((currentDoubledADCValue < (prevAdcValueFromTable - allowedADCValueOverage)) || (currentDoubledADCValue > (positionToADCTable[0x0] + allowedADCValueOverage)))
     {
         return 0xFF;
     }
@@ -516,7 +518,7 @@ uint8_t ADCValueToPosition(uint16_t currentDoubledADCValue)
             midpoint = (uint16_t)(adcValueFromTable - prevAdcValueFromTable) >> (uint16_t)0x1;
             if ((adcValueFromTable - midpoint) >= currentDoubledADCValue)
             {
-                current_pos = (uint8_t)(i--);
+                current_pos = (uint8_t)(i + 1);
             }
             else
             {

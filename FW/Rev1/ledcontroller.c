@@ -153,99 +153,103 @@ void SetLeds(void)
     uint8_t valveLocation = GetCurrentPosition();
     uint8_t ledToLight = valveLocation >> 2;
     uint8_t between2Lights = valveLocation & 0x1;
-    
-    switch(valveLocation)
+    nextDisplay.raw_leds = 0;
+    switch(ledToLight)
     {
         case 0:
-            if (!between2Lights)
+            if (between2Lights)
             {
-                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = currentDisplay.raw_leds & 0x7FFC;
             }
             nextDisplay.LEDbits.LED0 = 1; 
             break;
-        case 2:
-            if (!between2Lights)
+        case 1:
+            if (between2Lights)
             {
-                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = currentDisplay.raw_leds & 0x7FFC;
             }
             nextDisplay.LEDbits.LED2 = 1; 
             break;
-        case 4:
-            if (!between2Lights)
+        case 2:
+            if (between2Lights)
             {
-                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = currentDisplay.raw_leds & 0x7FFC;
             }
             nextDisplay.LEDbits.LED4 = 1; 
             break;
-        case 6:
-            if (!between2Lights)
+        case 3:
+            if (between2Lights)
             {
-                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = currentDisplay.raw_leds & 0x7FFC;
             }
             nextDisplay.LEDbits.LED6 = 1;     
             break;
-        case 8:
-            if (!between2Lights)
+        case 4:
+            if (between2Lights)
             {
-                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = currentDisplay.raw_leds & 0x7FFC;
             }
             nextDisplay.LEDbits.LED8 = 1; 
             break;
-        case 10:
-            if (!between2Lights)
+        case 5:
+            if (between2Lights)
             {
-                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = currentDisplay.raw_leds & 0x7FFC;
             }
             nextDisplay.LEDbits.LED10 = 1; 
             break;
-        case 12:
-            if (!between2Lights)
+        case 6:
+            if (between2Lights)
             {
-                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = currentDisplay.raw_leds & 0x7FFC;
             }
             nextDisplay.LEDbits.LED12 = 1; 
             break;
-        case 14:
-            if (!between2Lights)
+        case 7:
+            if (between2Lights)
             {
-                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = currentDisplay.raw_leds & 0x7FFC;
             }
             nextDisplay.LEDbits.LED14 = 1;     
             break;
-        case 16:
-            if (!between2Lights)
+        case 8:
+            if (between2Lights)
             {
-                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = currentDisplay.raw_leds & 0x7FFC;
             }
             nextDisplay.LEDbits.LED16 = 1; 
             break;
-        case 18:
-            if (!between2Lights)
+        case 9:
+            if (between2Lights)
             {
-                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = currentDisplay.raw_leds & 0x7FFC;
             }
             nextDisplay.LEDbits.LED18 = 1; 
             break;
-        case 20:
-            if (!between2Lights)
+        case 0xa:
+            if (between2Lights)
             {
-                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = currentDisplay.raw_leds & 0x7FFC;
             }
             nextDisplay.LEDbits.LED20 = 1; 
             break;
-        case 22:
-            if (!between2Lights)
+        case 0xb:
+            if (between2Lights)
             {
-                nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
+                nextDisplay.raw_leds = currentDisplay.raw_leds & 0x7FFC;
             }
             nextDisplay.LEDbits.LED22 = 1;   
             break;            
-        case 24:
-         if (!between2Lights)
+        case 0xc:
+         if (between2Lights)
          {
-             nextDisplay.raw_leds = nextDisplay.raw_leds & 0x7FFC;
+             nextDisplay.raw_leds = currentDisplay.raw_leds & 0x7FFC;
          }
-         nextDisplay.LEDbits.LED22 = 1;  
+         nextDisplay.LEDbits.LED24 = 1;  
+         break;
+        case 0xFF:
+        default:
+            nextDisplay.raw_leds = 0x7FFC; //Turn on all LEDS to signify error
          break;
     }
 }
