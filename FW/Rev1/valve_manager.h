@@ -55,13 +55,13 @@ typedef enum
 // Setup Valve
 void SetupValve(void);
 
-ValveMode SetNextValveMode(ValveMode newMode);
-ValveMode IncrementValveMode(void);
+void SetNextValveMode(ValveMode newMode);
+void IncrementValveMode(void);
 ValveMode GetCurrentValveMode(void);
 
-uint8_t SetEndstop0Value(uint8_t newEndstopValue);
+void SetEndstop0Value(uint8_t newEndstopValue);
 uint8_t GetEndstop0Value(void);
-uint8_t SetEndstop24Value(uint8_t newEndstopValue);
+void SetEndstop24Value(uint8_t newEndstopValue);
 uint8_t GetEndstop24Value(void);
 
 void SetSelectedEndstop0(void);
@@ -70,7 +70,7 @@ SelectedEndstop GetSelectedEndstop(void);
 uint8_t GetSelectedEndstopValue(void);
 uint8_t GetCurrentPosition(void);
 
-uint8_t PeriodicValveUpdate(uint8_t overridePosition);
+uint8_t PeriodicValveUpdate(void);
 
 #endif	/* VALVE_MANAGER_H */
 

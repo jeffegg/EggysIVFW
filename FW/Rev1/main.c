@@ -33,7 +33,6 @@
 void WriteRs485Array(uint8_t * value, uint8_t length);
 
 extern volatile bool eusartRxDone;
-uint8_t overridePosition = 0;
 
 void main(void)
 {
@@ -101,7 +100,7 @@ void main(void)
         }
         SetLeds();
         UpdateLeds();
-        PeriodicValveUpdate(overridePosition);
+        PeriodicValveUpdate();
         SettingsManagerRun();
         PeriodicEEPROM();
     }

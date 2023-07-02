@@ -74,38 +74,23 @@ void SetupValve(void)
     IOCAF1_SetInterruptHandler(ValvePosition24InterruptHandler);
 }
 
-ValveMode SetNextValveMode(ValveMode newMode)
+void SetNextValveMode(ValveMode newMode)
 {
-    if (currentValveInfo.valveMode != VALVE_MODE_MAINTAINENC)
+    nextValveInfo.valveMode = newMode;
+    if (currentValveInfo.valveMode == VALVE_MODE_MAINTAINENC)
     {
-        nextValveInfo.valveMode = newMode;
-        WriteEEPROM(VALVE_EEPROM_MODE_ADDRESS, (uint8_t)newMode);
-        // Only move valve to end stop when going to Normal version
-        if (nextValveInfo.valveMode == VALVE_MODE_NORMAL)
-        {
-            MoveValveToNewPosition();
-        }
-        currentValveInfo.valveMode = nextValveInfo.valveMode;
-    }
-    else
-    {
-        uint8_t currentPosition = 0;
         if (currentValveInfo.enstop0Selected)
         {
-            currentPosition = currentValveInfo.endstop0Value;
+            nextMaintenceOverridePosition = currentValveInfo.endstop0Value;
         }
         else
         {
-            currentPosition = currentValveInfo.endstop24Value;
+            nextMaintenceOverridePosition = currentValveInfo.endstop24Value;
         }
-        nextMaintenceOverridePosition = currentPosition;
-        WriteEEPROM(VALVE_EEPROM_MAINTENCE_POSITION, nextMaintenceOverridePosition);
-        currentMaintenceOverridePosition = currentPosition;
     }
-    return currentValveInfo.valveMode;
 }
 
-ValveMode IncrementValveMode(void)
+void IncrementValveMode(void)
 {
     ValveMode nextValveMode = GetCurrentValveMode();
     nextValveMode++;
@@ -115,19 +100,6 @@ ValveMode IncrementValveMode(void)
     }
 
     nextValveInfo.valveMode = nextValveMode;
-    WriteEEPROM(VALVE_EEPROM_MODE_ADDRESS, (uint8_t)nextValveMode);
-    // Only move valve to end stop when going to Normal version
-    if (nextValveInfo.valveMode == VALVE_MODE_NORMAL)
-    {
-        MoveValveToNewPosition();
-    }
-    else if (nextValveInfo.valveMode == VALVE_MODE_MAINTAINENC)
-    {
-        MoveValveToNewPosition();
-    }
-    currentValveInfo.valveMode = nextValveInfo.valveMode;
-    
-    return currentValveInfo.valveMode;
 }
 
 ValveMode GetCurrentValveMode(void)
@@ -135,20 +107,12 @@ ValveMode GetCurrentValveMode(void)
     return currentValveInfo.valveMode;
 }
 
-uint8_t SetEndstop0Value(uint8_t newEndstopValue)
+void SetEndstop0Value(uint8_t newEndstopValue)
 {
     if (currentValveInfo.valveMode != VALVE_MODE_MAINTAINENC)
     {
         nextValveInfo.endstop0Value = newEndstopValue;
-        WriteEEPROM(VALVE_EEPROM_0_END_STOP_ADDRESS, (uint8_t)newEndstopValue);
-        // Only move valve to end stop when going to Normal version; settings mode just updates
-        if (nextValveInfo.valveMode == VALVE_MODE_NORMAL)
-        {
-            MoveValveToNewPosition();
-        }
-        currentValveInfo.endstop0Value = nextValveInfo.endstop0Value;
     }
-    return currentValveInfo.endstop0Value;
 }
 
 uint8_t GetEndstop0Value(void)
@@ -156,20 +120,12 @@ uint8_t GetEndstop0Value(void)
     return currentValveInfo.endstop0Value;
 }
 
-uint8_t SetEndstop24Value(uint8_t newEndstopValue)
+void SetEndstop24Value(uint8_t newEndstopValue)
 {
     if (currentValveInfo.valveMode != VALVE_MODE_MAINTAINENC)
     {
         nextValveInfo.endstop24Value = newEndstopValue;
-        WriteEEPROM(VALVE_EEPROM_24_END_STOP_ADDRESS, (uint8_t)newEndstopValue);
-        // Only move valve to end stop when going to Normal version; settings mode just updates
-        if (nextValveInfo.valveMode == VALVE_MODE_NORMAL)
-        {
-            MoveValveToNewPosition();
-        }
-        currentValveInfo.endstop24Value = nextValveInfo.endstop24Value;
-    }
-    return currentValveInfo.endstop24Value;    
+    }  
 }
 
 uint8_t GetEndstop24Value(void)
@@ -234,27 +190,59 @@ uint8_t GetCurrentPosition(void)
     }*/
 }
 
-uint8_t PeriodicValveUpdate(uint8_t overridePosition)
+uint8_t PeriodicValveUpdate(void)
 {
+    if (currentValveInfo.valveMode != nextValveInfo.valveMode)
+    {
+        WriteEEPROM(VALVE_EEPROM_MODE_ADDRESS, (uint8_t)nextValveInfo.valveMode);
+        // Only move valve to end stop when going to Normal version
+        if (nextValveInfo.valveMode == VALVE_MODE_NORMAL)
+        {
+            MoveValveToNewPosition();
+        }
+        else if (nextValveInfo.valveMode == VALVE_MODE_MAINTAINENC)
+        {
+            MoveValveToNewPosition();
+        }
+        currentValveInfo.valveMode = nextValveInfo.valveMode;
+    }
     if (currentValveInfo.valveMode == VALVE_MODE_MAINTAINENC)
     {
-        if (overridePosition != currentMaintenceOverridePosition)
+        if (currentMaintenceOverridePosition != nextMaintenceOverridePosition)
         {
-            nextMaintenceOverridePosition = overridePosition;
             WriteEEPROM(VALVE_EEPROM_MAINTENCE_POSITION, nextMaintenceOverridePosition);
-            MoveValveToNewPosition();
             currentMaintenceOverridePosition = nextMaintenceOverridePosition;
         }
-        return currentMaintenceOverridePosition;
+        return MoveValveToNewPosition();
     }
     else
     {
+        if (currentValveInfo.endstop0Value != nextValveInfo.endstop0Value)
+        {    
+            WriteEEPROM(VALVE_EEPROM_0_END_STOP_ADDRESS, (uint8_t)nextValveInfo.endstop0Value);
+            // Only move valve to end stop when going to Normal version; settings mode just updates
+            if (nextValveInfo.valveMode == VALVE_MODE_NORMAL)
+            {
+                MoveValveToNewPosition();
+            }
+            currentValveInfo.endstop0Value = nextValveInfo.endstop0Value;
+        }
+        
+        if (currentValveInfo.endstop24Value != nextValveInfo.endstop24Value)
+        {   
+            WriteEEPROM(VALVE_EEPROM_24_END_STOP_ADDRESS, (uint8_t)nextValveInfo.endstop24Value);
+            // Only move valve to end stop when going to Normal version; settings mode just updates
+            if (nextValveInfo.valveMode == VALVE_MODE_NORMAL)
+            {
+                MoveValveToNewPosition();
+            }
+            currentValveInfo.endstop24Value = nextValveInfo.endstop24Value;
+        }
         if (nextValveInfo.enstop0Selected != currentValveInfo.enstop0Selected)
         {
             WriteEEPROM(VALVE_EEPROM_SELECTED_END_STOP_ADDRESS, (uint8_t)nextValveInfo.enstop0Selected);
             currentValveInfo.enstop0Selected = nextValveInfo.enstop0Selected;
         }
-        
         
         return MoveValveToNewPosition();
     }
