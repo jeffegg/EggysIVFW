@@ -328,7 +328,10 @@ void ProvisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
             {
                 uint8_t valve_address = currentRS485RXBuffer->data[6];
                 SetValveRs485Address(valve_address);
-                ProvisionValve(true); 
+                if (valve_address == 0xB3)
+                    ProvisionValve(false); 
+                else
+                    ProvisionValve(true); 
                 CommandExecutor = &ProvisionedCommandExecutor;
             }
             receiveReady = false;

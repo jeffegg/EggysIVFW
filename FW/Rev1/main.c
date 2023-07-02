@@ -101,7 +101,7 @@ void main(void)
         }
         SetLeds();
         UpdateLeds();
-        PeriodicVerifyPosition(overridePosition);
+        PeriodicValveUpdate(overridePosition);
         SettingsManagerRun();
         PeriodicEEPROM();
     }

@@ -3,7 +3,23 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/projects/EggysIVFW/FW/Rev1/command_system.h</file>
+            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/main.c</file>
+            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/command_system.c</file>
+            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/settings_state_controller.h</file>
+            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/mcc_generated_files/examples/i2c_master_example.c</file>
+            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/mcc_generated_files/mcc.c</file>
+            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/eeprom_controller.c</file>
+            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/settings_state_controller.c</file>
+            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/button_manager.c</file>
+            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/ledcontroller.h</file>
+            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/command_system.h</file>
+            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/ledcontroller.c</file>
+            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/eeprom_controller.h</file>
+            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/globals.h</file>
+            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/mcc_generated_files/i2c_master.c</file>
+            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/valve_manager.h</file>
+            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/valve_manager.c</file>
+            <file>file:/C:/Projects/eggys-intellivalve-firmware/FW/Rev1/mcc_generated_files/adc.c</file>
         </group>
     </open-files>
 </project-private>

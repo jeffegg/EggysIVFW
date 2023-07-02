@@ -47,6 +47,8 @@ uint8_t nextValveLocation = 0;
 uint16_t valveADCValue = 0xFFFF;
 uint16_t adderADC = 0;
 
+bool lastInterruptValue = false;
+
 void SetupValve(void)
 {
     struct ValveSettings newValveSettings;
@@ -173,43 +175,19 @@ uint8_t GetEndstop24Value(void)
     return currentValveInfo.endstop24Value;
 }
 
-uint8_t SetSelectedEndstop0(void)
+void SetSelectedEndstop0(void)
 {
     if (currentValveInfo.valveMode != VALVE_MODE_MAINTAINENC)
     {
-        if (currentValveInfo.enstop0Selected)
-        {
-            return currentValveInfo.endstop0Value;
-        }
-        else
-        {
-            nextValveInfo.enstop0Selected = true;
-            WriteEEPROM(VALVE_EEPROM_SELECTED_END_STOP_ADDRESS, (uint8_t)nextValveInfo.enstop0Selected);
-            MoveValveToNewPosition();
-            currentValveInfo.enstop0Selected = nextValveInfo.enstop0Selected;
-            return currentValveInfo.endstop0Value;
-        }
+        nextValveInfo.enstop0Selected = true;
     }
-    return GetSelectedEndstopValue();
 }
-uint8_t SetSelectedEndstop24(void)
+void SetSelectedEndstop24(void)
 {
     if (currentValveInfo.valveMode != VALVE_MODE_MAINTAINENC)
     {
-        if (!currentValveInfo.enstop0Selected)
-        {
-            return currentValveInfo.endstop24Value;
-        }
-        else
-        {
-            nextValveInfo.enstop0Selected = false;
-            WriteEEPROM(VALVE_EEPROM_SELECTED_END_STOP_ADDRESS, (uint8_t)nextValveInfo.enstop0Selected);
-            MoveValveToNewPosition();
-            currentValveInfo.enstop0Selected = nextValveInfo.enstop0Selected;
-            return currentValveInfo.endstop24Value;
-        }
+        nextValveInfo.enstop0Selected = false;
     }
-    return GetSelectedEndstopValue();
 }
 
 SelectedEndstop GetSelectedEndstop(void)
@@ -238,7 +216,12 @@ uint8_t GetSelectedEndstopValue(void)
 
 uint8_t GetCurrentPosition(void)
 {
-    return ADCValueToPosition(valveADCValue);
+    valveADCValue = GetCurrentADC();
+    uint16_t tempADCValue = valveADCValue;
+    valveADCValue = ADC_GetConversionResult();
+    tempADCValue += valveADCValue;
+        
+    return ADCValueToPosition(tempADCValue);
     /*if (currentValveInfo.valveMode != VALVE_MODE_MAINTAINENC)
     {
         return currentMaintenceOverridePosition;
@@ -249,7 +232,7 @@ uint8_t GetCurrentPosition(void)
     }*/
 }
 
-uint8_t PeriodicVerifyPosition(uint8_t overridePosition)
+uint8_t PeriodicValveUpdate(uint8_t overridePosition)
 {
     if (currentValveInfo.valveMode == VALVE_MODE_MAINTAINENC)
     {
@@ -264,6 +247,13 @@ uint8_t PeriodicVerifyPosition(uint8_t overridePosition)
     }
     else
     {
+        if (nextValveInfo.enstop0Selected != currentValveInfo.enstop0Selected)
+        {
+            WriteEEPROM(VALVE_EEPROM_SELECTED_END_STOP_ADDRESS, (uint8_t)nextValveInfo.enstop0Selected);
+            currentValveInfo.enstop0Selected = nextValveInfo.enstop0Selected;
+        }
+        
+        
         return MoveValveToNewPosition();
     }
 }
@@ -354,7 +344,7 @@ uint8_t MoveValveToNewPosition(void)
         
     uint16_t tempADCValue = 0;
     uint8_t delayLoop1 = 0x10;
-    uint8_t delayLoop2 = 0x20;
+    uint8_t delayLoop2 = 0x10;
     volatile Command * newCommand;
     bool valve_ran = false;
     uint8_t direction_change = 0; // This is how many times we changed direction, will be at least 1; using this to prevent bouncing from close by values
@@ -469,13 +459,16 @@ void CopyValveInfoBToA(struct ValveInfo *valveInfoA, struct ValveInfo *valveInfo
 
 void ValvePosition0InterruptHandler(void)
 {
-    
-    SetSelectedEndstop0();
+    lastInterruptValue = true;
+    if ((!lastInterruptValue) && (!currentValveInfo.enstop0Selected))
+        SetSelectedEndstop0();
 }
 
 void ValvePosition24InterruptHandler(void)
 {
-    SetSelectedEndstop24();
+    lastInterruptValue = false;
+    if ((lastInterruptValue) && (currentValveInfo.enstop0Selected))
+        SetSelectedEndstop24();
 }
 
 void CreateADCTable(struct ValveSettings *currentValveSettings)

@@ -109,7 +109,7 @@ uint8_t GetDebugLevel(void)
 
 void ProvisionValve(bool provisioned)
 {
-    nextValveAddress = provisioned;
+    nextValveProvisioned = provisioned;
 }
 
 bool IsProvisioned(void)

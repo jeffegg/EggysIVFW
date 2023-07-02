@@ -150,6 +150,7 @@ void HandleButtons(void)
         if (newCommand)
         {
             SendValveHailMessage(newCommand, GetValveRs485Address(), valve_uid);
+            redAndSaveButtonPushed = false;
         }
         TransmitMessage(newCommand);        
     }

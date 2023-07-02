@@ -56,6 +56,7 @@ void SetupLeds(void)
 
 void UpdateLeds(void)
 {
+    
     if (currentDisplay.raw_leds != nextDisplay.raw_leds)
     {
         uint8_t delayLoop1 = 0;

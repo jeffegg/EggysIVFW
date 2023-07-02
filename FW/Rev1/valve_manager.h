@@ -64,13 +64,13 @@ uint8_t GetEndstop0Value(void);
 uint8_t SetEndstop24Value(uint8_t newEndstopValue);
 uint8_t GetEndstop24Value(void);
 
-uint8_t SetSelectedEndstop0(void);
-uint8_t SetSelectedEndstop24(void);
+void SetSelectedEndstop0(void);
+void SetSelectedEndstop24(void);
 SelectedEndstop GetSelectedEndstop(void);
 uint8_t GetSelectedEndstopValue(void);
 uint8_t GetCurrentPosition(void);
 
-uint8_t PeriodicVerifyPosition(uint8_t overridePosition);
+uint8_t PeriodicValveUpdate(uint8_t overridePosition);
 
 #endif	/* VALVE_MANAGER_H */
 

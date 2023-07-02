@@ -166,7 +166,7 @@ void WriteEEPROMBuffer(uint8_t eeprom_addr, uint8_t *buffer, uint8_t length)
 
 void ReadEEPROM(uint8_t *data, uint8_t address, uint8_t length)
 {
-    if(eepromDataValid)
+    if(eepromDataValid && (address < (uint8_t)VALVE_EEPROM_SIZE))
     {
         for(uint8_t j = 0; j < length; ++j)
         {
