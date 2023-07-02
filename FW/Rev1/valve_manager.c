@@ -459,16 +459,17 @@ void CopyValveInfoBToA(struct ValveInfo *valveInfoA, struct ValveInfo *valveInfo
 
 void ValvePosition0InterruptHandler(void)
 {
-    lastInterruptValue = true;
     if ((!lastInterruptValue) && (!currentValveInfo.enstop0Selected))
         SetSelectedEndstop0();
+    lastInterruptValue = true;
 }
 
 void ValvePosition24InterruptHandler(void)
 {
-    lastInterruptValue = false;
+    
     if ((lastInterruptValue) && (currentValveInfo.enstop0Selected))
         SetSelectedEndstop24();
+    lastInterruptValue = false;
 }
 
 void CreateADCTable(struct ValveSettings *currentValveSettings)
