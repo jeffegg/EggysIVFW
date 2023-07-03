@@ -470,7 +470,7 @@ void SendMessage(volatile Command * command_struct, uint8_t valve_address, uint8
 
 void SendValveHailMessage(volatile Command * command, uint8_t valve_address, uint8_t* valve_uid)
 {
-    uint8_t newData[VALVE_EEPROM_SERIAL_LEN + 10] = {0};
+    uint8_t newData[VALVE_EEPROM_SERIAL_LEN + 14 + 1] = {0};
     
     for (int i = 0; i < VALVE_EEPROM_SERIAL_LEN; i++)
         newData[i] =  valve_uid[i];
@@ -491,7 +491,7 @@ void SendValveHailMessage(volatile Command * command, uint8_t valve_address, uin
     newData[VALVE_EEPROM_SERIAL_LEN + 13] = revisionID[2];
     newData[VALVE_EEPROM_SERIAL_LEN + 14] = revisionID[3];  
     
-    SendMessage(command, valve_address, 0xF, VALVE_HAIL_MESSAGE, valve_uid, VALVE_EEPROM_SERIAL_LEN + 14 + 1);
+    SendMessage(command, valve_address, 0xF, VALVE_HAIL_MESSAGE, newData, VALVE_EEPROM_SERIAL_LEN + 14 + 1);
 }
 
 void SendValveAddress(volatile Command * command, uint8_t valve_address)

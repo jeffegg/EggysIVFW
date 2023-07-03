@@ -28,7 +28,7 @@
 
 typedef enum
 {
-    VALVE_HAIL_MESSAGE      = 0x08, // Sent when Red + Save Button are pushed. Will send UUID  
+    VALVE_HAIL_MESSAGE      = 0x52, // Sent when Red + Save Button are pushed. Will send UUID - Similar to GRUT message
     VALVE_ADDR              = 0x22,
     VALVE_UUID              = 0x25,
     VALVE_CURRENT_POSITION  = 0x29, // Send current position and which endstop active
