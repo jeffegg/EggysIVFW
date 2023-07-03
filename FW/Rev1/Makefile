@@ -49,6 +49,11 @@ CP=cp
 CCADMIN=CCadmin
 RANLIB=ranlib
 
+BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
+HASH = $(shell git rev-parse --short HEAD)
+DATE = $(shell git log -1 --format=%cd --date=short)
+VERSION = $(shell git describe --abbrev=0) 
+
 
 # build
 build: .build-post

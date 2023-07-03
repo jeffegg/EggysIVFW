@@ -84,11 +84,31 @@ LDLIBSOPTIONS=
 # fixDeps replaces a bunch of sed/cat/printf statements that slow down the build
 FIXDEPS=fixDeps
 
-.build-conf:  ${BUILD_SUBPROJECTS}
+# The following macros may be used in the pre and post step lines
+_/_=\\
+ShExtension=.bat
+Device=PIC16F1718
+ProjectDir="C:\Projects\eggys-intellivalve-firmware\FW\Rev1"
+ProjectName=Intellivalve_FW
+ConfName=default
+ImagePath="${DISTDIR}\Rev1.${IMAGE_TYPE}.${OUTPUT_SUFFIX}"
+ImageDir="${DISTDIR}"
+ImageName="Rev1.${IMAGE_TYPE}.${OUTPUT_SUFFIX}"
+ifeq ($(TYPE_IMAGE), DEBUG_RUN)
+IsDebug="true"
+else
+IsDebug="false"
+endif
+
+.build-conf:  .pre ${BUILD_SUBPROJECTS}
 ifneq ($(INFORMATION_MESSAGE), )
 	@echo $(INFORMATION_MESSAGE)
 endif
 	${MAKE}  -f nbproject/Makefile-default.mk ${DISTDIR}/Rev1.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+	@echo "--------------------------------------"
+	@echo "User defined post-build step: [${MKDIR} image && ${CP} ${ImagePath} image && ${MV}  image/${ImageName} image/EggysIVFW_${RELEASE}_${BRANCH}_${HASH}_${DATE}.${OUTPUT_SUFFIX}]"
+	@${MKDIR} image && ${CP} ${ImagePath} image && ${MV}  image/${ImageName} image/EggysIVFW_${RELEASE}_${BRANCH}_${HASH}_${DATE}.${OUTPUT_SUFFIX}
+	@echo "--------------------------------------"
 
 MP_PROCESSOR_OPTION=16F1718
 # ------------------------------------------------------------------------------------
@@ -463,6 +483,11 @@ ${DISTDIR}/Rev1.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefi
 
 endif
 
+.pre:
+	@echo "--------------------------------------"
+	@echo "User defined pre-build step: [git log -n 1 --format=format:"#define GIT_COMMIT \"%h\"%n" HEAD ]"
+	@git log -n 1 --format=format:"#define GIT_COMMIT \"%h\"%n" HEAD 
+	@echo "--------------------------------------"
 
 # Subprojects
 .build-subprojects:
