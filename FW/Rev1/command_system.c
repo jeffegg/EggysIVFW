@@ -488,8 +488,8 @@ void SendValveHailMessage(volatile Command * command, uint8_t valve_address, uin
     newData[VALVE_EEPROM_SERIAL_LEN + 10] = deviceID[0];
     newData[VALVE_EEPROM_SERIAL_LEN + 11] = deviceID[1];
     newData[VALVE_EEPROM_SERIAL_LEN + 12] = 0x2;
-    newData[VALVE_EEPROM_SERIAL_LEN + 13] = revisionID[2];
-    newData[VALVE_EEPROM_SERIAL_LEN + 14] = revisionID[3];  
+    newData[VALVE_EEPROM_SERIAL_LEN + 13] = revisionID[0];
+    newData[VALVE_EEPROM_SERIAL_LEN + 14] = revisionID[1];  
     
     SendMessage(command, valve_address, 0xF, VALVE_HAIL_MESSAGE, newData, VALVE_EEPROM_SERIAL_LEN + 14 + 1);
 }
