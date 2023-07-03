@@ -1,1 +1,0 @@
-"User defined pre-build step: [echo git log -n 1 --format=format:"#define GIT_COMMIT \"n" HEAD 

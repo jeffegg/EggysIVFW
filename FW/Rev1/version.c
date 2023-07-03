@@ -19,5 +19,7 @@
 #include <xc.h>
 #include "version.h"
 
-volatile uint32_t current_fw_version = (uint32_t)FW_VERSION;
+volatile uint32_t current_fw_version = (uint32_t)GIT_HASH;
+volatile uint32_t current_fw_date = (uint32_t)GIT_HEX_DATE;
 extern uint8_t *fw_version = (uint8_t *)&current_fw_version;
+extern uint8_t *fw_date = (uint8_t *)&current_fw_date;

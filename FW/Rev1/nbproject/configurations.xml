@@ -30,7 +30,6 @@
       <itemPath>globals.h</itemPath>
       <itemPath>valve_manager.h</itemPath>
       <itemPath>button_manager.h</itemPath>
-      <itemPath>version.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -111,9 +110,9 @@
       <makeCustomizationType>
         <makeCustomizationPreStepEnabled>true</makeCustomizationPreStepEnabled>
         <makeUseCleanTarget>false</makeUseCleanTarget>
-        <makeCustomizationPreStep>git log -n 1 --format=format:"#define GIT_COMMIT \"%h\"%n" HEAD</makeCustomizationPreStep>
+        <makeCustomizationPreStep>${MKDIR} generated-headers &amp;&amp; printf "#ifndef XC_HEADER_TEMPLATE_H\n#define XC_HEADER_TEMPLATE_H\n\n#define GIT_HASH 0x${GIT_HASH}\n#define GIT_DATE \"${GIT_DATE}\"\n#define GIT_HEX_DATE 0x${GIT_S_DATE}\n#define GIT_BRANCH \"${GIT_BRANCH}\"\n#define GIT_VERSION \"${GIT_VERSION}\"\n\n#endif/* XC_HEADER_TEMPLATE_H */" > generated-headers\version.h</makeCustomizationPreStep>
         <makeCustomizationPostStepEnabled>true</makeCustomizationPostStepEnabled>
-        <makeCustomizationPostStep>${MKDIR} image &amp;&amp; ${CP} ${ImagePath} image &amp;&amp; ${MV}  image/${ImageName} image/EggysIVFW_${RELEASE}_${BRANCH}_${HASH}_${DATE}.${OUTPUT_SUFFIX}</makeCustomizationPostStep>
+        <makeCustomizationPostStep>${MKDIR} image &amp;&amp; ${CP} ${ImagePath} image &amp;&amp; ${MV}  image/${ImageName} image/EggysIVFW_${GIT_RELEASE}_${GIT_BRANCH}_$GIT_{HASH}_${GIT_DATE}.${OUTPUT_SUFFIX}</makeCustomizationPostStep>
         <makeCustomizationPutChecksumInUserID>false</makeCustomizationPutChecksumInUserID>
         <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
         <makeCustomizationNormalizeHexFile>true</makeCustomizationNormalizeHexFile>
@@ -126,7 +125,7 @@
         <property key="default-char-type" value="true"/>
         <property key="define-macros" value=""/>
         <property key="disable-optimizations" value="true"/>
-        <property key="extra-include-directories" value=""/>
+        <property key="extra-include-directories" value="generated-headers"/>
         <property key="favor-optimization-for" value="-speed,+space"/>
         <property key="garbage-collect-data" value="true"/>
         <property key="garbage-collect-functions" value="true"/>
@@ -187,7 +186,7 @@
         <property key="format-hex-file-for-download" value="true"/>
         <property key="initialize-data" value="true"/>
         <property key="input-libraries" value="libm"/>
-        <property key="keep-generated-startup.as" value="false"/>
+        <property key="keep-generated-startup.as" value="true"/>
         <property key="link-in-c-library" value="true"/>
         <property key="link-in-c-library-gcc" value=""/>
         <property key="link-in-peripheral-library" value="false"/>
