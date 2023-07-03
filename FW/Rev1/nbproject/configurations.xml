@@ -112,7 +112,7 @@
         <makeUseCleanTarget>false</makeUseCleanTarget>
         <makeCustomizationPreStep>${MKDIR} generated-headers &amp;&amp; printf "#ifndef XC_HEADER_TEMPLATE_H\n#define XC_HEADER_TEMPLATE_H\n\n#define GIT_HASH 0x${GIT_HASH}\n#define GIT_DATE \"${GIT_DATE}\"\n#define GIT_HEX_DATE 0x${GIT_S_DATE}\n#define GIT_BRANCH \"${GIT_BRANCH}\"\n#define GIT_VERSION \"${GIT_VERSION}\"\n\n#endif/* XC_HEADER_TEMPLATE_H */" > generated-headers\version.h</makeCustomizationPreStep>
         <makeCustomizationPostStepEnabled>true</makeCustomizationPostStepEnabled>
-        <makeCustomizationPostStep>${MKDIR} image &amp;&amp; ${CP} ${ImagePath} image &amp;&amp; ${MV}  image/${ImageName} image/EggysIVFW_${GIT_RELEASE}_${GIT_BRANCH}_$GIT_{HASH}_${GIT_DATE}.${OUTPUT_SUFFIX}</makeCustomizationPostStep>
+        <makeCustomizationPostStep>${MKDIR} image &amp;&amp; ${CP} ${ImagePath} image &amp;&amp; ${MV}  image/${ImageName} image/EggysIVFW_${GIT_RELEASE}_${GIT_BRANCH}_${GIT_HASH}_${GIT_DATE}.${ConfName}.${OUTPUT_SUFFIX}</makeCustomizationPostStep>
         <makeCustomizationPutChecksumInUserID>false</makeCustomizationPutChecksumInUserID>
         <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
         <makeCustomizationNormalizeHexFile>true</makeCustomizationNormalizeHexFile>
@@ -364,7 +364,6 @@
         <archiverTool>
         </archiverTool>
         <loading>
-          <loadableFile>bootloader.hex</loadableFile>
           <useAlternateLoadableFile>false</useAlternateLoadableFile>
           <parseOnProdLoad>false</parseOnProdLoad>
           <alternateLoadableFile></alternateLoadableFile>
@@ -377,7 +376,7 @@
         <makeUseCleanTarget>false</makeUseCleanTarget>
         <makeCustomizationPreStep>${MKDIR} generated-headers &amp;&amp; printf "#ifndef XC_HEADER_TEMPLATE_H\n#define XC_HEADER_TEMPLATE_H\n\n#define GIT_HASH 0x${GIT_HASH}\n#define GIT_DATE \"${GIT_DATE}\"\n#define GIT_HEX_DATE 0x${GIT_S_DATE}\n#define GIT_BRANCH \"${GIT_BRANCH}\"\n#define GIT_VERSION \"${GIT_VERSION}\"\n\n#endif/* XC_HEADER_TEMPLATE_H */" > generated-headers\version.h</makeCustomizationPreStep>
         <makeCustomizationPostStepEnabled>true</makeCustomizationPostStepEnabled>
-        <makeCustomizationPostStep>${MKDIR} image &amp;&amp; ${CP} ${ImagePath} image &amp;&amp; ${MV}  image/${ImageName} image/EggysIVFW_${GIT_RELEASE}_${GIT_BRANCH}_$GIT_{HASH}_${GIT_DATE}.${OUTPUT_SUFFIX}</makeCustomizationPostStep>
+        <makeCustomizationPostStep>${MKDIR} image &amp;&amp; ${CP} ${ImagePath} image &amp;&amp; ${MV}  image/${ImageName} image/EggysIVFW_${GIT_RELEASE}_${GIT_BRANCH}_${GIT_HASH}_${GIT_DATE}.${ConfName}.${OUTPUT_SUFFIX}</makeCustomizationPostStep>
         <makeCustomizationPutChecksumInUserID>false</makeCustomizationPutChecksumInUserID>
         <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
         <makeCustomizationNormalizeHexFile>true</makeCustomizationNormalizeHexFile>
@@ -400,7 +399,7 @@
         <property key="opt-xc8-compiler-strict_ansi" value="false"/>
         <property key="optimization-assembler" value="true"/>
         <property key="optimization-assembler-files" value="true"/>
-        <property key="optimization-debug" value="false"/>
+        <property key="optimization-debug" value="true"/>
         <property key="optimization-invariant-enable" value="false"/>
         <property key="optimization-invariant-value" value="16"/>
         <property key="optimization-level" value="-O0"/>
@@ -414,7 +413,7 @@
         <property key="use-iar" value="false"/>
         <property key="verbose" value="false"/>
         <property key="warning-level" value="-3"/>
-        <property key="what-to-do" value="ignore"/>
+        <property key="what-to-do" value="require"/>
       </HI-TECH-COMP>
       <HI-TECH-LINK>
         <property key="additional-options-checksum" value=""/>
@@ -463,7 +462,7 @@
         <property key="remove-unused-sections" value="true"/>
       </HI-TECH-LINK>
       <ICD4Tool>
-        <property key="AutoSelectMemRanges" value="auto"/>
+        <property key="AutoSelectMemRanges" value="manual"/>
         <property key="Freeze Peripherals" value="true"/>
         <property key="SecureSegment.SegmentProgramming" value="FullChipProgramming"/>
         <property key="ToolFirmwareFilePath"
@@ -473,8 +472,8 @@
         <property key="ToolFirmwareToolPack"
                   value="Press to select which tool pack to use"/>
         <property key="communication.interface.jtag" value="2wire"/>
-        <property key="debugoptions.debug-startup" value="Use system settings"/>
-        <property key="debugoptions.reset-behaviour" value="Use system settings"/>
+        <property key="debugoptions.debug-startup" value="Halt at main"/>
+        <property key="debugoptions.reset-behaviour" value="Main"/>
         <property key="debugoptions.simultaneous.debug" value="false"/>
         <property key="debugoptions.useswbreakpoints" value="true"/>
         <property key="hwtoolclock.frcindebug" value="false"/>
@@ -489,8 +488,8 @@
         <property key="memories.id" value="false"/>
         <property key="memories.instruction.ram.ranges"
                   value="${memories.instruction.ram.ranges}"/>
-        <property key="memories.programmemory" value="false"/>
-        <property key="memories.programmemory.ranges" value="7c0-3fff"/>
+        <property key="memories.programmemory" value="true"/>
+        <property key="memories.programmemory.ranges" value="0-3fff"/>
         <property key="poweroptions.powerenable" value="false"/>
         <property key="programoptions.donoteraseauxmem" value="false"/>
         <property key="programoptions.eraseb4program" value="true"/>
@@ -506,8 +505,8 @@
                   value="${memories.dataflash.default}"/>
         <property key="programoptions.preserveeeprom" value="false"/>
         <property key="programoptions.preserveeeprom.ranges" value=""/>
-        <property key="programoptions.preserveprogram.ranges" value=""/>
-        <property key="programoptions.preserveprogramrange" value="false"/>
+        <property key="programoptions.preserveprogram.ranges" value="0-7bf"/>
+        <property key="programoptions.preserveprogramrange" value="true"/>
         <property key="programoptions.preserveuserid" value="false"/>
         <property key="programoptions.program.otpconfig" value="false"/>
         <property key="programoptions.programcalmem" value="false"/>
@@ -520,7 +519,7 @@
         <property key="voltagevalue" value="5.0"/>
       </ICD4Tool>
       <Tool>
-        <property key="AutoSelectMemRanges" value="auto"/>
+        <property key="AutoSelectMemRanges" value="manual"/>
         <property key="Freeze Peripherals" value="true"/>
         <property key="SecureSegment.SegmentProgramming" value="FullChipProgramming"/>
         <property key="ToolFirmwareFilePath"
@@ -534,8 +533,8 @@
                   value="${communication.interface.default}"/>
         <property key="communication.interface.jtag" value="2wire"/>
         <property key="communication.speed" value="${communication.speed.default}"/>
-        <property key="debugoptions.debug-startup" value="Use system settings"/>
-        <property key="debugoptions.reset-behaviour" value="Use system settings"/>
+        <property key="debugoptions.debug-startup" value="Halt at main"/>
+        <property key="debugoptions.reset-behaviour" value="Main"/>
         <property key="debugoptions.simultaneous.debug" value="false"/>
         <property key="debugoptions.useswbreakpoints" value="true"/>
         <property key="event.recorder.enabled" value="false"/>
@@ -553,8 +552,8 @@
         <property key="memories.id" value="false"/>
         <property key="memories.instruction.ram.ranges"
                   value="${memories.instruction.ram.ranges}"/>
-        <property key="memories.programmemory" value="false"/>
-        <property key="memories.programmemory.ranges" value="7c0-3fff"/>
+        <property key="memories.programmemory" value="true"/>
+        <property key="memories.programmemory.ranges" value="0-3fff"/>
         <property key="poweroptions.powerenable" value="false"/>
         <property key="programmerToGoFilePath"
                   value="C:/Projects/eggys-intellivalve-firmware/FW/Rev1/debug/default/default_ptg"/>
@@ -572,8 +571,8 @@
                   value="${memories.dataflash.default}"/>
         <property key="programoptions.preserveeeprom" value="false"/>
         <property key="programoptions.preserveeeprom.ranges" value=""/>
-        <property key="programoptions.preserveprogram.ranges" value=""/>
-        <property key="programoptions.preserveprogramrange" value="false"/>
+        <property key="programoptions.preserveprogram.ranges" value="0-7bf"/>
+        <property key="programoptions.preserveprogramrange" value="true"/>
         <property key="programoptions.preserveuserid" value="false"/>
         <property key="programoptions.program.otpconfig" value="false"/>
         <property key="programoptions.programcalmem" value="false"/>

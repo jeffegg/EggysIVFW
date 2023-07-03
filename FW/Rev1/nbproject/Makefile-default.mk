@@ -106,8 +106,8 @@ ifneq ($(INFORMATION_MESSAGE), )
 endif
 	${MAKE}  -f nbproject/Makefile-default.mk ${DISTDIR}/Rev1.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 	@echo "--------------------------------------"
-	@echo "User defined post-build step: [${MKDIR} image && ${CP} ${ImagePath} image && ${MV}  image/${ImageName} image/EggysIVFW_${GIT_RELEASE}_${GIT_BRANCH}_$GIT_{HASH}_${GIT_DATE}.${OUTPUT_SUFFIX}]"
-	@${MKDIR} image && ${CP} ${ImagePath} image && ${MV}  image/${ImageName} image/EggysIVFW_${GIT_RELEASE}_${GIT_BRANCH}_$GIT_{HASH}_${GIT_DATE}.${OUTPUT_SUFFIX}
+	@echo "User defined post-build step: [${MKDIR} image && ${CP} ${ImagePath} image && ${MV}  image/${ImageName} image/EggysIVFW_${GIT_RELEASE}_${GIT_BRANCH}_${GIT_HASH}_${GIT_DATE}.${ConfName}.${OUTPUT_SUFFIX}]"
+	@${MKDIR} image && ${CP} ${ImagePath} image && ${MV}  image/${ImageName} image/EggysIVFW_${GIT_RELEASE}_${GIT_BRANCH}_${GIT_HASH}_${GIT_DATE}.${ConfName}.${OUTPUT_SUFFIX}
 	@echo "--------------------------------------"
 
 MP_PROCESSOR_OPTION=16F1718
