@@ -111,12 +111,12 @@
       <makeCustomizationType>
         <makeCustomizationPreStepEnabled>true</makeCustomizationPreStepEnabled>
         <makeUseCleanTarget>false</makeUseCleanTarget>
-        <makeCustomizationPreStep>git log -n 1 --format=format:"#define GIT_COMMIT \"%h\"%n" HEAD </makeCustomizationPreStep>
+        <makeCustomizationPreStep>git log -n 1 --format=format:"#define GIT_COMMIT \"%h\"%n" HEAD</makeCustomizationPreStep>
         <makeCustomizationPostStepEnabled>true</makeCustomizationPostStepEnabled>
         <makeCustomizationPostStep>${MKDIR} image &amp;&amp; ${CP} ${ImagePath} image &amp;&amp; ${MV}  image/${ImageName} image/EggysIVFW_${RELEASE}_${BRANCH}_${HASH}_${DATE}.${OUTPUT_SUFFIX}</makeCustomizationPostStep>
         <makeCustomizationPutChecksumInUserID>false</makeCustomizationPutChecksumInUserID>
         <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
-        <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
+        <makeCustomizationNormalizeHexFile>true</makeCustomizationNormalizeHexFile>
       </makeCustomizationType>
       <HI-TECH-COMP>
         <property key="additional-warnings" value="true"/>

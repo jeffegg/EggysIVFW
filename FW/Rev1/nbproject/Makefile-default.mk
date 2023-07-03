@@ -478,6 +478,9 @@ ${DISTDIR}/Rev1.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefi
 	@${MKDIR} ${DISTDIR} 
 	${MP_CC} $(MP_EXTRA_LD_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -Wl,-Map=${DISTDIR}/Rev1.${IMAGE_TYPE}.map  -DXPRJ_default=$(CND_CONF)  -Wl,--defsym=__MPLAB_BUILD=1   -mdfp="${DFP_DIR}/xc8"  -fno-short-double -fno-short-float -O0 -fasmfile -flocal -maddrqual=ignore -xassembler-with-cpp -mwarn=-3 -Wa,-a -msummary=+psect,+class,+mem,+hex,+file -mcodeoffset=0x7C0  -ginhx032 -Wl,--data-init -mno-keep-startup -mno-osccal -mno-resetbits -mno-save-resetbits -mdownload -mstackcall -mno-default-config-bits -std=c99 -gdwarf-3 -mstack=compiled:auto:auto     $(COMPARISON_BUILD) -Wl,--memorysummary,${DISTDIR}/memoryfile.xml -o ${DISTDIR}/Rev1.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}     
 	
+	@echo Normalizing hex file
+	@"C:/Program Files/Microchip/MPLABX/v6.00/mplab_platform/platform/../mplab_ide/modules/../../bin/hexmate" --edf="C:/Program Files/Microchip/MPLABX/v6.00/mplab_platform/platform/../mplab_ide/modules/../../dat/en_msgs.txt" ${DISTDIR}/Rev1.${IMAGE_TYPE}.hex -o${DISTDIR}/Rev1.${IMAGE_TYPE}.hex
+
 	@echo "Creating unified hex file"
 	@"C:/Program Files/Microchip/MPLABX/v6.00/mplab_platform/platform/../mplab_ide/modules/../../bin/hexmate" --edf="C:/Program Files/Microchip/MPLABX/v6.00/mplab_platform/platform/../mplab_ide/modules/../../dat/en_msgs.txt" ${DISTDIR}/Rev1.${IMAGE_TYPE}.hex bootloader.hex -odist/${CND_CONF}/production/Rev1.production.unified.hex
 
@@ -485,8 +488,8 @@ endif
 
 .pre:
 	@echo "--------------------------------------"
-	@echo "User defined pre-build step: [git log -n 1 --format=format:"#define GIT_COMMIT \"%h\"%n" HEAD ]"
-	@git log -n 1 --format=format:"#define GIT_COMMIT \"%h\"%n" HEAD 
+	@echo "User defined pre-build step: [git log -n 1 --format=format:"#define GIT_COMMIT \"%h\"%n" HEAD]"
+	@git log -n 1 --format=format:"#define GIT_COMMIT \"%h\"%n" HEAD
 	@echo "--------------------------------------"
 
 # Subprojects
