@@ -288,8 +288,8 @@ void UnprovisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
                     newCommand->data[10] = deviceID[0];
                     newCommand->data[11] = deviceID[1];
                     newCommand->data[12] = 0x2;
-                    newCommand->data[13] = revisionID[2];
-                    newCommand->data[14] = revisionID[3];  
+                    newCommand->data[13] = revisionID[0];
+                    newCommand->data[14] = revisionID[1];  
                     
                     newCommand->data_length = 15;
                     TransmitMessage(newCommand);
@@ -438,8 +438,8 @@ void ProvisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
                 newCommand->data[10] = deviceID[0];
                 newCommand->data[11] = deviceID[1];
                 newCommand->data[12] = 0x2;
-                newCommand->data[13] = revisionID[2];
-                newCommand->data[14] = revisionID[3];  
+                newCommand->data[13] = revisionID[0];
+                newCommand->data[14] = revisionID[1];  
 
                 newCommand->data_length = 15;
                 TransmitMessage(newCommand);
