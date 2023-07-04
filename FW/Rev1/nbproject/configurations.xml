@@ -227,6 +227,8 @@
         <property key="memories.programmemory" value="false"/>
         <property key="memories.programmemory.ranges" value="7c0-3fff"/>
         <property key="poweroptions.powerenable" value="false"/>
+        <property key="programmerToGoFilePath"
+                  value="C:/Projects/eggys-intellivalve-firmware/FW/Rev1/debug/default/default_ptg"/>
         <property key="programoptions.donoteraseauxmem" value="false"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.ledbrightness" value="5"/>
@@ -364,6 +366,7 @@
         <archiverTool>
         </archiverTool>
         <loading>
+          <loadableFile>bootloader.hex</loadableFile>
           <useAlternateLoadableFile>false</useAlternateLoadableFile>
           <parseOnProdLoad>false</parseOnProdLoad>
           <alternateLoadableFile></alternateLoadableFile>
@@ -462,7 +465,7 @@
         <property key="remove-unused-sections" value="true"/>
       </HI-TECH-LINK>
       <ICD4Tool>
-        <property key="AutoSelectMemRanges" value="manual"/>
+        <property key="AutoSelectMemRanges" value="auto"/>
         <property key="Freeze Peripherals" value="true"/>
         <property key="SecureSegment.SegmentProgramming" value="FullChipProgramming"/>
         <property key="ToolFirmwareFilePath"
@@ -488,9 +491,11 @@
         <property key="memories.id" value="false"/>
         <property key="memories.instruction.ram.ranges"
                   value="${memories.instruction.ram.ranges}"/>
-        <property key="memories.programmemory" value="true"/>
+        <property key="memories.programmemory" value="false"/>
         <property key="memories.programmemory.ranges" value="0-3fff"/>
         <property key="poweroptions.powerenable" value="false"/>
+        <property key="programmerToGoFilePath"
+                  value="C:/Projects/eggys-intellivalve-firmware/FW/Rev1/debug/debug/debug_ptg"/>
         <property key="programoptions.donoteraseauxmem" value="false"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.ledbrightness" value="5"/>
@@ -505,8 +510,8 @@
                   value="${memories.dataflash.default}"/>
         <property key="programoptions.preserveeeprom" value="false"/>
         <property key="programoptions.preserveeeprom.ranges" value=""/>
-        <property key="programoptions.preserveprogram.ranges" value="0-7bf"/>
-        <property key="programoptions.preserveprogramrange" value="true"/>
+        <property key="programoptions.preserveprogram.ranges" value="0-0"/>
+        <property key="programoptions.preserveprogramrange" value="false"/>
         <property key="programoptions.preserveuserid" value="false"/>
         <property key="programoptions.program.otpconfig" value="false"/>
         <property key="programoptions.programcalmem" value="false"/>
@@ -519,7 +524,7 @@
         <property key="voltagevalue" value="5.0"/>
       </ICD4Tool>
       <Tool>
-        <property key="AutoSelectMemRanges" value="manual"/>
+        <property key="AutoSelectMemRanges" value="auto"/>
         <property key="Freeze Peripherals" value="true"/>
         <property key="SecureSegment.SegmentProgramming" value="FullChipProgramming"/>
         <property key="ToolFirmwareFilePath"
@@ -552,7 +557,7 @@
         <property key="memories.id" value="false"/>
         <property key="memories.instruction.ram.ranges"
                   value="${memories.instruction.ram.ranges}"/>
-        <property key="memories.programmemory" value="true"/>
+        <property key="memories.programmemory" value="false"/>
         <property key="memories.programmemory.ranges" value="0-3fff"/>
         <property key="poweroptions.powerenable" value="false"/>
         <property key="programmerToGoFilePath"
@@ -571,8 +576,8 @@
                   value="${memories.dataflash.default}"/>
         <property key="programoptions.preserveeeprom" value="false"/>
         <property key="programoptions.preserveeeprom.ranges" value=""/>
-        <property key="programoptions.preserveprogram.ranges" value="0-7bf"/>
-        <property key="programoptions.preserveprogramrange" value="true"/>
+        <property key="programoptions.preserveprogram.ranges" value="0-0"/>
+        <property key="programoptions.preserveprogramrange" value="false"/>
         <property key="programoptions.preserveuserid" value="false"/>
         <property key="programoptions.program.otpconfig" value="false"/>
         <property key="programoptions.programcalmem" value="false"/>
