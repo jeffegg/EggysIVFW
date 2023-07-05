@@ -33,7 +33,7 @@
 void WriteRs485Array(uint8_t * value, uint8_t length);
 
 extern volatile bool eusartRxDone;
-
+extern volatile bool sendPeriodicEndStop;
 void main(void)
 {
     SYSTEM_Initialize();
@@ -103,6 +103,11 @@ void main(void)
         PeriodicValveUpdate();
         SettingsManagerRun();
         PeriodicEEPROM();
+        if (sendPeriodicEndStop)
+        {
+            SendValveENDStop(0x0);
+            sendPeriodicEndStop = false;
+        }
     }
 }
 

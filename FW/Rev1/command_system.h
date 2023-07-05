@@ -99,6 +99,6 @@ void SetupValveAddressPackets(volatile Command * command, uint8_t destination);
 void SendValveHailMessage(volatile Command * command, uint8_t valve_address, uint8_t* valve_uid);
 void SendValveAddress(volatile Command * command, uint8_t valve_address);
 void SendValveUUID(volatile Command * command, uint8_t valve_address, uint8_t* valve_uid);
-
+void SendValveENDStop(uint8_t altDest);
 #endif	/* COMMAND_SYSTEM_H */
 

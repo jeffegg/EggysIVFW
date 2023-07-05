@@ -39,9 +39,9 @@ volatile bool receiveReady; // Something in the receive buffer that needs to be 
 volatile bool receiveBuffersFull;
 volatile bool receiveBuffersOverflow;
 
-
 extern volatile bool resetValve = false;
 extern volatile bool fwUpdateValue = false;
+extern volatile bool sendPeriodicEndStop = false;
 volatile uint8_t uart_rx_buffer[MAX_DATA_LENGTH] = {0};
 
 volatile uint8_t transmitBuffer[MAX_PACKET] = {0};
@@ -65,6 +65,8 @@ uint8_t *fw_version;
 uint8_t *fw_date;
 uint8_t *deviceID;
 uint8_t *revisionID;
+
+uint8_t perodicEndStopSource = 0;
 
 void SetupCommandManager(void)
 {
@@ -225,26 +227,13 @@ void UnprovisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
                     currentRS485RXBuffer->data[4] == valve_uid[4]&&
                     currentRS485RXBuffer->data[5] == valve_uid[5])
             {
+                perodicEndStopSource = source;
                 SetEndstop0Value(currentRS485RXBuffer->data[6]);
                 SetEndstop24Value(currentRS485RXBuffer->data[7]);
-                newCommand = GetCommandEntryBuffer();
-                if (newCommand)
-                {
-                    newCommand->protocal = 0x1;
-                    newCommand->source = GetValveRs485Address();
-                    newCommand->destination = currentRS485RXBuffer->source;
-                    newCommand->command = (uint8_t)VALVE_ENDSTOPS;
-                    for (int i = 0; i < VALVE_EEPROM_SERIAL_LEN; i++)
-                        newCommand->data[i] =  valve_uid[i];
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 0] = GetEndstop0Value();
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 1] = GetEndstop24Value();
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 2] = (uint8_t)GetSelectedEndstop();
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 3] = GetCurrentPosition();
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 4] = (uint8_t)GetCurrentValveMode();
-                    newCommand->data_length = 5 + VALVE_EEPROM_SERIAL_LEN;
-                    TransmitMessage(newCommand);
-                }
-            } // Ohh yes there is no break here... We will save space by falling through to the GET_ENDSTOPS for our response
+                sendPeriodicEndStop = true;
+            }
+            receiveReady = false;
+            break;
         case VALVE_GET_ENDSTOPS:
             if (currentRS485RXBuffer->data[0] == valve_uid[0] &&
                     currentRS485RXBuffer->data[1] == valve_uid[1]&&
@@ -253,24 +242,7 @@ void UnprovisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
                     currentRS485RXBuffer->data[4] == valve_uid[4]&&
                     currentRS485RXBuffer->data[5] == valve_uid[5])
             {
-                newCommand = GetCommandEntryBuffer();
-                if (newCommand)
-                {
-                    newCommand->protocal = 0x1;
-                    newCommand->source = GetValveRs485Address();
-                    newCommand->destination = currentRS485RXBuffer->source;
-                    newCommand->command = (uint8_t)VALVE_ENDSTOPS;
-                    for (int i = 0; i < VALVE_EEPROM_SERIAL_LEN; i++)
-                        newCommand->data[i] =  valve_uid[i];
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 0] = GetEndstop0Value();
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 1] = GetEndstop24Value();
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 2] = (uint8_t)GetSelectedEndstop();
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 3] = GetCurrentPosition();
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 4] = (uint8_t)GetCurrentValveMode();
-                    newCommand->data_length = 5 + VALVE_EEPROM_SERIAL_LEN;
-                    TransmitMessage(newCommand);
-                }
-                receiveReady = false;
+                SendValveENDStop(source);
             }
             receiveReady = false;
             break;
@@ -511,26 +483,13 @@ void ProvisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
                     currentRS485RXBuffer->data[4] == valve_uid[4]&&
                     currentRS485RXBuffer->data[5] == valve_uid[5])
             {
+                perodicEndStopSource = source;
                 SetEndstop0Value(currentRS485RXBuffer->data[6]);
                 SetEndstop24Value(currentRS485RXBuffer->data[7]);
-                newCommand = GetCommandEntryBuffer();
-                if (newCommand)
-                {
-                    newCommand->protocal = 0x1;
-                    newCommand->source = GetValveRs485Address();
-                    newCommand->destination = currentRS485RXBuffer->source;
-                    newCommand->command = (uint8_t)VALVE_ENDSTOPS;
-                    for (int i = 0; i < VALVE_EEPROM_SERIAL_LEN; i++)
-                        newCommand->data[i] =  valve_uid[i];
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 0] = GetEndstop0Value();
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 1] = GetEndstop24Value();
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 2] = (uint8_t)GetSelectedEndstop();
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 3] = GetCurrentPosition();
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 4] = (uint8_t)GetCurrentValveMode();
-                    newCommand->data_length = 5 + VALVE_EEPROM_SERIAL_LEN;
-                    TransmitMessage(newCommand);
-                }
-            } // Ohh yes there is no break here... We will save space by falling through to the GET_ENDSTOPS for our response
+                sendPeriodicEndStop = true;
+            }
+            receiveReady = false;
+            break;
         case VALVE_GET_ENDSTOPS:
             if (currentRS485RXBuffer->data[0] == valve_uid[0] &&
                     currentRS485RXBuffer->data[1] == valve_uid[1]&&
@@ -539,24 +498,7 @@ void ProvisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
                     currentRS485RXBuffer->data[4] == valve_uid[4]&&
                     currentRS485RXBuffer->data[5] == valve_uid[5])
             {
-                newCommand = GetCommandEntryBuffer();
-                if (newCommand)
-                {
-                    newCommand->protocal = 0x1;
-                    newCommand->source = GetValveRs485Address();
-                    newCommand->destination = currentRS485RXBuffer->source;
-                    newCommand->command = (uint8_t)VALVE_ENDSTOPS;
-                    for (int i = 0; i < VALVE_EEPROM_SERIAL_LEN; i++)
-                        newCommand->data[i] =  valve_uid[i];
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 0] = GetEndstop0Value();
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 1] = GetEndstop24Value();
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 2] = (uint8_t)GetSelectedEndstop();
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 3] = GetCurrentPosition();
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 4] = (uint8_t)GetCurrentValveMode();
-                    newCommand->data_length = 5 + VALVE_EEPROM_SERIAL_LEN;
-                    TransmitMessage(newCommand);
-                }
-                receiveReady = false;
+                SendValveENDStop(source);
             }
             receiveReady = false;
             break;
@@ -616,4 +558,26 @@ void SendValveAddress(volatile Command * command, uint8_t valve_address)
 void SendValveUUID(volatile Command * command, uint8_t valve_address, uint8_t* valve_uid)
 {
     SendMessage(command, valve_address, 0xF, VALVE_UUID, valve_uid, 6);
+}
+
+void SendValveENDStop(uint8_t altDest)
+{
+    uint8_t dest = perodicEndStopSource;
+    if(altDest != 0)
+        dest = altDest;
+    uint8_t data[5 + VALVE_EEPROM_SERIAL_LEN];
+    for (int i = 0; i < VALVE_EEPROM_SERIAL_LEN; i++)
+            data[i] =  valve_uid[i];
+        data[VALVE_EEPROM_SERIAL_LEN + 0] = GetEndstop0Value();
+        data[VALVE_EEPROM_SERIAL_LEN + 1] = GetEndstop24Value();
+        data[VALVE_EEPROM_SERIAL_LEN + 2] = (uint8_t)GetSelectedEndstop();
+        data[VALVE_EEPROM_SERIAL_LEN + 3] = GetCurrentPosition();
+        data[VALVE_EEPROM_SERIAL_LEN + 4] = (uint8_t)GetCurrentValveMode();
+    Command * newCommand = GetCommandEntryBuffer();
+    
+    if (newCommand)
+    {
+        SendMessage(newCommand, GetValveRs485Address(), dest, VALVE_ENDSTOPS, data, 5 + VALVE_EEPROM_SERIAL_LEN);
+        TransmitMessage(newCommand);
+    }
 }
