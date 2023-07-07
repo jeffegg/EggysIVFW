@@ -24,15 +24,39 @@
 #include "valve_manager.h"
 #include "settings_state_controller.h"
 #include "command_system.h"
+#include "mcc_generated_files/tmr0.h"
 
-bool modeButtonPushed = false;
-bool saveButtonPushed = false;
-bool yellowButtonPushed = false;
-bool redButtonPushed = false;
-bool redAndYellowButtonPushed = false;
-bool redAndSaveButtonPushed = false;
+#define MODE_BUTTON_POS 0
+#define YELLOW_BUTTON_POS 1
+#define RED_BUTTON_POS 2
+#define SAVE_BUTTON_POS 3
+
+// We will look for 3 samples of stables keys
+uint8_t current_keys_pushed = 0;
+uint8_t last_keys_pushed = 0;
+uint8_t second_last_keys_pushed = 0;
+uint8_t debounced_buttons = 0;
 
 void HandleButtons(void);
+void HandleButtonDebounce(void);
+
+void ButtonManagerSetup(void)
+{
+    TMR0_SetDebounceInterruptHandler(HandleButtonDebounce);
+}
+
+void HandleButtonDebounce(void)
+{
+    if ((second_last_keys_pushed == last_keys_pushed) && (last_keys_pushed == current_keys_pushed))
+    {
+        debounced_buttons = current_keys_pushed;
+        current_keys_pushed = 0;
+        last_keys_pushed = 0;
+        second_last_keys_pushed = 0;
+    }
+    second_last_keys_pushed = last_keys_pushed;
+    last_keys_pushed = current_keys_pushed;
+}
 
 void ReadButtons(void)
 {
@@ -46,112 +70,56 @@ void ReadButtons(void)
     yellowButtonPushedFirst |= (YellowButton_GetValue() == 0);
     redButtonPushedFirst |= (RedButton_GetValue() == 0);
     
-    // TODO - needs to move to a timer
-    // Delay for about 50 mS-100mS
-    uint8_t delayLoop1 = 0xF0;
-    uint8_t delayLoop2 = 0xF0;
-    do {
-        do {
-            delayLoop2 -= 1;
-        } while (delayLoop2 != 0);
-        delayLoop1 -= 1;
-    } while (delayLoop1 != 0);
-
-    if(modeButtonPushedFirst)
-    {
-        if (ModeButton_GetValue() == 0)
-            modeButtonPushed |= true;
-        else
-            modeButtonPushed = false;
-        modeButtonPushedFirst = false;
-    }
-    else if (yellowButtonPushedFirst && redButtonPushedFirst)
-    {
-        if(YellowButton_GetValue() == 0)
-            yellowButtonPushed |= true;
-        else
-            yellowButtonPushed = false;
-        if(RedButton_GetValue() == 0)
-            redButtonPushed |= true;
-        else
-            redButtonPushed = false;
-        if (yellowButtonPushed && redButtonPushed)
-            redAndYellowButtonPushed = true;
-        yellowButtonPushedFirst = false;
-        redButtonPushedFirst = false; 
-        yellowButtonPushed = false;
-        redButtonPushed = false;
-    }
-    else if (saveButtonPushedFirst && redButtonPushedFirst)
-    {
-        if(SaveButton_GetValue() == 0)
-            saveButtonPushed |= true;
-        else
-            saveButtonPushed = false;
-        if(RedButton_GetValue() == 0)
-            redButtonPushed |= true;
-        else
-            redButtonPushed = false;
-        if (saveButtonPushed && redButtonPushed)
-            redAndSaveButtonPushed = true;
-        saveButtonPushedFirst = false;
-        redButtonPushedFirst = false; 
-        saveButtonPushed = false;
-        redButtonPushed = false;
-    }
-    else if(saveButtonPushedFirst)
-    {
-        if(SaveButton_GetValue() == 0)
-            saveButtonPushed |= true;
-        else
-            saveButtonPushed = false;
-        saveButtonPushedFirst = false;
-    }
-    else if(yellowButtonPushedFirst)
-    {
-        if(YellowButton_GetValue() == 0)
-            yellowButtonPushed |= true;
-        else
-            yellowButtonPushed = false;
-        yellowButtonPushedFirst = false;
-    }
-    else if(redButtonPushedFirst)
-    {
-        if(RedButton_GetValue() == 0)
-            redButtonPushed |= true;
-        else
-            redButtonPushed = false;
-        redButtonPushedFirst = false;
-    }
-    
+    current_keys_pushed = (ModeButton_GetValue() << MODE_BUTTON_POS) + 
+            (YellowButton_GetValue() << YELLOW_BUTTON_POS) + 
+            (RedButton_GetValue() << RED_BUTTON_POS) + 
+            (SaveButton_GetValue() << SAVE_BUTTON_POS);
     HandleButtons();
 }
 
 void HandleButtons(void)
 {
-    if (modeButtonPushed)
-    {   
-        IncrementValveMode();
-        modeButtonPushed = false;
-    }  
-    if (redAndYellowButtonPushed)
+    bool modeButtonPushed = false;
+    bool saveButtonPushed = false;
+    bool yellowButtonPushed = false;
+    bool redButtonPushed = false;
+    bool redAndYellowButtonPushed = false;
+    bool redAndSaveButtonPushed = false;
+
+    if (debounced_buttons)
     {
-        SelectedEndstop currentEndStop = GetSelectedEndstop();
-        if (currentEndStop == ENDSTOP_0_SELECTED)
-            SetSelectedEndstop24();
-        else
-            SetSelectedEndstop0();
-        redAndYellowButtonPushed = false;
-    }
-    if(redAndSaveButtonPushed)
-    {
-        volatile Command * newCommand;          
-        newCommand = GetCommandEntryBuffer();    
-        if (newCommand)
+        modeButtonPushed = debounced_buttons & (1 << MODE_BUTTON_POS);
+        yellowButtonPushed = debounced_buttons & (1 << YELLOW_BUTTON_POS);
+        redButtonPushed = debounced_buttons & (1 << RED_BUTTON_POS);
+        saveButtonPushed = debounced_buttons & (1 << SAVE_BUTTON_POS);
+        redAndYellowButtonPushed = redButtonPushed && yellowButtonPushed;
+        redAndSaveButtonPushed = redButtonPushed && saveButtonPushed;
+        debounced_buttons = 0;
+        
+        if (modeButtonPushed)
+        {   
+            IncrementValveMode();
+            modeButtonPushed = false;
+        }  
+        if (redAndYellowButtonPushed)
         {
-            SendValveHailMessage(newCommand, GetValveRs485Address(), valve_uid);
-            redAndSaveButtonPushed = false;
+            SelectedEndstop currentEndStop = GetSelectedEndstop();
+            if (currentEndStop == ENDSTOP_0_SELECTED)
+                SetSelectedEndstop24();
+            else
+                SetSelectedEndstop0();
+            redAndYellowButtonPushed = false;
         }
-        TransmitMessage(newCommand);        
+        if(redAndSaveButtonPushed)
+        {
+            volatile Command * newCommand;          
+            newCommand = GetCommandEntryBuffer();    
+            if (newCommand)
+            {
+                SendValveHailMessage(newCommand, GetValveRs485Address(), valve_uid);
+                redAndSaveButtonPushed = false;
+            }
+            TransmitMessage(newCommand);        
+        }    
     }
 }

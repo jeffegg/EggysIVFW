@@ -44,12 +44,6 @@ else
 COMPARISON_BUILD=
 endif
 
-ifdef SUB_IMAGE_ADDRESS
-
-else
-SUB_IMAGE_ADDRESS_COMMAND=
-endif
-
 # Object Directory
 OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 
@@ -91,8 +85,8 @@ Device=PIC16F1718
 ProjectDir="C:\Projects\eggys-intellivalve-firmware\FW\Rev1"
 ProjectName=Intellivalve_FW
 ConfName=default
-ImagePath="${DISTDIR}\Rev1.${IMAGE_TYPE}.${OUTPUT_SUFFIX}"
-ImageDir="${DISTDIR}"
+ImagePath="dist\default\${IMAGE_TYPE}\Rev1.${IMAGE_TYPE}.${OUTPUT_SUFFIX}"
+ImageDir="dist\default\${IMAGE_TYPE}"
 ImageName="Rev1.${IMAGE_TYPE}.${OUTPUT_SUFFIX}"
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
 IsDebug="true"
@@ -479,10 +473,10 @@ ${DISTDIR}/Rev1.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefi
 	${MP_CC} $(MP_EXTRA_LD_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -Wl,-Map=${DISTDIR}/Rev1.${IMAGE_TYPE}.map  -DXPRJ_default=$(CND_CONF)  -Wl,--defsym=__MPLAB_BUILD=1   -mdfp="${DFP_DIR}/xc8"  -fno-short-double -fno-short-float -O0 -fasmfile -flocal -maddrqual=ignore -xassembler-with-cpp -I"generated-headers" -mwarn=-3 -Wa,-a -msummary=+psect,+class,+mem,+hex,+file -mcodeoffset=0x7C0  -ginhx032 -Wl,--data-init -mkeep-startup -mno-osccal -mno-resetbits -mno-save-resetbits -mdownload -mstackcall -mno-default-config-bits -std=c99 -gdwarf-3 -mstack=compiled:auto:auto     $(COMPARISON_BUILD) -Wl,--memorysummary,${DISTDIR}/memoryfile.xml -o ${DISTDIR}/Rev1.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}     
 	
 	@echo Normalizing hex file
-	@"C:/Program Files/Microchip/MPLABX/v6.00/mplab_platform/platform/../mplab_ide/modules/../../bin/hexmate" --edf="C:/Program Files/Microchip/MPLABX/v6.00/mplab_platform/platform/../mplab_ide/modules/../../dat/en_msgs.txt" ${DISTDIR}/Rev1.${IMAGE_TYPE}.hex -o${DISTDIR}/Rev1.${IMAGE_TYPE}.hex
+	@"C:/Program Files/Microchip/MPLABX/v6.10/mplab_platform/platform/../mplab_ide/modules/../../bin/hexmate" --edf="C:/Program Files/Microchip/MPLABX/v6.10/mplab_platform/platform/../mplab_ide/modules/../../dat/en_msgs.txt" ${DISTDIR}/Rev1.${IMAGE_TYPE}.hex -o${DISTDIR}/Rev1.${IMAGE_TYPE}.hex
 
 	@echo "Creating unified hex file"
-	@"C:/Program Files/Microchip/MPLABX/v6.00/mplab_platform/platform/../mplab_ide/modules/../../bin/hexmate" --edf="C:/Program Files/Microchip/MPLABX/v6.00/mplab_platform/platform/../mplab_ide/modules/../../dat/en_msgs.txt" ${DISTDIR}/Rev1.${IMAGE_TYPE}.hex bootloader.hex -odist/${CND_CONF}/production/Rev1.production.unified.hex
+	@"C:/Program Files/Microchip/MPLABX/v6.10/mplab_platform/platform/../mplab_ide/modules/../../bin/hexmate" --edf="C:/Program Files/Microchip/MPLABX/v6.10/mplab_platform/platform/../mplab_ide/modules/../../dat/en_msgs.txt" ${DISTDIR}/Rev1.${IMAGE_TYPE}.hex bootloader.hex -odist/${CND_CONF}/production/Rev1.production.unified.hex
 
 endif
 
@@ -507,7 +501,7 @@ endif
 # Enable dependency checking
 .dep.inc: .depcheck-impl
 
-DEPFILES=$(shell mplabwildcard ${POSSIBLE_DEPFILES})
+DEPFILES=$(wildcard ${POSSIBLE_DEPFILES})
 ifneq (${DEPFILES},)
 include ${DEPFILES}
 endif

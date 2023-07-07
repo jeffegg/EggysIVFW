@@ -56,6 +56,9 @@
 */
 
 volatile uint8_t timer0ReloadVal;
+void (*TMR0_InterruptHandler)(void);
+void (*TMR0_ProvisionedInterruptHandler)(void);
+void (*TMR0_DebounceInterruptHandler)(void);
 /**
   Section: TMR0 APIs
 */
@@ -64,17 +67,25 @@ void TMR0_Initialize(void)
 {
     // Set TMR0 to the options selected in the User Interface
 	
-    // PSA assigned; PS 1:128; TMRSE Increment_lo_hi; mask the nWPUEN and INTEDG bits
-    OPTION_REG = (uint8_t)((OPTION_REG & 0xC0) | (0x86 & 0x3F)); 
+    // PSA assigned; PS 1:128; TMRSE Increment_hi_lo; mask the nWPUEN and INTEDG bits
+    OPTION_REG = (uint8_t)((OPTION_REG & 0xC0) | (0x96 & 0x3F)); 
 	
-    // TMR0 96; 
-    TMR0 = 0x60;
+    // TMR0 194; 
+    TMR0 = 0xC2;
 	
     // Load the TMR value to reload variable
-    timer0ReloadVal= 96;
+    timer0ReloadVal= 0xC2;
 
-    // Clearing IF flag
+    // Clear Interrupt flag before enabling the interrupt
     INTCONbits.TMR0IF = 0;
+
+    // Enabling TMR0 interrupt
+    INTCONbits.TMR0IE = 1;
+
+    // Set Default Interrupt Handler
+    TMR0_SetInterruptHandler(TMR0_DefaultInterruptHandler);
+    TMR0_SetProvisionedInterruptHandler(TMR0_DefaultProvisionedInterruptHandler);
+    TMR0_SetDebounceInterruptHandler(TMR0_DefaultDebounceInterruptHandler);
 }
 
 uint8_t TMR0_ReadTimer(void)
@@ -98,11 +109,71 @@ void TMR0_Reload(void)
     TMR0 = timer0ReloadVal;
 }
 
-bool TMR0_HasOverflowOccured(void)
+void TMR0_ISR(void)
 {
-    // check if  overflow has occurred by checking the TMRIF bit
-    return(INTCONbits.TMR0IF);
+    static volatile uint16_t CountCallBack = 0;
+    static volatile uint16_t debounceCountCallBack = 0;
+
+    TMR0 = timer0ReloadVal;
+    
+    if(TMR0_InterruptHandler)
+    {
+        TMR0_InterruptHandler();
+    }
+    // callback function - called every 30242th pass
+    if (++CountCallBack >= TMR0_INTERRUPT_TICKER_FACTOR)
+    {
+        // ticker function call
+        if (TMR0_ProvisionedInterruptHandler)
+        {
+            TMR0_ProvisionedInterruptHandler();
+        }
+        // reset ticker counter
+        CountCallBack = 0;
+    }
+    
+    if (++debounceCountCallBack >= TMR0_INTERRUPT_DEBOUNCE_FACTOR)
+    {
+        if (TMR0_DebounceInterruptHandler)
+        {
+            TMR0_DebounceInterruptHandler();
+        }
+        // reset ticker counter
+        CountCallBack = 0;
+    }
+    
+    
+    // Clear the TMR0 interrupt flag after the interrupt is handled
+    INTCONbits.TMR0IF = 0;
 }
+
+void TMR0_SetDebounceInterruptHandler(void (* InterruptHandler)(void)){
+    TMR0_ProvisionedInterruptHandler = InterruptHandler;
+}
+
+void TMR0_DefaultDebounceInterruptHandler(void)
+{
+    // Add your custom callback code here called every 30 seconds
+}
+
+void TMR0_SetProvisionedInterruptHandler(void (* InterruptHandler)(void)){
+    TMR0_ProvisionedInterruptHandler = InterruptHandler;
+}
+
+void TMR0_DefaultProvisionedInterruptHandler(void)
+{
+    // Add your custom callback code here called every 30 seconds
+}
+
+void TMR0_SetInterruptHandler(void (* InterruptHandler)(void)){
+    TMR0_InterruptHandler = InterruptHandler;
+}
+
+void TMR0_DefaultInterruptHandler(void){
+    // add your TMR0 interrupt custom code
+    // or set custom function using TMR0_SetInterruptHandler()
+}
+
 /**
   End of File
 */

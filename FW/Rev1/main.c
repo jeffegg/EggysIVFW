@@ -43,6 +43,7 @@ void main(void)
     INTERRUPT_GlobalInterruptEnable();
     // Enable the Peripheral Interrupts
     INTERRUPT_PeripheralInterruptEnable();
+    
     ADC_SelectChannel(Pot1);
     
     // Read EEPROM to local memory
@@ -51,7 +52,8 @@ void main(void)
     SetupValve(); 
     SetLeds();
     UpdateLeds();
-    SetupCommandManager();
+    SetupCommandManager();   
+    ButtonManagerSetup();
     
     volatile Command * newCommand;  
     

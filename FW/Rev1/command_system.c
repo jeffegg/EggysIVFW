@@ -68,6 +68,8 @@ uint8_t *revisionID;
 
 uint8_t perodicEndStopSource = 0;
 
+extern bool provisonSeen;
+
 void SetupCommandManager(void)
 {
     if(IsProvisioned())
@@ -220,6 +222,7 @@ void UnprovisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
             receiveReady = false;
             break;
         case VALVE_SET_ENDSTOPS:
+            provisonSeen = true;
             if (currentRS485RXBuffer->data[0] == valve_uid[0] &&
                     currentRS485RXBuffer->data[1] == valve_uid[1]&&
                     currentRS485RXBuffer->data[2] == valve_uid[2] &&
@@ -476,6 +479,7 @@ void ProvisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
             receiveReady = false;
             break;
         case VALVE_SET_ENDSTOPS:
+            provisonSeen = true;
             if (currentRS485RXBuffer->data[0] == valve_uid[0] &&
                     currentRS485RXBuffer->data[1] == valve_uid[1]&&
                     currentRS485RXBuffer->data[2] == valve_uid[2] &&

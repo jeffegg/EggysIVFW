@@ -59,7 +59,11 @@ void __interrupt() INTERRUPT_InterruptManager (void)
 void InterruptCallback()
 {
     // interrupt handler
-    if(INTCONbits.IOCIE == 1 && INTCONbits.IOCIF == 1)
+    if(INTCONbits.TMR0IE == 1 && INTCONbits.TMR0IF == 1)
+    {
+        TMR0_ISR();
+    }
+    else if(INTCONbits.IOCIE == 1 && INTCONbits.IOCIF == 1)
     {
         PIN_MANAGER_IOC();
     }
@@ -81,10 +85,6 @@ void InterruptCallback()
         {
             EUSART_RxDefaultInterruptHandler();
         } 
-        //else if(PIE1bits.ADIE == 1 &&  PIR1bits.ADIF)
-        //{
-            //ADC_InterruptHandler();
-        //}
         else
         {
             //Unhandled Interrupt

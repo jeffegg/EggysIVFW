@@ -21,9 +21,11 @@
 #include "globals.h"
 #include "settings_state_controller.h"
 #include "eeprom_controller.h"
+#include "mcc_generated_files/tmr0.h"
 
 void GetUUIDFromEEPROM(void);
 void GetDID_RIDFromEEPROM(void);
+
 
 volatile uint16_t localDeviceID = 0;
 volatile uint16_t localRevisionID = 0;
@@ -34,6 +36,10 @@ uint8_t nextValveAddress = 0xB3;
 uint8_t currentValveAddress = 0;
 bool nextValveProvisioned = false;
 bool currentValveProvisioned = false;
+
+uint8_t missedProvisionedCount = 0;
+extern bool provisonSeen = false;
+
 extern uint8_t *deviceID = (uint8_t *)&localDeviceID;
 extern uint8_t *revisionID = (uint8_t *)&localRevisionID;
 
@@ -41,6 +47,8 @@ extern uint8_t *revisionID = (uint8_t *)&localRevisionID;
 
 void LoadValveSettings(void)
 {
+    missedProvisionedCount = 0;
+    
     GetUUIDFromEEPROM();
     GetDID_RIDFromEEPROM();
     
@@ -72,6 +80,7 @@ void LoadValveSettings(void)
         nextValveProvisioned = (bool)tempValue;
     }
     currentValveProvisioned = nextValveProvisioned;
+    TMR0_SetProvisionedInterruptHandler(ProvisionedTimeFunction);
 }
 
 void SetValveRs485Address(uint8_t newAddress)
@@ -115,6 +124,28 @@ void ProvisionValve(bool provisioned)
 bool IsProvisioned(void)
 {
     return currentValveProvisioned;
+}
+
+void ProvisionedTimeFunction(void)
+{
+    if (!provisonSeen)
+    {
+        missedProvisionedCount++;
+    }
+    else
+    {
+        missedProvisionedCount = 0;
+        nextValveProvisioned = true;
+    }
+    if (missedProvisionedCount >= 4) // No commands seen 30 seconds * 4 = 2 minutes
+    {
+        // If valve is provisioned then unprovision it
+        if (currentValveProvisioned)
+        {
+            nextValveProvisioned = false;
+        }
+        missedProvisionedCount = 0;
+    }
 }
 
 void SettingsManagerRun(void)

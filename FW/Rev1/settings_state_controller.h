@@ -30,6 +30,7 @@ extern uint8_t updateEEPROM;
 void LoadValveSettings(void);
 void SetValveRs485Address(uint8_t newAddress);
 uint8_t GetValveRs485Address(void);
+void ProvisionedTimeFunction(void);
 
 void SetDebugLevel(uint8_t value);
 uint8_t GetDebugLevel(void);
