@@ -20,6 +20,7 @@
 #define	EEPROM_CONTROLLER_H
 
 #include <xc.h> // include processor files - each processor file is guarded.  
+#define VALVE_EEPROM_UUID_ADDRESS       0xFA
 
 // Custom FW EEPROM
 #define VALVE_EEPROM_RS485_ADDRESS                        0x60  // RS485 valve address location 1 byte
@@ -29,8 +30,25 @@
 #define VALVE_EEPROM_SELECTED_END_STOP_ADDRESS            0x66  // Current endstop selected 1 byte
 #define VALVE_EEPROM_MAINTENCE_POSITION                   0x67  // Current endstop selected 1 byte
 #define VALVE_EEPROM_DEBUG_LEVEL_ADDRESS                  0x68  // Current debug level 4 bytes
-#define VALVE_EEPROM_PROVISONED_ADDRESS                   0x6C  // Current debug level 4 bytes
-#define VALVE_EEPROM_UUID_ADDRESS       0xFA
+#define VALVE_EEPROM_PROVISONED_ADDRESS                   0x6C  // Are we provisioned? May drop this
+
+#define VALVE_EEPROM_0_END_STOP_ADDRESS_1                 0x70  // Current Valve Mode 1 bytes + Reserve 1 byte
+#define VALVE_EEPROM_24_END_STOP_ADDRESS_1                0x71  // Current Valve Mode 1 bytes + Reserve 1 byte
+#define VALVE_EEPROM_SELECTED_END_STOP_ADDRESS_1          0x72  // Current endstop selected 1 byte
+#define VALVE_EEPROM_0_END_STOP_ADDRESS_2                 0x73  // Current Valve Mode 1 bytes + Reserve 1 byte
+#define VALVE_EEPROM_24_END_STOP_ADDRESS_2                0x74  // Current Valve Mode 1 bytes + Reserve 1 byte
+#define VALVE_EEPROM_SELECTED_END_STOP_ADDRESS_2          0x75  // Current endstop selected 1 byte
+#define VALVE_EEPROM_0_END_STOP_ADDRESS_3                 0x76  // Current Valve Mode 1 bytes + Reserve 1 byte
+#define VALVE_EEPROM_24_END_STOP_ADDRESS_3                0x77  // Current Valve Mode 1 bytes + Reserve 1 byte
+#define VALVE_EEPROM_SELECTED_END_STOP_ADDRESS_3          0x78  // Current endstop selected 1 byte
+#define VALVE_EEPROM_0_END_STOP_ADDRESS_4                 0x79  // Current Valve Mode 1 bytes + Reserve 1 byte
+#define VALVE_EEPROM_24_END_STOP_ADDRESS_4                0x7A  // Current Valve Mode 1 bytes + Reserve 1 byte
+#define VALVE_EEPROM_SELECTED_END_STOP_ADDRESS_4          0x7B  // Current endstop selected 1 byte
+#define VALVE_EEPROM_0_END_STOP_ADDRESS_5                 0x7C  // Current Valve Mode 1 bytes + Reserve 1 byte
+#define VALVE_EEPROM_24_END_STOP_ADDRESS_5                0x7D  // Current Valve Mode 1 bytes + Reserve 1 byte
+#define VALVE_EEPROM_SELECTED_END_STOP_ADDRESS_5          0x7E  // Current endstop selected 1 byte
+
+
 
 // Production FW EEPROM Location - 
 // No plans to use outside of:  VALVE_EEPROM_PROD_FIRMWARE_UPDATE_ADDRESS (Enter FW update)

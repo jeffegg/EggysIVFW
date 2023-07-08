@@ -32,10 +32,12 @@
 #define SAVE_BUTTON_POS 3
 
 // We will look for 3 samples of stables keys
-uint8_t current_keys_pushed = 0;
-uint8_t last_keys_pushed = 0;
-uint8_t second_last_keys_pushed = 0;
-uint8_t debounced_buttons = 0;
+volatile uint8_t current_keys_pushed = 0;
+volatile uint8_t last_keys_pushed = 0;
+volatile uint8_t second_last_keys_pushed = 0;
+volatile uint8_t keysArePushed = 0;
+volatile uint8_t debounced_buttons = 0;
+volatile uint8_t release_buttons = 0;
 
 void HandleButtons(void);
 void HandleButtonDebounce(void);
@@ -47,33 +49,28 @@ void ButtonManagerSetup(void)
 
 void HandleButtonDebounce(void)
 {
-    if ((second_last_keys_pushed == last_keys_pushed) && (last_keys_pushed == current_keys_pushed))
+    ReadButtons();
+    if (keysArePushed && ((current_keys_pushed == 0) && (second_last_keys_pushed == last_keys_pushed) && (last_keys_pushed == current_keys_pushed))) // Ok  now we need to wait to release those keys
     {
-        debounced_buttons = current_keys_pushed;
-        current_keys_pushed = 0;
-        last_keys_pushed = 0;
-        second_last_keys_pushed = 0;
+        debounced_buttons = keysArePushed;
+        keysArePushed = 0;
     }
+    if ((current_keys_pushed != 0) && (second_last_keys_pushed == last_keys_pushed) && (last_keys_pushed == current_keys_pushed))
+    {
+        keysArePushed = current_keys_pushed;
+    }
+    
     second_last_keys_pushed = last_keys_pushed;
     last_keys_pushed = current_keys_pushed;
+    
 }
 
 void ReadButtons(void)
-{
-    bool modeButtonPushedFirst = false;
-    bool saveButtonPushedFirst = false;
-    bool yellowButtonPushedFirst = false;
-    bool redButtonPushedFirst = false;
-
-    modeButtonPushedFirst |= (ModeButton_GetValue() == 0);
-    saveButtonPushedFirst |= (SaveButton_GetValue() == 0);
-    yellowButtonPushedFirst |= (YellowButton_GetValue() == 0);
-    redButtonPushedFirst |= (RedButton_GetValue() == 0);
-    
-    current_keys_pushed = (ModeButton_GetValue() << MODE_BUTTON_POS) + 
-            (YellowButton_GetValue() << YELLOW_BUTTON_POS) + 
-            (RedButton_GetValue() << RED_BUTTON_POS) + 
-            (SaveButton_GetValue() << SAVE_BUTTON_POS);
+{    
+    current_keys_pushed = (uint8_t)((uint8_t)(ModeButton_GetValue() == 0x0) << (uint8_t)MODE_BUTTON_POS) + 
+            (uint8_t)((uint8_t)(YellowButton_GetValue() == 0x0) << (uint8_t)YELLOW_BUTTON_POS) + 
+            (uint8_t)((uint8_t)(RedButton_GetValue() == 0x0) << (uint8_t)RED_BUTTON_POS) + 
+            (uint8_t)((uint8_t)(SaveButton_GetValue() == 0x0) << (uint8_t)SAVE_BUTTON_POS);
     HandleButtons();
 }
 

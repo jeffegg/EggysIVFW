@@ -139,7 +139,7 @@ void TMR0_ISR(void)
             TMR0_DebounceInterruptHandler();
         }
         // reset ticker counter
-        CountCallBack = 0;
+        debounceCountCallBack = 0;
     }
     
     
@@ -148,7 +148,7 @@ void TMR0_ISR(void)
 }
 
 void TMR0_SetDebounceInterruptHandler(void (* InterruptHandler)(void)){
-    TMR0_ProvisionedInterruptHandler = InterruptHandler;
+    TMR0_DebounceInterruptHandler = InterruptHandler;
 }
 
 void TMR0_DefaultDebounceInterruptHandler(void)

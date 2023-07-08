@@ -40,10 +40,10 @@ void CreateADCTable(struct ValveSettings *currentValveSettings);
 // This will give the ADC value for each entry
 uint16_t positionToADCTable[0x31] = {0};
 struct ValveInfo currentValveInfo;
-struct ValveInfo nextValveInfo;
+volatile struct ValveInfo nextValveInfo;
 uint8_t currentMaintenceOverridePosition = 0;
-uint8_t nextMaintenceOverridePosition = 0;
-uint8_t nextValveLocation = 0;
+volatile uint8_t nextMaintenceOverridePosition = 0;
+volatile uint8_t nextValveLocation = 0;
 uint16_t valveADCValue = 0xFFFF;
 uint16_t adderADC = 0;
 
@@ -77,16 +77,9 @@ void SetupValve(void)
 void SetNextValveMode(ValveMode newMode)
 {
     nextValveInfo.valveMode = newMode;
-    if (currentValveInfo.valveMode == VALVE_MODE_MAINTAINENC)
+    if (nextValveInfo.valveMode == VALVE_MODE_MAINTAINENC)
     {
-        if (currentValveInfo.enstop0Selected)
-        {
-            nextMaintenceOverridePosition = currentValveInfo.endstop0Value;
-        }
-        else
-        {
-            nextMaintenceOverridePosition = currentValveInfo.endstop24Value;
-        }
+        nextMaintenceOverridePosition = GetCurrentPosition();
     }
 }
 
@@ -98,8 +91,11 @@ void IncrementValveMode(void)
     {
         nextValveMode = VALVE_MODE_NORMAL;
     }
-
     nextValveInfo.valveMode = nextValveMode;
+    if (nextValveInfo.valveMode == VALVE_MODE_MAINTAINENC)
+    {
+        nextMaintenceOverridePosition = GetCurrentPosition();
+    }
 }
 
 ValveMode GetCurrentValveMode(void)
@@ -202,6 +198,11 @@ uint8_t PeriodicValveUpdate(void)
         }
         else if (nextValveInfo.valveMode == VALVE_MODE_MAINTAINENC)
         {
+            if (currentMaintenceOverridePosition != nextMaintenceOverridePosition)
+            {
+                WriteEEPROM(VALVE_EEPROM_MAINTENCE_POSITION, nextMaintenceOverridePosition);
+                currentMaintenceOverridePosition = nextMaintenceOverridePosition;
+            }
             MoveValveToNewPosition();
         }
         currentValveInfo.valveMode = nextValveInfo.valveMode;
