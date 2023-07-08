@@ -138,7 +138,7 @@ void UpdateLeds(void)
 void SetLeds(void)
 {    
     ValveMode nextValveMode = GetCurrentValveMode();
-    if ((nextValveMode == VALVE_MODE_NORMAL) && (light_on))
+    if ((nextValveMode == VALVE_MODE_NORMAL) && (light_on || (!IsProvisioned())))
         nextDisplay.LEDbits.AUTO_LED = 1;
     else
         nextDisplay.LEDbits.AUTO_LED = 0;
