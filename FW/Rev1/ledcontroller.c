@@ -47,11 +47,15 @@ volatile LEDS nextDisplay;
 
 bool nextIDValve = false;
 bool currentIDValve = false;
+volatile bool light_on = false;
+
+void FlashLedInterrupt(void);
 
 void SetupLeds(void)
 {    
     nextDisplay.raw_leds = 0;
     currentDisplay.raw_leds = nextDisplay.raw_leds;
+    TMR0_SetLightFlashInterruptHandler(FlashLedInterrupt);
 }
 
 void UpdateLeds(void)
@@ -134,7 +138,7 @@ void UpdateLeds(void)
 void SetLeds(void)
 {    
     ValveMode nextValveMode = GetCurrentValveMode();
-    if (nextValveMode == VALVE_MODE_NORMAL)
+    if ((nextValveMode == VALVE_MODE_NORMAL) && (light_on))
         nextDisplay.LEDbits.AUTO_LED = 1;
     else
         nextDisplay.LEDbits.AUTO_LED = 0;
@@ -258,3 +262,7 @@ void IdentifyValve(void)
     nextIDValve = true;
 }
 
+void FlashLedInterrupt(void)
+{
+    light_on = !light_on;
+}

@@ -59,6 +59,7 @@ volatile uint8_t timer0ReloadVal;
 void (*TMR0_InterruptHandler)(void);
 void (*TMR0_ProvisionedInterruptHandler)(void);
 void (*TMR0_DebounceInterruptHandler)(void);
+void (*TMR0_LightFlashInterruptHandler)(void);
 /**
   Section: TMR0 APIs
 */
@@ -86,6 +87,7 @@ void TMR0_Initialize(void)
     TMR0_SetInterruptHandler(TMR0_DefaultInterruptHandler);
     TMR0_SetProvisionedInterruptHandler(TMR0_DefaultProvisionedInterruptHandler);
     TMR0_SetDebounceInterruptHandler(TMR0_DefaultDebounceInterruptHandler);
+    TMR0_SetLightFlashInterruptHandler(TMR0_DefaultLightFlashInterruptHandler);
 }
 
 uint8_t TMR0_ReadTimer(void)
@@ -113,6 +115,7 @@ void TMR0_ISR(void)
 {
     static volatile uint16_t CountCallBack = 0;
     static volatile uint16_t debounceCountCallBack = 0;
+    static volatile uint16_t flashLightCountCallBack = 0;
 
     TMR0 = timer0ReloadVal;
     
@@ -142,6 +145,15 @@ void TMR0_ISR(void)
         debounceCountCallBack = 0;
     }
     
+    if (++flashLightCountCallBack >= TMR0_INTERRUPT_LIGHT_FLASH_FACTOR)
+    {
+        if (TMR0_LightFlashInterruptHandler)
+        {
+            TMR0_LightFlashInterruptHandler();
+        }
+        // reset ticker counter
+        flashLightCountCallBack = 0;
+    }
     
     // Clear the TMR0 interrupt flag after the interrupt is handled
     INTCONbits.TMR0IF = 0;
@@ -172,6 +184,13 @@ void TMR0_SetInterruptHandler(void (* InterruptHandler)(void)){
 void TMR0_DefaultInterruptHandler(void){
     // add your TMR0 interrupt custom code
     // or set custom function using TMR0_SetInterruptHandler()
+}
+
+void TMR0_SetLightFlashInterruptHandler(void (* InterruptHandler)(void)){
+    TMR0_LightFlashInterruptHandler = InterruptHandler;
+}
+
+void TMR0_DefaultLightFlashInterruptHandler(void){
 }
 
 /**

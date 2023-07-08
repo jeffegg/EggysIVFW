@@ -64,7 +64,11 @@
   Section: Macro Declarations
 */
 
-#define TMR0_INTERRUPT_DEBOUNCE_FACTOR  20
+// 20ms
+#define TMR0_INTERRUPT_DEBOUNCE_FACTOR  20      
+// 1s
+#define TMR0_INTERRUPT_LIGHT_FLASH_FACTOR  1004              
+// 30s
 #define TMR0_INTERRUPT_TICKER_FACTOR    30242
 
 /**
@@ -262,6 +266,7 @@ void TMR0_CallBack(void);
  void TMR0_SetInterruptHandler(void (* InterruptHandler)(void));
  void TMR0_SetProvisionedInterruptHandler(void (* InterruptHandler)(void));
  void TMR0_SetDebounceInterruptHandler(void (* InterruptHandler)(void));
+ void TMR0_SetLightFlashInterruptHandler(void (* InterruptHandler)(void));
 /**
   @Summary
     Timer Interrupt Handler
@@ -281,6 +286,7 @@ void TMR0_CallBack(void);
 extern void (*TMR0_InterruptHandler)(void);
 extern void (*TMR0_ProvisionedInterruptHandler)(void);
 void (*TMR0_DebounceInterruptHandler)(void);
+void (*TMR0_LightFlashInterruptHandler)(void);
 /**
   @Summary
     Default Timer Interrupt Handler
@@ -300,6 +306,7 @@ void (*TMR0_DebounceInterruptHandler)(void);
 void TMR0_DefaultInterruptHandler(void);
 void TMR0_DefaultProvisionedInterruptHandler(void);
 void TMR0_DefaultDebounceInterruptHandler(void);
+void TMR0_DefaultLightFlashInterruptHandler(void);
 #ifdef __cplusplus  // Provide C++ Compatibility
 
     }

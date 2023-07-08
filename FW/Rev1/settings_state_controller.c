@@ -166,5 +166,6 @@ void SettingsManagerRun(void)
     {
         WriteEEPROM(VALVE_EEPROM_PROVISONED_ADDRESS, (uint8_t)nextValveProvisioned);
         currentValveProvisioned = nextValveProvisioned;
+        ProvisionValve(currentValveProvisioned);
     }
 }

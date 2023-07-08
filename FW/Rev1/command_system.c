@@ -193,7 +193,7 @@ void UnprovisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
             {
                 uint8_t valve_address = currentRS485RXBuffer->data[6];
                 SetValveRs485Address(valve_address);
-                ProvisionValve(true); 
+                //ProvisionValve(true); 
                 CommandExecutor = &ProvisionedCommandExecutor;
             }
             receiveReady = false;
@@ -367,10 +367,10 @@ void ProvisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
             {
                 uint8_t valve_address = currentRS485RXBuffer->data[6];
                 SetValveRs485Address(valve_address);
-                if (valve_address == 0xB3)
-                    ProvisionValve(false); 
-                else
-                    ProvisionValve(true); 
+                //if (valve_address == 0xB3)
+                //    ProvisionValve(false); 
+                //else
+                //    ProvisionValve(true); 
                 CommandExecutor = &ProvisionedCommandExecutor;
             }
             receiveReady = false;
@@ -490,6 +490,7 @@ void ProvisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
                 perodicEndStopSource = source;
                 SetEndstop0Value(currentRS485RXBuffer->data[6]);
                 SetEndstop24Value(currentRS485RXBuffer->data[7]);
+                //ProvisionValve(true)
                 sendPeriodicEndStop = true;
             }
             receiveReady = false;
