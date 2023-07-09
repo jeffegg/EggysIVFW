@@ -36,7 +36,7 @@ void SetDebugLevel(uint8_t value);
 uint8_t GetDebugLevel(void);
 
 void ProvisionValve(bool provisioned);
-bool IsProvisioned(void);
+inline bool IsProvisioned(void);
 
 void SettingsManagerRun(void);
 

@@ -24,7 +24,7 @@
 #include "version.h"
 
 void WriteRs485Array(uint8_t * value, uint8_t length);
-
+bool CheckUUID(uint8_t *payload);
 void SendMessage(volatile Command * command_struct, uint8_t valve_address, uint8_t dest, uint8_t command, uint8_t * data, uint8_t data_length);
 
 #define TX_COMMAND_BUFFER_SIZE 3 
@@ -160,6 +160,10 @@ void ReceiveCommandExecutor(void)
     }
     
     volatile Command * currentBuffer = &rs485RXBuffer[0];
+    if(IsProvisioned() && (CommandExecutor == &UnprovisionedCommandExecutor))
+        CommandExecutor = &ProvisionedCommandExecutor;
+    else if (!IsProvisioned() && (CommandExecutor == &ProvisionedCommandExecutor))
+        CommandExecutor = &UnprovisionedCommandExecutor;
     (*CommandExecutor)(currentBuffer);
 }
 
@@ -172,39 +176,22 @@ void UnprovisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
     switch (command)
     {   
         case VALVE_IDENTIFY_UUID:
-            if (currentRS485RXBuffer->data[0] == valve_uid[0] &&
-                    currentRS485RXBuffer->data[1] == valve_uid[1]&&
-                    currentRS485RXBuffer->data[2] == valve_uid[2] &&
-                    currentRS485RXBuffer->data[3] == valve_uid[3]&& 
-                    currentRS485RXBuffer->data[4] == valve_uid[4]&&
-                    currentRS485RXBuffer->data[5] == valve_uid[5])
+            if (CheckUUID(currentRS485RXBuffer->data))
             {
                 IdentifyValve();
             }
             receiveReady = false;
             break;
         case VALVE_SET_ADDR:
-            if (currentRS485RXBuffer->data[0] == valve_uid[0] &&
-                    currentRS485RXBuffer->data[1] == valve_uid[1]&&
-                    currentRS485RXBuffer->data[2] == valve_uid[2] &&
-                    currentRS485RXBuffer->data[3] == valve_uid[3]&& 
-                    currentRS485RXBuffer->data[4] == valve_uid[4]&&
-                    currentRS485RXBuffer->data[5] == valve_uid[5])
+            if (CheckUUID(currentRS485RXBuffer->data))
             {
                 uint8_t valve_address = currentRS485RXBuffer->data[6];
                 SetValveRs485Address(valve_address);
-                //ProvisionValve(true); 
-                CommandExecutor = &ProvisionedCommandExecutor;
             }
             receiveReady = false;
             break;
         case VALVE_GET_ADDR:
-            if (currentRS485RXBuffer->data[0] == valve_uid[0] &&
-                    currentRS485RXBuffer->data[1] == valve_uid[1]&&
-                    currentRS485RXBuffer->data[2] == valve_uid[2] &&
-                    currentRS485RXBuffer->data[3] == valve_uid[3]&& 
-                    currentRS485RXBuffer->data[4] == valve_uid[4]&&
-                    currentRS485RXBuffer->data[5] == valve_uid[5])
+            if (CheckUUID(currentRS485RXBuffer->data))
             {
                 newCommand = GetCommandEntryBuffer();
                 if (newCommand)
@@ -223,12 +210,7 @@ void UnprovisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
             break;
         case VALVE_SET_ENDSTOPS:
             provisonSeen = true;
-            if (currentRS485RXBuffer->data[0] == valve_uid[0] &&
-                    currentRS485RXBuffer->data[1] == valve_uid[1]&&
-                    currentRS485RXBuffer->data[2] == valve_uid[2] &&
-                    currentRS485RXBuffer->data[3] == valve_uid[3]&& 
-                    currentRS485RXBuffer->data[4] == valve_uid[4]&&
-                    currentRS485RXBuffer->data[5] == valve_uid[5])
+            if (CheckUUID(currentRS485RXBuffer->data))
             {
                 perodicEndStopSource = source;
                 SetEndstop0Value(currentRS485RXBuffer->data[6]);
@@ -238,12 +220,7 @@ void UnprovisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
             receiveReady = false;
             break;
         case VALVE_GET_ENDSTOPS:
-            if (currentRS485RXBuffer->data[0] == valve_uid[0] &&
-                    currentRS485RXBuffer->data[1] == valve_uid[1]&&
-                    currentRS485RXBuffer->data[2] == valve_uid[2] &&
-                    currentRS485RXBuffer->data[3] == valve_uid[3]&& 
-                    currentRS485RXBuffer->data[4] == valve_uid[4]&&
-                    currentRS485RXBuffer->data[5] == valve_uid[5])
+            if (CheckUUID(currentRS485RXBuffer->data))
             {
                 SendValveENDStop(source);
             }
@@ -256,12 +233,7 @@ void UnprovisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
             receiveReady = false;
             break;
         case VALVE_DEBUG:
-            if (currentRS485RXBuffer->data[0] == valve_uid[0] &&
-                    currentRS485RXBuffer->data[1] == valve_uid[1]&&
-                    currentRS485RXBuffer->data[2] == valve_uid[2] &&
-                    currentRS485RXBuffer->data[3] == valve_uid[3]&& 
-                    currentRS485RXBuffer->data[4] == valve_uid[4]&&
-                    currentRS485RXBuffer->data[5] == valve_uid[5])
+            if (CheckUUID(currentRS485RXBuffer->data))
             {
                 uint8_t debugLevel = currentRS485RXBuffer->data[6];
                 SetDebugLevel(debugLevel);
@@ -269,36 +241,21 @@ void UnprovisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
             receiveReady = false;
             break;
         case VALVE_RESET:
-            if (currentRS485RXBuffer->data[0] == valve_uid[0] &&
-                    currentRS485RXBuffer->data[1] == valve_uid[1]&&
-                    currentRS485RXBuffer->data[2] == valve_uid[2] &&
-                    currentRS485RXBuffer->data[3] == valve_uid[3]&& 
-                    currentRS485RXBuffer->data[4] == valve_uid[4]&&
-                    currentRS485RXBuffer->data[5] == valve_uid[5])
+            if (CheckUUID(currentRS485RXBuffer->data))
             {
                 resetValve = currentRS485RXBuffer->data[6] == 1;
             }
             receiveReady = false;
             break;
         case VALVE_FW_UPDATE:
-            if (currentRS485RXBuffer->data[0] == valve_uid[0] &&
-                    currentRS485RXBuffer->data[1] == valve_uid[1]&&
-                    currentRS485RXBuffer->data[2] == valve_uid[2] &&
-                    currentRS485RXBuffer->data[3] == valve_uid[3]&& 
-                    currentRS485RXBuffer->data[4] == valve_uid[4]&&
-                    currentRS485RXBuffer->data[5] == valve_uid[5])
+            if (CheckUUID(currentRS485RXBuffer->data))
             {
                 fwUpdateValue = currentRS485RXBuffer->data[6] == 1;
             }
             receiveReady = false;
             break;
         case VALVE_FW_VERISON:
-            if (currentRS485RXBuffer->data[0] == valve_uid[0] &&
-                    currentRS485RXBuffer->data[1] == valve_uid[1]&&
-                    currentRS485RXBuffer->data[2] == valve_uid[2] &&
-                    currentRS485RXBuffer->data[3] == valve_uid[3]&& 
-                    currentRS485RXBuffer->data[4] == valve_uid[4]&&
-                    currentRS485RXBuffer->data[5] == valve_uid[5])
+            if (CheckUUID(currentRS485RXBuffer->data))
             {
                 newCommand = GetCommandEntryBuffer();
                 if (newCommand)
@@ -346,42 +303,22 @@ void ProvisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
     switch (command)
     {   
         case VALVE_IDENTIFY_UUID:
-            if (currentRS485RXBuffer->data[0] == valve_uid[0] &&
-                    currentRS485RXBuffer->data[1] == valve_uid[1]&&
-                    currentRS485RXBuffer->data[2] == valve_uid[2] &&
-                    currentRS485RXBuffer->data[3] == valve_uid[3]&& 
-                    currentRS485RXBuffer->data[4] == valve_uid[4]&&
-                    currentRS485RXBuffer->data[5] == valve_uid[5])
+            if (CheckUUID(currentRS485RXBuffer->data))
             {
                 IdentifyValve();
             }
             receiveReady = false;
             break;
         case VALVE_SET_ADDR:
-            if (currentRS485RXBuffer->data[0] == valve_uid[0] &&
-                    currentRS485RXBuffer->data[1] == valve_uid[1]&&
-                    currentRS485RXBuffer->data[2] == valve_uid[2] &&
-                    currentRS485RXBuffer->data[3] == valve_uid[3]&& 
-                    currentRS485RXBuffer->data[4] == valve_uid[4]&&
-                    currentRS485RXBuffer->data[5] == valve_uid[5])
+            if (CheckUUID(currentRS485RXBuffer->data))
             {
                 uint8_t valve_address = currentRS485RXBuffer->data[6];
                 SetValveRs485Address(valve_address);
-                //if (valve_address == 0xB3)
-                //    ProvisionValve(false); 
-                //else
-                //    ProvisionValve(true); 
-                CommandExecutor = &ProvisionedCommandExecutor;
             }
             receiveReady = false;
             break;
         case VALVE_GET_ADDR:
-            if (currentRS485RXBuffer->data[0] == valve_uid[0] &&
-                    currentRS485RXBuffer->data[1] == valve_uid[1]&&
-                    currentRS485RXBuffer->data[2] == valve_uid[2] &&
-                    currentRS485RXBuffer->data[3] == valve_uid[3]&& 
-                    currentRS485RXBuffer->data[4] == valve_uid[4]&&
-                    currentRS485RXBuffer->data[5] == valve_uid[5])
+            if (CheckUUID(currentRS485RXBuffer->data))
             {
                 newCommand = GetCommandEntryBuffer();
                 if (newCommand)
@@ -399,109 +336,108 @@ void ProvisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
             receiveReady = false;
             break;
         case VALVE_SET_SETTINGS:
+            if (CheckUUID(currentRS485RXBuffer->data))
+            {
+                
+            }
             receiveReady = false;
             break;
         case VALVE_GET_SETTINGS:
+            if (CheckUUID(currentRS485RXBuffer->data))
+            {
+                
+            }
             receiveReady = false;
             break;
         case VALVE_GET_EEPROM:
-            sendEEPROMAddress = currentRS485RXBuffer->data[0];
-            sendEEPROMLength = currentRS485RXBuffer->data[1];
-            sendEEPROMSource = source;
-            sendEEPROM = true;
+            if (CheckUUID(currentRS485RXBuffer->data))
+            {
+                sendEEPROMAddress = currentRS485RXBuffer->data[0];
+                sendEEPROMLength = currentRS485RXBuffer->data[1];
+                sendEEPROMSource = source;
+                sendEEPROM = true;
+            }
             receiveReady = false;
             break;
         case VALVE_SET_EEPROM:
-            writeEEPROMSource = source;
-            writeEEPROMAddress = currentRS485RXBuffer->data[0];
-            writeEEPROMLength = currentRS485RXBuffer->data[1];
-            for (uint8_t i = 0; i < writeEEPROMLength; i++)
-                ((uint8_t *)&writeEEPROMValue)[i] = currentRS485RXBuffer->data[2 + i];
-            writeEEPROM = true;
+            if (CheckUUID(currentRS485RXBuffer->data))
+            {
+                writeEEPROMSource = source;
+                writeEEPROMAddress = currentRS485RXBuffer->data[0];
+                writeEEPROMLength = currentRS485RXBuffer->data[1];
+                for (uint8_t i = 0; i < writeEEPROMLength; i++)
+                    ((uint8_t *)&writeEEPROMValue)[i] = currentRS485RXBuffer->data[2 + i];
+                writeEEPROM = true;
+            }
             receiveReady = false;
             break;
         case VALVE_DEBUG:
-            debugLevel = currentRS485RXBuffer->data[6];
-            SetDebugLevel(debugLevel);
+            if (CheckUUID(currentRS485RXBuffer->data))
+            {
+                debugLevel = currentRS485RXBuffer->data[6];
+                SetDebugLevel(debugLevel);
+            }
             receiveReady = false;
             break;
         case VALVE_RESET:
-            if (currentRS485RXBuffer->data[0] == valve_uid[0] &&
-                    currentRS485RXBuffer->data[1] == valve_uid[1]&&
-                    currentRS485RXBuffer->data[2] == valve_uid[2] &&
-                    currentRS485RXBuffer->data[3] == valve_uid[3]&& 
-                    currentRS485RXBuffer->data[4] == valve_uid[4]&&
-                    currentRS485RXBuffer->data[5] == valve_uid[5])
+            if (CheckUUID(currentRS485RXBuffer->data))
             {
                 resetValve = currentRS485RXBuffer->data[6] == 1;
             }
             receiveReady = false;
             break;
         case VALVE_FW_UPDATE:
-            if (currentRS485RXBuffer->data[0] == valve_uid[0] &&
-                    currentRS485RXBuffer->data[1] == valve_uid[1]&&
-                    currentRS485RXBuffer->data[2] == valve_uid[2] &&
-                    currentRS485RXBuffer->data[3] == valve_uid[3]&& 
-                    currentRS485RXBuffer->data[4] == valve_uid[4]&&
-                    currentRS485RXBuffer->data[5] == valve_uid[5])
+            if (CheckUUID(currentRS485RXBuffer->data))
             {
                 fwUpdateValue = currentRS485RXBuffer->data[6] == 1;
             }
             receiveReady = false;
             break;
         case VALVE_FW_VERISON:
-            newCommand = GetCommandEntryBuffer();
-            if (newCommand)
+            if (CheckUUID(currentRS485RXBuffer->data))
             {
-                newCommand->protocal = 0x1;
-                newCommand->source = GetValveRs485Address();
-                newCommand->destination = currentRS485RXBuffer->source;
-                newCommand->command = (uint8_t)VALVE_FW_VERISON;
-                newCommand->data[0] = fw_version[0];
-                newCommand->data[1] = fw_version[1];
-                newCommand->data[2] = fw_version[2];
-                newCommand->data[3] = fw_version[3];
-                newCommand->data[4] = 0x0;
-                newCommand->data[5] = fw_date[0];
-                newCommand->data[6] = fw_date[1];
-                newCommand->data[7] = fw_date[2];
-                newCommand->data[8] = fw_date[3];
-                newCommand->data[9] = 0x1;
-                newCommand->data[10] = deviceID[0];
-                newCommand->data[11] = deviceID[1];
-                newCommand->data[12] = 0x2;
-                newCommand->data[13] = revisionID[0];
-                newCommand->data[14] = revisionID[1];  
+                newCommand = GetCommandEntryBuffer();
+                if (newCommand)
+                {
+                    newCommand->protocal = 0x1;
+                    newCommand->source = GetValveRs485Address();
+                    newCommand->destination = currentRS485RXBuffer->source;
+                    newCommand->command = (uint8_t)VALVE_FW_VERISON;
+                    newCommand->data[0] = fw_version[0];
+                    newCommand->data[1] = fw_version[1];
+                    newCommand->data[2] = fw_version[2];
+                    newCommand->data[3] = fw_version[3];
+                    newCommand->data[4] = 0x0;
+                    newCommand->data[5] = fw_date[0];
+                    newCommand->data[6] = fw_date[1];
+                    newCommand->data[7] = fw_date[2];
+                    newCommand->data[8] = fw_date[3];
+                    newCommand->data[9] = 0x1;
+                    newCommand->data[10] = deviceID[0];
+                    newCommand->data[11] = deviceID[1];
+                    newCommand->data[12] = 0x2;
+                    newCommand->data[13] = revisionID[0];
+                    newCommand->data[14] = revisionID[1];  
 
-                newCommand->data_length = 15;
-                TransmitMessage(newCommand);
+                    newCommand->data_length = 15;
+                    TransmitMessage(newCommand);
+                }
             }
             receiveReady = false;
             break;
         case VALVE_SET_ENDSTOPS:
-            provisonSeen = true;
-            if (currentRS485RXBuffer->data[0] == valve_uid[0] &&
-                    currentRS485RXBuffer->data[1] == valve_uid[1]&&
-                    currentRS485RXBuffer->data[2] == valve_uid[2] &&
-                    currentRS485RXBuffer->data[3] == valve_uid[3]&& 
-                    currentRS485RXBuffer->data[4] == valve_uid[4]&&
-                    currentRS485RXBuffer->data[5] == valve_uid[5])
+            if (CheckUUID(currentRS485RXBuffer->data))
             {
                 perodicEndStopSource = source;
                 SetEndstop0Value(currentRS485RXBuffer->data[6]);
                 SetEndstop24Value(currentRS485RXBuffer->data[7]);
-                //ProvisionValve(true)
+                provisonSeen = true;
                 sendPeriodicEndStop = true;
             }
             receiveReady = false;
             break;
         case VALVE_GET_ENDSTOPS:
-            if (currentRS485RXBuffer->data[0] == valve_uid[0] &&
-                    currentRS485RXBuffer->data[1] == valve_uid[1]&&
-                    currentRS485RXBuffer->data[2] == valve_uid[2] &&
-                    currentRS485RXBuffer->data[3] == valve_uid[3]&& 
-                    currentRS485RXBuffer->data[4] == valve_uid[4]&&
-                    currentRS485RXBuffer->data[5] == valve_uid[5])
+            if (CheckUUID(currentRS485RXBuffer->data))
             {
                 SendValveENDStop(source);
             }
@@ -511,6 +447,20 @@ void ProvisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
             receiveReady = false;
             break;
     }
+}
+
+bool CheckUUID(uint8_t *payload)
+{
+    if (payload[0] == valve_uid[0] &&
+        payload[1] == valve_uid[1] &&
+        payload[2] == valve_uid[2] &&
+        payload[3] == valve_uid[3] && 
+        payload[4] == valve_uid[4] &&
+        payload[5] == valve_uid[5])
+    {
+        return true;
+    }
+    return false;
 }
 
 void SendMessage(volatile Command * command_struct, uint8_t valve_address, uint8_t dest, uint8_t command, uint8_t * data, uint8_t data_length)

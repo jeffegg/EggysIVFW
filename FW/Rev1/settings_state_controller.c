@@ -35,7 +35,7 @@ uint8_t currentDebugLevel = 0;
 uint8_t nextValveAddress = 0xB3;
 uint8_t currentValveAddress = 0;
 bool nextValveProvisioned = false;
-bool currentValveProvisioned = false;
+volatile bool currentValveProvisioned = false;
 
 uint8_t missedProvisionedCount = 0;
 extern bool provisonSeen = false;
@@ -67,8 +67,9 @@ void LoadValveSettings(void)
         WriteEEPROM(VALVE_EEPROM_RS485_ADDRESS, nextValveAddress);
     }
     currentValveAddress = nextValveAddress;
-            
-    uint8_t tempValue = 0;
+    
+    // I don't think we should load... If not we will wait 3 minutes to see.
+    /*uint8_t tempValue = 0;
     ReadEEPROM(&tempValue, VALVE_EEPROM_PROVISONED_ADDRESS, 1);
     if (tempValue == 0xFF)
     {
@@ -78,7 +79,8 @@ void LoadValveSettings(void)
     else
     {
         nextValveProvisioned = (bool)tempValue;
-    }
+    }*/
+    nextValveProvisioned = false;
     currentValveProvisioned = nextValveProvisioned;
     TMR0_SetProvisionedInterruptHandler(ProvisionedTimeFunction);
 }
@@ -121,7 +123,7 @@ void ProvisionValve(bool provisioned)
     nextValveProvisioned = provisioned;
 }
 
-bool IsProvisioned(void)
+inline bool IsProvisioned(void)
 {
     return currentValveProvisioned;
 }
