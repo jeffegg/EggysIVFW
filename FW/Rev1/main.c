@@ -164,7 +164,7 @@ void ResetInfo(void)
     }
     else if (__timeout == 1)
     {
-        reset_reason =0xA; //"Interrupt Wake-up from Sleep";
+        reset_reason = 0xA; //"Interrupt Wake-up from Sleep";
     }
     else if (PCONbits.nRMCLR == 0)
     {

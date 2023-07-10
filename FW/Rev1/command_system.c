@@ -579,7 +579,7 @@ void SendValveHailMessage(volatile Command * command, uint8_t valve_address, uin
     newData[VALVE_EEPROM_SERIAL_LEN + 14 + fw_branch_size + fw_tag_size + 2] = reset_pcon;
     newData[VALVE_EEPROM_SERIAL_LEN + 14 + fw_branch_size + fw_tag_size + 3] = status;
 
-    SendMessage(command, valve_address, 0xF, VALVE_HAIL_MESSAGE, newData, VALVE_EEPROM_SERIAL_LEN + 14 + fw_branch_size + fw_tag_size + 3);
+    SendMessage(command, valve_address, 0xF, VALVE_HAIL_MESSAGE, newData, VALVE_EEPROM_SERIAL_LEN + 14 + fw_branch_size + fw_tag_size + 4);
 }
 
 void SendValveAddress(volatile Command * command, uint8_t valve_address)
