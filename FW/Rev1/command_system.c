@@ -17,6 +17,7 @@
    
  */
 #include <stdbool.h>
+#include <string.h>
 #include "command_system.h"
 #include "valve_manager.h"
 #include "settings_state_controller.h"
@@ -61,8 +62,15 @@ extern uint8_t writeEEPROMAddress = 0;
 extern uint8_t writeEEPROMLength = 0;
 extern uint32_t writeEEPROMValue = 0;
 
+
+extern uint8_t reset_reason;
+extern uint8_t reset_pcon;
+extern uint8_t status;
+
 uint8_t *fw_version;
 uint8_t *fw_date;
+uint8_t *fw_branch;
+uint8_t *fw_tag;
 uint8_t *deviceID;
 uint8_t *revisionID;
 
@@ -268,19 +276,41 @@ void UnprovisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
                     newCommand->data[1] = fw_version[1];
                     newCommand->data[2] = fw_version[2];
                     newCommand->data[3] = fw_version[3];
-                    newCommand->data[4] = 0x0;
-                    newCommand->data[5] = fw_date[0];
-                    newCommand->data[6] = fw_date[1];
-                    newCommand->data[7] = fw_date[2];
-                    newCommand->data[8] = fw_date[3];
-                    newCommand->data[9] = 0x1;
-                    newCommand->data[10] = deviceID[0];
-                    newCommand->data[11] = deviceID[1];
-                    newCommand->data[12] = 0x2;
-                    newCommand->data[13] = revisionID[0];
-                    newCommand->data[14] = revisionID[1];  
+                    newCommand->data[4] = fw_date[0];
+                    newCommand->data[5] = fw_date[1];
+                    newCommand->data[6] = fw_date[2];
+                    newCommand->data[7] = fw_date[3];
+                    newCommand->data[8] = deviceID[0];
+                    newCommand->data[9] = deviceID[1];
+                    newCommand->data[10] = revisionID[0];
+                    newCommand->data[11] = revisionID[1];  
                     
-                    newCommand->data_length = 15;
+                    int i = 0;
+                    uint8_t fw_branch_size = (uint8_t)strlen(fw_branch);
+                    if (fw_branch_size > 20)
+                    {
+                        fw_branch_size = 20;
+                    }
+                    uint8_t fw_tag_size = (uint8_t)strlen(fw_tag);
+                    if (fw_tag_size > 10)
+                    {
+                        fw_tag_size = 10;
+                    }
+                    
+                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 12] = fw_branch_size;  
+                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 13] = fw_tag_size;  
+    
+                    for (i = 0; i < fw_branch_size; i++)
+                    {
+                        newCommand->data[VALVE_EEPROM_SERIAL_LEN + 14 + i] = fw_branch[i];
+                    }
+
+                    for (i = 0; i < fw_tag_size; i++)
+                    {
+                        newCommand->data[VALVE_EEPROM_SERIAL_LEN + 14 + fw_branch_size + i] = fw_tag[i];
+                    }
+
+                    newCommand->data_length = VALVE_EEPROM_SERIAL_LEN + 14 + fw_branch_size + fw_tag_size;
                     TransmitMessage(newCommand);
                 }
                 receiveReady = false;
@@ -407,19 +437,41 @@ void ProvisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
                     newCommand->data[1] = fw_version[1];
                     newCommand->data[2] = fw_version[2];
                     newCommand->data[3] = fw_version[3];
-                    newCommand->data[4] = 0x0;
-                    newCommand->data[5] = fw_date[0];
-                    newCommand->data[6] = fw_date[1];
-                    newCommand->data[7] = fw_date[2];
-                    newCommand->data[8] = fw_date[3];
-                    newCommand->data[9] = 0x1;
-                    newCommand->data[10] = deviceID[0];
-                    newCommand->data[11] = deviceID[1];
-                    newCommand->data[12] = 0x2;
-                    newCommand->data[13] = revisionID[0];
-                    newCommand->data[14] = revisionID[1];  
+                    newCommand->data[4] = fw_date[0];
+                    newCommand->data[5] = fw_date[1];
+                    newCommand->data[6] = fw_date[2];
+                    newCommand->data[7] = fw_date[3];
+                    newCommand->data[8] = deviceID[0];
+                    newCommand->data[9] = deviceID[1];
+                    newCommand->data[10] = revisionID[0];
+                    newCommand->data[11] = revisionID[1];  
+                    
+                    int i = 0;
+                    uint8_t fw_branch_size = (uint8_t)strlen(fw_branch);
+                    if (fw_branch_size > 20)
+                    {
+                        fw_branch_size = 20;
+                    }
+                    uint8_t fw_tag_size = (uint8_t)strlen(fw_tag);
+                    if (fw_tag_size > 10)
+                    {
+                        fw_tag_size = 10;
+                    }
+                    
+                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 12] = fw_branch_size;  
+                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 13] = fw_tag_size;  
+    
+                    for (i = 0; i < fw_branch_size; i++)
+                    {
+                        newCommand->data[VALVE_EEPROM_SERIAL_LEN + 14 + i] = fw_branch[i];
+                    }
 
-                    newCommand->data_length = 15;
+                    for (i = 0; i < fw_tag_size; i++)
+                    {
+                        newCommand->data[VALVE_EEPROM_SERIAL_LEN + 14 + fw_branch_size + i] = fw_tag[i];
+                    }
+
+                    newCommand->data_length = VALVE_EEPROM_SERIAL_LEN + 14 + fw_branch_size + fw_tag_size;
                     TransmitMessage(newCommand);
                 }
             }
@@ -481,28 +533,53 @@ void SendMessage(volatile Command * command_struct, uint8_t valve_address, uint8
 
 void SendValveHailMessage(volatile Command * command, uint8_t valve_address, uint8_t* valve_uid)
 {
-    uint8_t newData[VALVE_EEPROM_SERIAL_LEN + 14 + 1] = {0};
+    int i = 0;
+    uint8_t fw_branch_size = (uint8_t)strlen(fw_branch);
+    if (fw_branch_size > 20)
+    {
+        fw_branch_size = 20;
+    }
+    uint8_t fw_tag_size = (uint8_t)strlen(fw_tag);
+    if (fw_tag_size > 10)
+    {
+        fw_tag_size = 10;
+    }
     
-    for (int i = 0; i < VALVE_EEPROM_SERIAL_LEN; i++)
+    uint8_t newData[VALVE_EEPROM_SERIAL_LEN + 14 + 30 + 3] = {0};
+    
+    for (i = 0; i < VALVE_EEPROM_SERIAL_LEN; i++)
         newData[i] =  valve_uid[i];
        
     newData[VALVE_EEPROM_SERIAL_LEN + 0] = fw_version[0];
     newData[VALVE_EEPROM_SERIAL_LEN + 1] = fw_version[1];
     newData[VALVE_EEPROM_SERIAL_LEN + 2] = fw_version[2];
     newData[VALVE_EEPROM_SERIAL_LEN + 3] = fw_version[3];
-    newData[VALVE_EEPROM_SERIAL_LEN + 4] = 0x0;
-    newData[VALVE_EEPROM_SERIAL_LEN + 5] = fw_date[0];
-    newData[VALVE_EEPROM_SERIAL_LEN + 6] = fw_date[1];
-    newData[VALVE_EEPROM_SERIAL_LEN + 7] = fw_date[2];
-    newData[VALVE_EEPROM_SERIAL_LEN + 8] = fw_date[3];
-    newData[VALVE_EEPROM_SERIAL_LEN + 9] = 0x1;
-    newData[VALVE_EEPROM_SERIAL_LEN + 10] = deviceID[0];
-    newData[VALVE_EEPROM_SERIAL_LEN + 11] = deviceID[1];
-    newData[VALVE_EEPROM_SERIAL_LEN + 12] = 0x2;
-    newData[VALVE_EEPROM_SERIAL_LEN + 13] = revisionID[0];
-    newData[VALVE_EEPROM_SERIAL_LEN + 14] = revisionID[1];  
+    newData[VALVE_EEPROM_SERIAL_LEN + 4] = fw_date[0];
+    newData[VALVE_EEPROM_SERIAL_LEN + 5] = fw_date[1];
+    newData[VALVE_EEPROM_SERIAL_LEN + 6] = fw_date[2];
+    newData[VALVE_EEPROM_SERIAL_LEN + 7] = fw_date[3];
+    newData[VALVE_EEPROM_SERIAL_LEN + 8] = deviceID[0];
+    newData[VALVE_EEPROM_SERIAL_LEN + 9] = deviceID[1];
+    newData[VALVE_EEPROM_SERIAL_LEN + 10] = revisionID[0];
+    newData[VALVE_EEPROM_SERIAL_LEN + 11] = revisionID[1];  
     
-    SendMessage(command, valve_address, 0xF, VALVE_HAIL_MESSAGE, newData, VALVE_EEPROM_SERIAL_LEN + 14 + 1);
+    newData[VALVE_EEPROM_SERIAL_LEN + 12] = fw_branch_size;  
+    newData[VALVE_EEPROM_SERIAL_LEN + 13] = fw_tag_size;  
+    
+    for (i = 0; i < fw_branch_size; i++)
+    {
+        newData[VALVE_EEPROM_SERIAL_LEN + 14 + i] = fw_branch[i];
+    }
+    
+    for (i = 0; i < fw_tag_size; i++)
+    {
+        newData[VALVE_EEPROM_SERIAL_LEN + 14 + fw_branch_size + i] = fw_tag[i];
+    }
+    newData[VALVE_EEPROM_SERIAL_LEN + 14 + fw_branch_size + fw_tag_size + 1] = reset_reason;
+    newData[VALVE_EEPROM_SERIAL_LEN + 14 + fw_branch_size + fw_tag_size + 2] = reset_pcon;
+    newData[VALVE_EEPROM_SERIAL_LEN + 14 + fw_branch_size + fw_tag_size + 3] = status;
+
+    SendMessage(command, valve_address, 0xF, VALVE_HAIL_MESSAGE, newData, VALVE_EEPROM_SERIAL_LEN + 14 + fw_branch_size + fw_tag_size + 3);
 }
 
 void SendValveAddress(volatile Command * command, uint8_t valve_address)

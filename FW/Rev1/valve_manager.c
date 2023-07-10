@@ -49,7 +49,7 @@ uint16_t adderADC = 0;
 
 bool lastInterruptValue = false;
 
-const uint16_t allowedADCValueOverage = 2;
+const uint16_t allowedADCValueOverage = 3;
 
 void SetupValve(void)
 {
@@ -320,20 +320,35 @@ uint16_t GetCurrentADC(void)
 uint8_t MoveValveToNewPosition(void)
 {
     uint16_t neededADCValue = 0; 
+    uint8_t neededPosition = 0;
     if (nextValveInfo.valveMode == VALVE_MODE_MAINTAINENC)
     {
-        neededADCValue = positionToADCTable[nextMaintenceOverridePosition];
+        neededPosition = nextMaintenceOverridePosition;
     }
     else if (nextValveInfo.enstop0Selected)
     {
-        neededADCValue = positionToADCTable[nextValveInfo.endstop0Value];
+        neededPosition = nextValveInfo.endstop0Value;
     }
     else
     {
-        neededADCValue = positionToADCTable[nextValveInfo.endstop24Value];
+        neededPosition = nextValveInfo.endstop24Value;
     }
-        
-    uint16_t tempADCValue = 0;
+    neededADCValue = positionToADCTable[neededPosition];
+    
+    uint16_t currentADCValue = 0;
+    
+    if (GetCurrentPosition() == neededPosition)
+    {
+        valveADCValue = GetCurrentADC();
+        currentADCValue = valveADCValue;
+        valveADCValue = ADC_GetConversionResult();
+        currentADCValue += valveADCValue;
+        if ((currentADCValue <= (neededADCValue + 12 )) || (currentADCValue >= (neededADCValue - 12 )))
+        {
+            return GetCurrentPosition();
+        }
+    }        
+    
     uint8_t delayLoop1 = 0x10;
     uint8_t delayLoop2 = 0x10;
     volatile Command * newCommand;
@@ -343,9 +358,10 @@ uint8_t MoveValveToNewPosition(void)
     do
     {
         valveADCValue = GetCurrentADC();
-        tempADCValue = valveADCValue;
+        currentADCValue = valveADCValue;
         valveADCValue = ADC_GetConversionResult();
-        tempADCValue += valveADCValue;
+        currentADCValue += valveADCValue;
+        
         
         if (GetDebugLevel() > 0x20)
         {
@@ -368,9 +384,10 @@ uint8_t MoveValveToNewPosition(void)
             }
             TransmitMessage(newCommand);*/
         }
+        
         // If we are within +/- 2of the ADCValue, we can stop. Each stop is about 0x1C off so this isn't much
         // There will be some skid, this seems to help...
-        if (((tempADCValue >= (neededADCValue - allowedADCValueOverage)) && (tempADCValue <= (neededADCValue + allowedADCValueOverage))) || (direction_change >= MAX_DIRECTION_CHANGE))
+        if (((currentADCValue >= (neededADCValue - allowedADCValueOverage)) && (currentADCValue <= (neededADCValue + allowedADCValueOverage))) || (direction_change >= MAX_DIRECTION_CHANGE))
         {
             MotorA_SetLow();
             MotorB_SetLow();
@@ -399,12 +416,27 @@ uint8_t MoveValveToNewPosition(void)
             
             break;
         }
+        // If we are in postion 
+        /*if (GetCurrentPosition() == neededPosition)
+        {
+            MotorA_SetLow();
+            MotorB_SetLow();
+            //currentValveLocation = nextValveLocation;
+            
+            if (valve_ran)
+            {
+                SetLeds();
+                UpdateLeds();
+            }
+            
+            break;
+        }*/
         
         valve_ran = true;  
         SetLeds();
         UpdateLeds();
                 
-        if(neededADCValue < tempADCValue)
+        if(neededADCValue < currentADCValue)
         {   
             if ((MotorB_LAT != 1) || (MotorA_LAT == 1))
             {

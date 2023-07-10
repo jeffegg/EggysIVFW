@@ -31,11 +31,18 @@
 
 
 void WriteRs485Array(uint8_t * value, uint8_t length);
+void ResetInfo(void);
 
 extern volatile bool eusartRxDone;
 extern volatile bool sendPeriodicEndStop;
+
+extern uint8_t reset_reason = 0;
+extern uint8_t reset_pcon = 0;
+extern uint8_t status = 0;
+
 void main(void)
 {
+    ResetInfo();
     SYSTEM_Initialize();
     SetupEEPROM();
     SetupLeds();
@@ -69,7 +76,7 @@ void main(void)
         newCommand->data_length = 2;
     }
     TransmitMessage(newCommand);*/
-
+    
     while (1)
     {
         CLRWDT();         
@@ -102,6 +109,7 @@ void main(void)
         }
         SetLeds();
         UpdateLeds();
+        CLRWDT(); 
         PeriodicValveUpdate();
         SettingsManagerRun();
         PeriodicEEPROM();
@@ -110,6 +118,61 @@ void main(void)
             SendValveENDStop(0x0);
             sendPeriodicEndStop = false;
         }
+    }
+}
+
+void ResetInfo(void)
+{
+    reset_pcon = PCON;
+    status = (__timeout << 4) | (__powerdown << 3);
+    
+    if (PCONbits.STKOVF == 1)
+    {
+        reset_reason = 1;
+    }
+    else if (PCONbits.STKUNF == 1)
+    {
+        reset_reason = 2;
+    }
+    else if ((PCONbits.STKOVF == 0) && (PCONbits.STKUNF == 0) && (PCONbits.nRWDT == 1) && (PCONbits.nRMCLR == 1) && (PCONbits.nRI == 1) && (PCONbits.nBOR == 0) && (__timeout == 1) && (__powerdown == 1))
+    {
+        reset_reason = 3; //"Power-on Reset";
+    }
+    else if ((PCONbits.STKOVF == 0) && (PCONbits.STKUNF == 0) && (PCONbits.nRWDT == 1) && (PCONbits.nRMCLR == 1) && (PCONbits.nRI == 1) && (PCONbits.nBOR == 0) && (__timeout == 0))
+    {
+        reset_reason = 4; //"Illegal, TO is set on POR";
+    }
+    else if ((PCONbits.STKOVF == 0) && (PCONbits.STKUNF == 0) && (PCONbits.nRWDT == 1) && (PCONbits.nRMCLR == 1) && (PCONbits.nRI == 1) && (PCONbits.nBOR == 0) && (__powerdown == 0))
+    {
+        reset_reason = 5; //"Illegal, PD is set on POR";
+    }
+    else if ((PCONbits.STKOVF == 0) && (PCONbits.STKUNF == 0) && (PCONbits.nRMCLR == 1) && (PCONbits.nRI == 1) && (PCONbits.nBOR == 0) && (__powerdown == 0) && (__timeout == 1) && (__powerdown == 1))
+    {
+        reset_reason = 6; //"Brown-out Reset";
+    }
+    else if ((PCONbits.nRWDT == 0) && (__timeout == 0))
+    {
+        reset_reason = 7; //"WDT Reset ";
+    }
+    else if ((__timeout == 0) && (__powerdown == 0))
+    {
+        reset_reason = 8; //"WDT Wake-up from Sleep";
+    }
+    else if ((PCONbits.nRMCLR == 0) && (__timeout == 1) && (__powerdown == 0))
+    {
+        reset_reason = 9; //"MCLR Reset during Sleep";
+    }
+    else if (__timeout == 1)
+    {
+        reset_reason =0xA; //"Interrupt Wake-up from Sleep";
+    }
+    else if (PCONbits.nRMCLR == 0)
+    {
+        reset_reason = 0xB; //"MCLR Reset during normal operation";
+    }
+    else if (PCONbits.nRI == 0)
+    {
+        reset_reason = 0xC; //"RESET Instruction Executed";
     }
 }
 

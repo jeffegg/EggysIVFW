@@ -19,7 +19,12 @@
 #include <xc.h>
 #include "version.h"
 
-volatile uint32_t current_fw_version = (uint32_t)GIT_HASH;
-volatile uint32_t current_fw_date = (uint32_t)GIT_HEX_DATE;
+uint32_t current_fw_version = (uint32_t)GIT_HASH;
+uint32_t current_fw_date = (uint32_t)GIT_HEX_DATE;
+const uint8_t current_branch[] = GIT_BRANCH;
+const uint8_t current_tag[] = GIT_VERSION;
+
 extern uint8_t *fw_version = (uint8_t *)&current_fw_version;
 extern uint8_t *fw_date = (uint8_t *)&current_fw_date;
+extern uint8_t *fw_branch = (uint8_t *)&current_branch;
+extern uint8_t *fw_tag = (uint8_t *)&current_tag;
