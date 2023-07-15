@@ -55,10 +55,6 @@ void SYSTEM_Initialize(void)
     OSCILLATOR_Initialize();
     WDT_Initialize();
     FVR_Initialize();
-    ADC_Initialize();
-    TMR2_Initialize();
-    TMR1_Initialize();
-    TMR0_Initialize();
     EUSART_Initialize();
 }
 

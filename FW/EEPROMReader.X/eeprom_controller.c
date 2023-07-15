@@ -23,15 +23,6 @@
 #include "mcc_generated_files/examples/i2c_master_example.h"
 #include "command_system.h"
 
-// Backup EEPROM Values for checking
-#define BACKUP_VALVE_EEPROM_RS485_ADDRESS                 (VALVE_EEPROM_RS485_ADDRESS + 0x10)              // RS485 valve address location 1 byte
-#define BACKUP_VALVE_EEPROM_MODE_ADDRESS                  (VALVE_EEPROM_MODE_ADDRESS + 0x10)               // Current Valve Mode 1 byte
-#define BACKUP_VALVE_EEPROM_0_END_STOP_ADDRESS            (VALVE_EEPROM_0_END_STOP_ADDRESS + 0x10)        // Current Valve Mode 2 bytes
-#define BACKUP_VALVE_EEPROM_24_END_STOP_ADDRESS           (VALVE_EEPROM_24_END_STOP_ADDRESS + 0x10)       // Current Valve Mode 2 bytes
-#define BACKUP_VALVE_EEPROM_SELECTED_END_STOP_ADDRESS     (VALVE_EEPROM_SELECTED_END_STOP_ADDRESS + 0x10)  // Current endstop selected 1 byte
-#define BACKUP_VALVE_EEPROM_DEBUG_LEVEL_ADDRESS           (VALVE_EEPROM_DEBUG_LEVEL_ADDRESS + 0x10)        // Current debug level 4 bytes
-
-
 #define VALVE_EEPROM_ADDRESS            0xA0
 #define VALVE_EEPROM_ADDRESS_SHIFTED    (VALVE_EEPROM_ADDRESS >> 1)
 #define VALVE_EEPROM_SIZE               0x80

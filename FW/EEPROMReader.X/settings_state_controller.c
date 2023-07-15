@@ -21,68 +21,31 @@
 #include "globals.h"
 #include "settings_state_controller.h"
 #include "eeprom_controller.h"
-#include "mcc_generated_files/tmr0.h"
 
 void GetUUIDFromEEPROM(void);
 void GetDID_RIDFromEEPROM(void);
 
-
 volatile uint16_t localDeviceID = 0;
 volatile uint16_t localRevisionID = 0;
 uint8_t valve_uid[VALVE_EEPROM_SERIAL_LEN] = {0};
-uint8_t nextDebugLevel = 0;
-uint8_t currentDebugLevel = 0;
 uint8_t nextValveAddress = 0xB3;
 uint8_t currentValveAddress = 0;
-bool nextValveProvisioned = false;
-volatile bool currentValveProvisioned = false;
-
-uint8_t missedProvisionedCount = 0;
-extern bool provisonSeen = false;
 
 extern uint8_t *deviceID = (uint8_t *)&localDeviceID;
 extern uint8_t *revisionID = (uint8_t *)&localRevisionID;
 
-
-
 void LoadValveSettings(void)
 {
-    missedProvisionedCount = 0;
     
     GetUUIDFromEEPROM();
     GetDID_RIDFromEEPROM();
-    
-    ReadEEPROM(&nextDebugLevel, VALVE_EEPROM_DEBUG_LEVEL_ADDRESS, 1);
-    if (nextDebugLevel == 0xFF)
-    {
-        nextDebugLevel = 0;
-        WriteEEPROM(VALVE_EEPROM_DEBUG_LEVEL_ADDRESS, nextDebugLevel);
-    }
-    currentDebugLevel = nextDebugLevel;
     
     ReadEEPROM(&nextValveAddress, VALVE_EEPROM_RS485_ADDRESS, 1);
     if (nextValveAddress == 0xFF)
     {
         nextValveAddress = 0xB3;
-        WriteEEPROM(VALVE_EEPROM_RS485_ADDRESS, nextValveAddress);
     }
     currentValveAddress = nextValveAddress;
-    
-    // I don't think we should load... If not we will wait 3 minutes to see.
-    /*uint8_t tempValue = 0;
-    ReadEEPROM(&tempValue, VALVE_EEPROM_PROVISONED_ADDRESS, 1);
-    if (tempValue == 0xFF)
-    {
-        nextValveProvisioned = false;
-        WriteEEPROM(VALVE_EEPROM_PROVISONED_ADDRESS, (uint8_t)nextValveProvisioned);
-    }  
-    else
-    {
-        nextValveProvisioned = (bool)tempValue;
-    }*/
-    nextValveProvisioned = false;
-    currentValveProvisioned = nextValveProvisioned;
-    TMR0_SetProvisionedInterruptHandler(ProvisionedTimeFunction);
 }
 
 void SetValveRs485Address(uint8_t newAddress)
@@ -106,68 +69,6 @@ void GetDID_RIDFromEEPROM(void)
     ReadEEPROM((uint8_t *)&localRevisionID, VALVE_EEPROM_PROD_DEVICE_RID_ADDRESS, 2);
 }
 
-
-
-void SetDebugLevel(uint8_t value)
-{
-    nextDebugLevel = value;
-}
-
-uint8_t GetDebugLevel(void)
-{
-    return currentDebugLevel;
-}
-
-void ProvisionValve(bool provisioned)
-{
-    nextValveProvisioned = provisioned;
-}
-
-inline bool IsProvisioned(void)
-{
-    return currentValveProvisioned;
-}
-
-void ProvisionedTimeFunction(void)
-{
-    if (!provisonSeen)
-    {
-        missedProvisionedCount++;
-    }
-    else
-    {
-        missedProvisionedCount = 0;
-        nextValveProvisioned = true;
-    }
-    if (missedProvisionedCount >= 4) // No commands seen 30 seconds * 4 = 2 minutes
-    {
-        // If valve is provisioned then unprovision it
-        if (currentValveProvisioned)
-        {
-            nextValveProvisioned = false;
-        }
-        missedProvisionedCount = 0;
-    }
-}
-
 void SettingsManagerRun(void)
 {    
-    if (nextDebugLevel != currentDebugLevel)
-    {
-        WriteEEPROM(VALVE_EEPROM_DEBUG_LEVEL_ADDRESS, nextDebugLevel);
-        currentDebugLevel = nextDebugLevel;
-    }
-    
-    if (nextValveAddress != currentValveAddress)
-    {
-        WriteEEPROM(VALVE_EEPROM_RS485_ADDRESS, nextValveAddress);
-        currentValveAddress = nextValveAddress;
-    }
-            
-    if (nextValveProvisioned != currentValveProvisioned)
-    {
-        WriteEEPROM(VALVE_EEPROM_PROVISONED_ADDRESS, (uint8_t)nextValveProvisioned);
-        currentValveProvisioned = nextValveProvisioned;
-        ProvisionValve(currentValveProvisioned);
-    }
 }

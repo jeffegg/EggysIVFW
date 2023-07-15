@@ -28,35 +28,16 @@
 
 typedef enum
 {
-    VALVE_HAIL_MESSAGE      = 0x52, // Sent when Red + Save Button are pushed. Will send UUID - Similar to GRUT message
-    VALVE_ADDR              = 0x22,
-    VALVE_UUID              = 0x25,
-    VALVE_CURRENT_POSITION  = 0x29, // Send current position and which endstop active
-    VALVE_ENDSTOPS          = 0x2B,
-    VALVE_SETTING           = 0x31,
     VALVE_EEPROM            = 0x39, 
     VALVE_EEPROM_SET_DONE   = 0x3B,  // Valve EEPROM Data (For backup
-    VALVE_MODE              = 0x41,
     VALVE_FW_VERISON        = 0xF9
 } rs485_send_commands;
 
 // Commands received by the Valve
 typedef enum
 {
-    VALVE_IDENTIFY_UUID     = 0x10, // Will look for UUID and then flash leds for 1 minutes
-    VALVE_IDENTIFY_ADDR     = 0x12, // Will look for ADDRESS and then flash leds for 1 minutes
-    VALVE_SET_ADDR          = 0x20, // Sets the valve address, need to pass data as UUID (6 bytes), 0x0, newAddr
-    VALVE_GET_ADDR          = 0x21, // Will match on UUID and return the Address
-    VALVE_GET_UUID          = 0x24, // Will match on UUID and return the UUID
-    VALVE_SET_ENDSTOPS      = 0x28, // Sent periodicially, will have both left and right endstop
-    VALVE_GET_ENDSTOPS      = 0x2A, // Returns left and right endstop + current end stop selected
-    VALVE_SET_SETTINGS      = 0x30, // Sets valve settings (setting number)
-    VALVE_GET_SETTINGS      = 0x32, // Returns current valve settings
     VALVE_GET_EEPROM        = 0x38, // Gets the EEPROM for backup
-    VALVE_SET_EEPROM        = 0x3A, // Use with extreme caution - will overwrite EEPROM  
-    VALVE_GET_MODE          = 0x40, // Gets current Valve mode
-    VALVE_SET_MODE          = 0x42, // Sets current Valve mode - note once set to Service cannot leave programatically
-    VALVE_DEBUG             = 0xF0, // Enter a debug mode that outputs lots of data -- Use with caution;            
+    VALVE_SET_EEPROM        = 0x3A, // Use with extreme caution - will overwrite EEPROM           
     VALVE_RESET             = 0xF1, // Forces valve to reset; used for FW Update
     VALVE_FW_UPDATE         = 0xF3, // Enter FW update on next boot   
     VALVE_GET_FW_VERSION    = 0xF8  // Get the FW version, Device ID, and Revison ID of the PIC Device
@@ -94,11 +75,6 @@ uint8_t TransmitMessage(Command * newCommand); //Adds to transmit buffer if poss
 volatile Command * GetCommandEntryBuffer(void); //Gets an entry in the command buffer or Null if no available
 void CopyToUARTRXBuff(uint8_t * rx_buffer, uint8_t length);
 void ReceiveCommandExecutor(void);
-void SetupValveAddressPackets(volatile Command * command, uint8_t destination);
 
-void SendValveHailMessage(volatile Command * command, uint8_t valve_address, uint8_t* valve_uid);
-void SendValveAddress(volatile Command * command, uint8_t valve_address);
-void SendValveUUID(volatile Command * command, uint8_t valve_address, uint8_t* valve_uid);
-void SendValveENDStop(uint8_t altDest);
 #endif	/* COMMAND_SYSTEM_H */
 
