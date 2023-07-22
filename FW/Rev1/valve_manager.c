@@ -419,7 +419,7 @@ uint8_t MoveValveToNewPosition(void)
         }   
     }   
     
-    while(0);
+    while(1);
     
     return GetCurrentPosition();
 }
