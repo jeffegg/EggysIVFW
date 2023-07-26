@@ -80,11 +80,8 @@ extern bool provisonSeen;
 
 void SetupCommandManager(void)
 {
-    if(IsProvisioned())
-        CommandExecutor = &ProvisionedCommandExecutor;
-    else
-        CommandExecutor = &UnprovisionedCommandExecutor;
-}
+    CommandExecutor = &ProvisionedCommandExecutor;
+ }
 
 
 volatile Command * GetCommandEntryBuffer(void)
@@ -168,159 +165,9 @@ void ReceiveCommandExecutor(void)
     }
     
     volatile Command * currentBuffer = &rs485RXBuffer[0];
-    if(IsProvisioned() && (CommandExecutor == &UnprovisionedCommandExecutor))
-        CommandExecutor = &ProvisionedCommandExecutor;
-    else if (!IsProvisioned() && (CommandExecutor == &ProvisionedCommandExecutor))
-        CommandExecutor = &UnprovisionedCommandExecutor;
+    CommandExecutor = &ProvisionedCommandExecutor;
+    
     (*CommandExecutor)(currentBuffer);
-}
-
-void UnprovisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
-{
-    uint8_t command = currentRS485RXBuffer->command;
-    uint8_t source = currentRS485RXBuffer->source;
-    Command * newCommand;
-    
-    switch (command)
-    {   
-        case VALVE_IDENTIFY_UUID:
-            if (CheckUUID(currentRS485RXBuffer->data))
-            {
-                IdentifyValve();
-            }
-            receiveReady = false;
-            break;
-        case VALVE_SET_ADDR:
-            if (CheckUUID(currentRS485RXBuffer->data))
-            {
-                uint8_t valve_address = currentRS485RXBuffer->data[6];
-                SetValveRs485Address(valve_address);
-            }
-            receiveReady = false;
-            break;
-        case VALVE_GET_ADDR:
-            if (CheckUUID(currentRS485RXBuffer->data))
-            {
-                newCommand = GetCommandEntryBuffer();
-                if (newCommand)
-                {
-                    newCommand->protocal = 0x1;
-                    newCommand->source = GetValveRs485Address();
-                    newCommand->destination = currentRS485RXBuffer->source;
-                    newCommand->command = (uint8_t)VALVE_ADDR;
-                    newCommand->data[0] = GetValveRs485Address();
-                    newCommand->data_length = 1;
-                    TransmitMessage(newCommand);
-                }
-                receiveReady = false;
-            }
-            receiveReady = false;
-            break;
-        case VALVE_SET_ENDSTOPS:
-            provisonSeen = true;
-            if (CheckUUID(currentRS485RXBuffer->data))
-            {
-                perodicEndStopSource = source;
-                SetEndstop0Value(currentRS485RXBuffer->data[6]);
-                SetEndstop24Value(currentRS485RXBuffer->data[7]);
-                sendPeriodicEndStop = true;
-            }
-            receiveReady = false;
-            break;
-        case VALVE_GET_ENDSTOPS:
-            if (CheckUUID(currentRS485RXBuffer->data))
-            {
-                SendValveENDStop(source);
-            }
-            receiveReady = false;
-            break;
-        case VALVE_SET_SETTINGS:
-        case VALVE_GET_SETTINGS:
-        case VALVE_GET_EEPROM:
-        case VALVE_SET_EEPROM:
-            receiveReady = false;
-            break;
-        case VALVE_DEBUG:
-            if (CheckUUID(currentRS485RXBuffer->data))
-            {
-                uint8_t debugLevel = currentRS485RXBuffer->data[6];
-                SetDebugLevel(debugLevel);
-            }
-            receiveReady = false;
-            break;
-        case VALVE_RESET:
-            if (CheckUUID(currentRS485RXBuffer->data))
-            {
-                resetValve = currentRS485RXBuffer->data[6] == 1;
-            }
-            receiveReady = false;
-            break;
-        case VALVE_FW_UPDATE:
-            if (CheckUUID(currentRS485RXBuffer->data))
-            {
-                fwUpdateValue = currentRS485RXBuffer->data[6] == 1;
-            }
-            receiveReady = false;
-            break;
-        case VALVE_FW_VERISON:
-            if (CheckUUID(currentRS485RXBuffer->data))
-            {
-                newCommand = GetCommandEntryBuffer();
-                if (newCommand)
-                {
-                    newCommand->protocal = 0x1;
-                    newCommand->source = GetValveRs485Address();
-                    newCommand->destination = currentRS485RXBuffer->source;
-                    newCommand->command = (uint8_t)VALVE_FW_VERISON;
-                    newCommand->data[0] = fw_version[0];
-                    newCommand->data[1] = fw_version[1];
-                    newCommand->data[2] = fw_version[2];
-                    newCommand->data[3] = fw_version[3];
-                    newCommand->data[4] = fw_date[0];
-                    newCommand->data[5] = fw_date[1];
-                    newCommand->data[6] = fw_date[2];
-                    newCommand->data[7] = fw_date[3];
-                    newCommand->data[8] = deviceID[0];
-                    newCommand->data[9] = deviceID[1];
-                    newCommand->data[10] = revisionID[0];
-                    newCommand->data[11] = revisionID[1];  
-                    
-                    int i = 0;
-                    uint8_t fw_branch_size = (uint8_t)strlen(fw_branch);
-                    if (fw_branch_size > 20)
-                    {
-                        fw_branch_size = 20;
-                    }
-                    uint8_t fw_tag_size = (uint8_t)strlen(fw_tag);
-                    if (fw_tag_size > 10)
-                    {
-                        fw_tag_size = 10;
-                    }
-                    
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 12] = fw_branch_size;  
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 13] = fw_tag_size;  
-    
-                    for (i = 0; i < fw_branch_size; i++)
-                    {
-                        newCommand->data[VALVE_EEPROM_SERIAL_LEN + 14 + i] = fw_branch[i];
-                    }
-
-                    for (i = 0; i < fw_tag_size; i++)
-                    {
-                        newCommand->data[VALVE_EEPROM_SERIAL_LEN + 14 + fw_branch_size + i] = fw_tag[i];
-                    }
-
-                    newCommand->data_length = VALVE_EEPROM_SERIAL_LEN + 14 + fw_branch_size + fw_tag_size;
-                    TransmitMessage(newCommand);
-                }
-                receiveReady = false;
-            }
-            receiveReady = false;
-            break;
-        default:
-            receiveReady = false;
-            break;
-    }
 }
 
 void ProvisionedCommandExecutor(volatile Command *currentRS485RXBuffer)

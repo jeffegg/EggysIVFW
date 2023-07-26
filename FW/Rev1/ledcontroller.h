@@ -24,7 +24,7 @@
 
 typedef union {
     uint16_t raw_leds;
-    struct {
+    struct packed {
         unsigned SERVICE_LED    :1;
         unsigned LED12          :1;
         unsigned LED14          :1;

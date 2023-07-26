@@ -365,24 +365,6 @@ uint8_t MoveValveToNewPosition(void)
         
         if (GetDebugLevel() > 0x20)
         {
-            
-            /*newCommand = GetCommandEntryBuffer();
-
-            if (newCommand)
-            {
-                newCommand->protocal = 0x1;
-                newCommand->source = GetAddress();
-                newCommand->destination = 0x10;
-                newCommand->command = (uint8_t)VALVE_DEBUG_DEGREES;// Returns Byte(next position), Byte(0 - moving, 1 not moving), WORD(raw ADC read twice), WORD(neededValue);
-                newCommand->data[0] = nextValveLocation;
-                newCommand->data[1] = MotorB_LAT | MotorA_LAT; // Motor Location
-                newCommand->data[2] = (tempADCValue >> (uint16_t)8) & 0xFF;
-                newCommand->data[3] = tempADCValue & 0xFF;
-                newCommand->data[4] = (neededADCValue >> (uint16_t)8) & 0xFF;
-                newCommand->data[5] = neededADCValue & 0xFF;
-                newCommand->data_length = 6;
-            }
-            TransmitMessage(newCommand);*/
         }
         
         // If we are within +/- 2of the ADCValue, we can stop. Each stop is about 0x1C off so this isn't much
@@ -391,37 +373,6 @@ uint8_t MoveValveToNewPosition(void)
         {
             MotorA_SetLow();
             MotorB_SetLow();
-            //currentValveLocation = nextValveLocation;
-            
-            if (valve_ran)
-            {
-               /* newCommand = GetCommandEntryBuffer();
-
-                if (newCommand)
-                {
-                    newCommand->protocal = 0x1;
-                    newCommand->source = GetAddress();
-                    newCommand->destination = 0x10;
-                    newCommand->command = (uint8_t)VALVE_DEGREES;// Returns Byte(next position), Byte(0 - moving, 1 not moving), WORD(raw ADC read twice), WORD(neededValue);
-                    newCommand->data[0] = nextValveLocation;
-                    newCommand->data[1] = MotorB_LAT | MotorA_LAT; // Motor Location
-                    newCommand->data[2] = (tempADCValue >> (uint16_t)8) & 0xFF;
-                    newCommand->data[3] = tempADCValue & 0xFF;
-                    newCommand->data_length = 4;
-                }
-                TransmitMessage(newCommand);*/
-                SetLeds();
-                UpdateLeds();
-            }
-            
-            break;
-        }
-        // If we are in postion 
-        /*if (GetCurrentPosition() == neededPosition)
-        {
-            MotorA_SetLow();
-            MotorB_SetLow();
-            //currentValveLocation = nextValveLocation;
             
             if (valve_ran)
             {
@@ -430,8 +381,7 @@ uint8_t MoveValveToNewPosition(void)
             }
             
             break;
-        }*/
-        
+        }        
         valve_ran = true;  
         SetLeds();
         UpdateLeds();
@@ -451,7 +401,7 @@ uint8_t MoveValveToNewPosition(void)
                 direction_change++;
             }
         }
-        else
+        else if (neededADCValue > currentADCValue)
         {
             if ((MotorA_LAT != 1) || (MotorB_LAT == 1))
             {
