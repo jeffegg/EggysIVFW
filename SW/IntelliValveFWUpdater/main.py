@@ -213,7 +213,7 @@ class FWUpdater:
             raise BufferError("This doesn't seem to be a valid packet")
         if valve_packet[7] == 0x52:
             packet_lenght = valve_packet[8]
-            address = valve_packet[6].hex()
+            address = hex(valve_packet[6])
             valve_packet = valve_packet[9:]
             unique_id = valve_packet[0:6].hex('-')
             fw_version = valve_packet[6:10].hex()
