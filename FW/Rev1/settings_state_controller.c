@@ -22,6 +22,7 @@
 #include "settings_state_controller.h"
 #include "eeprom_controller.h"
 #include "mcc_generated_files/tmr0.h"
+#include "command_system.h"
 
 void GetUUIDFromEEPROM(void);
 void GetDID_RIDFromEEPROM(void);
@@ -43,7 +44,8 @@ extern bool provisonSeen = false;
 extern uint8_t *deviceID = (uint8_t *)&localDeviceID;
 extern uint8_t *revisionID = (uint8_t *)&localRevisionID;
 
-
+extern bool idValve = false;
+volatile bool sendValveHail = 0;
 
 void LoadValveSettings(void)
 {
@@ -130,6 +132,7 @@ inline bool IsProvisioned(void)
 
 void ProvisionedTimeFunction(void)
 {
+    static uint8_t sendValveHailCount = 0;
     if (!provisonSeen)
     {
         missedProvisionedCount++;
@@ -147,6 +150,16 @@ void ProvisionedTimeFunction(void)
             nextValveProvisioned = false;
         }
         missedProvisionedCount = 0;
+    }
+    provisonSeen = false;
+    if (sendValveHailCount > 4)
+    {
+        idValve = false;
+        sendValveHailCount = 0;
+    }
+    if (idValve) {
+        sendValveHail = true;
+        sendValveHailCount++;
     }
 }
 
@@ -166,8 +179,20 @@ void SettingsManagerRun(void)
             
     if (nextValveProvisioned != currentValveProvisioned)
     {
-        WriteEEPROM(VALVE_EEPROM_PROVISONED_ADDRESS, (uint8_t)nextValveProvisioned);
+        //WriteEEPROM(VALVE_EEPROM_PROVISONED_ADDRESS, (uint8_t)nextValveProvisioned);
         currentValveProvisioned = nextValveProvisioned;
         ProvisionValve(currentValveProvisioned);
     }
+    if (sendValveHail)
+    {
+        volatile Command * newCommand;          
+        newCommand = GetCommandEntryBuffer();    
+        if (newCommand)
+        {
+            SendValveHailMessage(newCommand, GetValveRs485Address(), valve_uid);
+        }
+        TransmitMessage(newCommand);  
+        sendValveHail = false;
+    }
+        
 }

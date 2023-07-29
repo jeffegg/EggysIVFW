@@ -1,3 +1,5 @@
+import traceback
+
 import serial
 import binascii
 import time
@@ -57,6 +59,7 @@ class FWUpdater:
             print(comport.device)
 
         self._rs485_loc = rs485_loc
+        print("Enumerating Valves")
         self.enumerate_valves()
         self.setup_addresses()
         time.sleep(1)
@@ -114,6 +117,7 @@ class FWUpdater:
             self._enumerate_valves(enumerate_timeout)
         print("Found the following valves:")
         for valve_id in self.found_valves.keys():
+            print(valve_id)
             print('\t0x' + str(valve_id.hex()))
 
     def _enumerate_valves(self, enumerate_timeout):
@@ -141,6 +145,8 @@ class FWUpdater:
         self._calculate_and_append_checksum(address_reset)
         ser.write(address_reset)
         ser.close()
+
+
 
     def setup_addresses(self):
         ser = serial.Serial(self._rs485_loc, 9600)
@@ -187,6 +193,7 @@ class FWUpdater:
             valve_info = ser.read(29)
 
             read_id = self.decode_unique_id(valve_info)
+            print(valve_info)
             did, rid = self.decode_did_rid(valve_info)
             print(hex(valve_info[6]) + "     0x" + str(read_id.hex()) + " 0x" + str(did.hex()) + " 0x" + str(rid.hex()))
         ser.close()
@@ -200,6 +207,67 @@ class FWUpdater:
                 raise BufferError("This doesn't seem to be a valid packet for serial numbers, etc, byte 10 should be 0x80. Instead was " + hex(valve_packet[10]))
             unique_id = valve_packet[11:17]
             return unique_id
+
+    def decode_valve_hail(self, valve_packet: bytearray) -> dict:
+        if valve_packet[0:3] != self._start_of_frame:
+            raise BufferError("This doesn't seem to be a valid packet")
+        if valve_packet[7] == 0x52:
+            packet_lenght = valve_packet[8]
+            address = valve_packet[6].hex()
+            valve_packet = valve_packet[9:]
+            unique_id = valve_packet[0:6].hex('-')
+            fw_version = valve_packet[6:10].hex()
+            fw_date = valve_packet[10:14].hex()
+            did = valve_packet[14:16].hex()
+            rid = valve_packet[16:18].hex()
+            fw_branch_size = int(valve_packet[18:19].hex(), 16)
+            fw_tag_size = int(valve_packet[19:20].hex(), 16)
+            fw_branch = valve_packet[20:20+fw_branch_size].decode("ascii")
+            fw_tag = valve_packet[20 + fw_branch_size:20 + fw_branch_size + fw_tag_size].decode("ascii")
+
+            return {"Type": "Eggy's FW", "Address": address, "UUID": unique_id, "Git Hash": fw_version, "Git Date": fw_date, "DID": did, "RID": rid, "Branch": fw_branch, "Tag": fw_tag}
+
+        return None
+
+    def id_new_values(self, enumerate_timeout=60):
+        ser = serial.Serial(self._rs485_loc, 9600)
+        id_valve_packet = bytearray([0xFF, 0x0, 0xFF, 0xA5, 0x3F, 0xF, 0xF, 0x12, 0x1, 0x1])
+        self._calculate_and_append_checksum(id_valve_packet)
+        ser.write(id_valve_packet)
+        ser.close()
+        ser = serial.Serial(self._rs485_loc, 9600)
+        ser.timeout = enumerate_timeout
+        print("Listening to " + self._rs485_loc + " for " + str(enumerate_timeout) + " seconds.")
+        last_time = time.time()
+        elapsed_time = 0
+        while elapsed_time < enumerate_timeout:
+            ser.flushInput()
+            try:
+                valve:bytearray = ser.read(10000)
+
+                id_packets = []
+                for i in range(len(valve) - 3):
+                    if valve[i+0:i+3] == self._start_of_frame:
+                        packet_len = int(valve[i+8:i+9].hex(), 16)
+                        id_packets.append(valve[i : i+packet_len+9+2])
+
+                for entry in id_packets:
+                    try:
+                        new_valve_id = {}
+                        new_valve_id = self.decode_valve_hail(entry)
+                    except Exception:
+                        try:
+                            read_id = self.decode_unique_id(entry)
+                            print({"Type": "Pentairs's FW", "Address": hex(entry[6]), "UUID": read_id.hex('-')})
+                        except:
+                            continue
+                    else:
+                        print(new_valve_id)
+
+            except BufferError:
+                pass
+            elapsed_time = time.time() - last_time
+        ser.close()
 
     def decode_did_rid(self, valve_packet: bytearray) -> (bytearray, bytearray):
         if valve_packet[0:3] != self._start_of_frame:
@@ -219,3 +287,6 @@ class FWUpdater:
             did = valve_packet[21:23]
             rid = valve_packet[23:25]
             return did, rid
+
+        else:
+            raise BufferError(f"valve_packet[7]: {str(valve_packet[7])}")
