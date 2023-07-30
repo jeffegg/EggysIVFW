@@ -142,7 +142,7 @@ void ProvisionedTimeFunction(void)
         missedProvisionedCount = 0;
         nextValveProvisioned = true;
     }
-    if (missedProvisionedCount >= 4) // No commands seen 30 seconds * 4 = 2 minutes
+    if (missedProvisionedCount >= 12) // No commands seen 10 seconds * 12 = 2 minutes
     {
         // If valve is provisioned then unprovision it
         if (currentValveProvisioned)
@@ -152,10 +152,10 @@ void ProvisionedTimeFunction(void)
         missedProvisionedCount = 0;
     }
     provisonSeen = false;
-    if (sendValveHailCount > 4)
+    if (sendValveHailCount > 12) // Send 12 at about 10s ->> about 2 minutes
     {
-        idValve = false;
         sendValveHailCount = 0;
+        idValve = false;
     }
     if (idValve) {
         sendValveHail = true;

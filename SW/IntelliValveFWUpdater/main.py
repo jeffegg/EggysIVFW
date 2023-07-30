@@ -1,12 +1,18 @@
 import traceback
-
+import requests
 import serial
 import binascii
 import time
 from importlib import reload
 import intel_hex_reader
 import serial.tools.list_ports
+from tabulate import tabulate
+import readline
+import tempfile
+import os
 
+PENTAIR_FW_TYPE = "Pentairs's FW"
+EGGY_FW_TYPE = "Eggy's FW"
 reload(intel_hex_reader)
 
 class FWUpdater:
@@ -198,6 +204,28 @@ class FWUpdater:
             print(hex(valve_info[6]) + "     0x" + str(read_id.hex()) + " 0x" + str(did.hex()) + " 0x" + str(rid.hex()))
         ser.close()
 
+    def decode_did_rid(self, valve_packet: bytearray) -> (bytearray, bytearray):
+        if valve_packet[0:3] != self._start_of_frame:
+            raise BufferError("This doesn't seem to be a valid packet")
+
+        if valve_packet[7] == 0xF1:
+            if valve_packet[10] != 0x80:
+                raise BufferError(
+                    "This doesn't seem to be a valid packet for serial numbers, etc, byte 10 should be 0x80. Instead was 0x" + hex(valve_packet[10]))
+
+            if valve_packet[17:21] != bytearray([0x1, 0x2, 0xFF, 0xFF]):
+                raise BufferError(
+                    "This doesn't seem to be a valid packet for serial numbers, etc, byte 17-20 should be 0x0102ffff. Instead was 0x" + valve_packet[17:21].hex())
+            if valve_packet[25:27] != bytearray([0x0, 0x40]):
+                raise BufferError(
+                    "This doesn't seem to be a valid packet for serial numbers, etc, byte 17-20 should be 0x0040. Instead was 0x" + valve_packet[25:26].hex())
+            did = valve_packet[21:23]
+            rid = valve_packet[23:25]
+            return did, rid
+
+        else:
+            raise BufferError(f"valve_packet[7]: {str(valve_packet[7])}")
+
     def decode_unique_id(self, valve_packet: bytearray) -> bytearray:
         if valve_packet[0:3] != self._start_of_frame:
             raise BufferError("This doesn't seem to be a valid packet")
@@ -225,26 +253,223 @@ class FWUpdater:
             fw_branch = valve_packet[20:20+fw_branch_size].decode("ascii")
             fw_tag = valve_packet[20 + fw_branch_size:20 + fw_branch_size + fw_tag_size].decode("ascii")
 
-            return {"Type": "Eggy's FW", "Address": address, "UUID": unique_id, "Git Hash": fw_version, "Git Date": fw_date, "DID": did, "RID": rid, "Branch": fw_branch, "Tag": fw_tag}
+            return {"Type": EGGY_FW_TYPE, "Address": address, "UUID": unique_id, "Git Hash": fw_version, "Git Date": fw_date, "DID": did, "RID": rid, "Branch": fw_branch, "Tag": fw_tag}
 
         return None
 
-    def id_new_values(self, enumerate_timeout=60):
+    def fw_updater(self, alt_fw_path=""):
+        self._rs485_loc = self.select_com_port()
+        device_list = self.find_all_valves(enumerate_timeout=60)
+        if alt_fw_path != "":
+            self._fw_update_filename = alt_fw_path
+        else:
+            self._fw_update_filename = self.get_latest_firmware()
+            if self._fw_update_filename == "":
+                print("FW was not downloaded, please manually download")
+                return
+
+        valve_uuid_selected, valve_type, valve_address = self.select_valve_for_update(device_list)
+        if valve_uuid_selected is None:
+            print("No valve selected, exiting")
+            return
+
+        if valve_type == EGGY_FW_TYPE:
+            self.goto_fw_update_mode_eggy(valve_uuid_selected, valve_address)
+            self.setup_addresses_new(valve_uuid_selected, valve_address)
+            time.sleep(1)
+            self.setup_addresses_new(valve_uuid_selected, valve_address)
+            time.sleep(1)
+            self.update_fw_eggy(valve_uuid_selected, valve_address)
+
+    def setup_addresses_new(self, valve_uuid_selected: bytearray, valve_address: int):
+        ser = serial.Serial(self._rs485_loc, 9600)
+        print(f'Setting valve {valve_uuid_selected.hex("-")} to {hex(valve_address)}')
+
+        change_address_packet = self._start_of_frame.copy()
+        change_address_packet = change_address_packet + self._start_of_header.copy()
+        change_address_packet.append(self._dest)
+        change_address_packet.append(self._src)
+        change_address_packet.append(0x50)
+        change_address_packet.append(8)
+        change_address_packet.append(valve_address)
+        change_address_packet.append(0x1)
+        change_address_packet += valve_uuid_selected
+        self._calculate_and_append_checksum(change_address_packet)
+        ser.write(change_address_packet)
+
+        ser.close()
+
+    def update_fw_eggy(self, valve_uuid_selected: bytearray, valve_address: int):
+        print(f"Opening serial port: {self._rs485_loc}")
+        ser = serial.Serial(self._rs485_loc, 9600)
+        ihr = intel_hex_reader.intel_hex_reader(self._fw_update_filename)
+        ihr.open()
+        ihr.convert_to_64_byte_lines()
+        ser.timeout = 1
+        expected_packet = bytes([0xFF, 0x0, 0xFF, 0xA5, 0x1, 0x10, valve_address, 0x1, 0x1, 0xF5, 0x02, 0x4D])
+        lenght_of_update = len(ihr._parse_64_byte_list)
+        for line in ihr._parse_64_byte_list:
+            address = valve_address
+            fw_packet = bytearray([0xFF, 0x0, 0xFF, 0xA5, 0x3F, address, 0xF, 0xF5, 0x2, 0x1, 0x2])
+            print("programming 0x" + line["address"])
+            data = line["address"] + "01" + line["data"]
+            fw_packet[8] = 2 + 1 + 2 + line["byte_count"]
+            fw_packet += bytearray.fromhex(data)
+            self._calculate_and_append_checksum(fw_packet)
+            ser.write(fw_packet)
+            ser.flush()
+            read_packet: bytes = ser.read(size=12)
+            if expected_packet != read_packet:
+                print(f"Unexpected packet read: {read_packet.hex('-')} vs {expected_packet.hex('-')} on line {line}")
+            #time.sleep(1)
+        ser.close()
+
+    def goto_fw_update_mode_eggy(self, uuid: bytearray, address: int):
+        print(f"Opening serial port: {self._rs485_loc}")
+        ser = serial.Serial(self._rs485_loc, 9600)
+        '''print(f'Forcing valve address: {hex(address)} uuid: {uuid.hex("-")} to fw update mode')
+        fw_mode_packet = bytearray([0xFF, 0x0, 0xFF, 0xA5, 0x3F, address, 0x10, 0xF3, 0x7])
+        fw_mode_packet += uuid
+        fw_mode_packet += bytearray([0x1])
+        self._calculate_and_append_checksum(fw_mode_packet)
+        ser.write(fw_mode_packet)
+        ser.flush()
+        time.sleep(0.5)'''
+        print(f'Forcing valve address: {hex(address)} uuid: {uuid.hex("-")} to reset')
+        fw_mode_packet = bytearray([0xFF, 0x0, 0xFF, 0xA5, 0x3F, address, 0x10, 0xF1, 0x7])
+        fw_mode_packet += uuid
+        fw_mode_packet += bytearray([0x1])
+        self._calculate_and_append_checksum(fw_mode_packet)
+        ser.write(fw_mode_packet)
+        ser.flush()
+        print(f'Closing Port')
+        ser.close()
+
+    def select_valve_for_update(self, device_list: list) -> tuple:
+        menu_list = {}
+        menu_display_list = []
+        index = 0
+        for valve in device_list:
+            menu_list[str(index)] = valve
+            try:
+                menu_display_list.append({"Index": index, "Address": valve['Address'], "UUID": valve["UUID"],
+                                          "Git Hash": valve["Git Hash"], "Git Date": valve["Git Date"],
+                                          "Branch": valve["Branch"], "Tag": valve["Tag"], "DID": valve["DID"],
+                                          "RID": valve["RID"]})
+            except Exception:
+                menu_display_list.append({"Index": index, "Address": valve['Address'], "UUID": valve["UUID"],
+                                          "Git Hash": "N/A", "Git Date": "",
+                                          "Branch": "", "Tag": "", "DID": "",
+                                          "RID": ""})
+            index += 1
+        print(tabulate(menu_display_list, headers='keys'))
+
+        choice = input('Please select the index of the Valve for FW update: ')
+        menu_choice = menu_list.get(choice, None)
+        if menu_choice is None:
+            print(f"{str(menu_choice)} was invalid; exiting")
+            return None, "", 0
+        valve_uuid = menu_choice["UUID"]
+        print(f'Valve {valve_uuid} was selected.')
+        return bytearray.fromhex(valve_uuid.replace("-", "")), menu_choice["Type"], int(menu_choice["Address"], 16)
+
+    def get_latest_firmware(self)->str:
+        response = requests.get("https://api.github.com/repos/jeffegg/EggysIVFW/releases/latest")
+        if "name" in response.json().keys():
+            print(f'Found latest FW version is: {response.json()["name"]}')
+        else:
+            print("No release found, please download manually")
+            return ""
+
+        download_url = ""
+        for asset in response.json()["assets"]:
+            if ("EggysIVFW__" in asset["browser_download_url"]) and (".hex" in asset["browser_download_url"]):
+                download_url = asset["browser_download_url"]
+                print(f'Found FW: {asset["browser_download_url"]}')
+        if download_url == "":
+            print("No FW found, please download manually")
+            return ""
+
+        fw_filename = download_url.split("/")[-1]
+        tmp_path = os.path.join(tempfile.gettempdir(), '.{}'.format(hash(os.times())))
+        os.makedirs(tmp_path)
+
+        fw_full_path = os.path.join(tmp_path, fw_filename)
+
+        r = requests.get(download_url, allow_redirects=True)
+        with open(fw_full_path, 'wb') as file:
+            file.write(r.content)
+            file.close()
+
+        return fw_full_path
+
+    def select_com_port(self) -> str:
+        comport_list = serial.tools.list_ports.comports()
+        index = 1
+        comport_display_list = []
+        menu_list = {}
+        for comport in comport_list:
+            entry = {"Index": index, "Device": comport.device, "Product": comport.product, "Serial #": comport.serial_number, "HW ID": comport.hwid}
+            comport_display_list.append(entry)
+            menu_list[str(index)] = entry
+            index += 1
+
+        print(tabulate(comport_display_list, headers='keys'))
+        print(f"Default RS485 device is (hit enter to select): {self._rs485_loc}")
+        choice = input('Please select the index of your RS485 device: ')
+        menu_choice = menu_list.get(choice, None)
+        if menu_choice is None:
+            print(f"Default device of {self._rs485_loc} was selected.")
+            return self._rs485_loc
+        print(f"Device {self._rs485_loc} was selected.")
+        return menu_choice["Device"]
+
+    def find_all_valves(self, enumerate_timeout=50):
+        print(f"Opening serial port: {self._rs485_loc}")
+        ser = serial.Serial(self._rs485_loc, 9600)
+        print("Forcing all address reset on all Pentair FW Valves")
+        address_reset = bytearray([0xFF, 0x0, 0xFF, 0xA5, 0x3F, 0xC, 0x10, 0x51, 0x1, 0x1])
+        self._calculate_and_append_checksum(address_reset)
+        ser.write(address_reset)
+        ser.flush()
+        ser.close()
+        print("Waiting 5 seconds for message to send and valves to quiet a bit")
+        time.sleep(5)
+        print("Sending ID valves packet to Valves with Eggy's Intellivalve Firmware")
         ser = serial.Serial(self._rs485_loc, 9600)
         id_valve_packet = bytearray([0xFF, 0x0, 0xFF, 0xA5, 0x3F, 0xF, 0xF, 0x12, 0x1, 0x1])
         self._calculate_and_append_checksum(id_valve_packet)
         ser.write(id_valve_packet)
+        ser.flush()
         ser.close()
+        time.sleep(0.5)
+        ser = serial.Serial(self._rs485_loc, 9600)
+        id_valve_packet = bytearray([0xFF, 0x0, 0xFF, 0xA5, 0x3F, 0xF, 0xF, 0x12, 0x1, 0x1])
+        self._calculate_and_append_checksum(id_valve_packet)
+        ser.write(id_valve_packet)
+        ser.flush()
+        ser.close()
+        time.sleep(0.5)
+        ser = serial.Serial(self._rs485_loc, 9600)
+        id_valve_packet = bytearray([0xFF, 0x0, 0xFF, 0xA5, 0x3F, 0xF, 0xF, 0x12, 0x1, 0x1])
+        self._calculate_and_append_checksum(id_valve_packet)
+        ser.write(id_valve_packet)
+        ser.flush()
+        ser.close()
+        print("Waiting 5 seconds for message to send and valves to quiet a bit")
+        time.sleep(5)
+
+        print("Listening to " + self._rs485_loc + " for " + str(enumerate_timeout) + " seconds.")
         ser = serial.Serial(self._rs485_loc, 9600)
         ser.timeout = enumerate_timeout
-        print("Listening to " + self._rs485_loc + " for " + str(enumerate_timeout) + " seconds.")
-        last_time = time.time()
+        all_valve_packets_by_uuid = []
         elapsed_time = 0
+        last_time = time.time()
+
         while elapsed_time < enumerate_timeout:
             ser.flushInput()
             try:
-                valve:bytearray = ser.read(10000)
-
+                valve: bytearray = ser.read(size=10000)
                 id_packets = []
                 for i in range(len(valve) - 3):
                     if valve[i+0:i+3] == self._start_of_frame:
@@ -255,38 +480,35 @@ class FWUpdater:
                     try:
                         new_valve_id = {}
                         new_valve_id = self.decode_valve_hail(entry)
+                        shoud_add = True
+                        for decoded_packet in all_valve_packets_by_uuid:
+                            if new_valve_id['UUID'] == decoded_packet['UUID']:
+                                shoud_add = False
+                                break
+                        if shoud_add:
+                            all_valve_packets_by_uuid.append(new_valve_id)
                     except Exception:
                         try:
                             read_id = self.decode_unique_id(entry)
-                            print({"Type": "Pentairs's FW", "Address": hex(entry[6]), "UUID": read_id.hex('-')})
+                            shoud_add = True
+                            for decoded_packet in all_valve_packets_by_uuid:
+                                if read_id.hex('-') == decoded_packet['UUID']:
+                                    shoud_add = False
+                                    break
+                            if shoud_add:
+                                all_valve_packets_by_uuid.append({"Type": PENTAIR_FW_TYPE, "Address": hex(entry[6]), "UUID": read_id.hex('-')})
                         except:
                             continue
-                    else:
-                        print(new_valve_id)
 
             except BufferError:
                 pass
             elapsed_time = time.time() - last_time
+        print(f"Closing Serial Port: {self._rs485_loc}")
         ser.close()
+        print(tabulate(all_valve_packets_by_uuid, headers='keys'))
 
-    def decode_did_rid(self, valve_packet: bytearray) -> (bytearray, bytearray):
-        if valve_packet[0:3] != self._start_of_frame:
-            raise BufferError("This doesn't seem to be a valid packet")
+        return all_valve_packets_by_uuid
 
-        if valve_packet[7] == 0xF1:
-            if valve_packet[10] != 0x80:
-                raise BufferError(
-                    "This doesn't seem to be a valid packet for serial numbers, etc, byte 10 should be 0x80. Instead was 0x" + hex(valve_packet[10]))
 
-            if valve_packet[17:21] != bytearray([0x1, 0x2, 0xFF, 0xFF]):
-                raise BufferError(
-                    "This doesn't seem to be a valid packet for serial numbers, etc, byte 17-20 should be 0x0102ffff. Instead was 0x" + valve_packet[17:21].hex())
-            if valve_packet[25:27] != bytearray([0x0, 0x40]):
-                raise BufferError(
-                    "This doesn't seem to be a valid packet for serial numbers, etc, byte 17-20 should be 0x0040. Instead was 0x" + valve_packet[25:26].hex())
-            did = valve_packet[21:23]
-            rid = valve_packet[23:25]
-            return did, rid
 
-        else:
-            raise BufferError(f"valve_packet[7]: {str(valve_packet[7])}")
+
