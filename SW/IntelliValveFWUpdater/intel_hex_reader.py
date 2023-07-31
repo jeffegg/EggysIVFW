@@ -28,7 +28,7 @@ class intel_hex_reader:
         address = line[3:7]
         record_type = int(line[7:9], 16)
 
-        print(byte_count, address, record_type)
+        #print(byte_count, address, record_type)
         if record_type != 0:
             raise Exception("This is not a data record as expected")
         end_of_data = (byte_count * 2) + 9
@@ -40,7 +40,7 @@ class intel_hex_reader:
     def convert_to_64_byte_lines(self):
         new_line = {"byte_count": 0x40, "address": None, "data": "", "checksum": None}
         for line in self._parse_file_list:
-            print(line)
+            #print(line)
             if new_line["address"] is None:
                 if (int(line["address"], 16) % 0x40) == 0:
                     new_line["address"] = line["address"]
@@ -53,8 +53,10 @@ class intel_hex_reader:
                 if ((int(line["address"], 16) - int(new_line["address"], 16)) / 0x40) > 1:
                     needed_0_bytes = (0x40 * 0x2) - len(new_line["data"])
                     new_line["data"] += "00" * int(floor(needed_0_bytes / 2))
-
+                    #print(f'1    {new_line["data"]}')
+                    #print(f'1    {len(new_line["data"])}')
                     self._parse_64_byte_list.append(new_line.copy())
+                    new_line = {"byte_count": 0x40, "address": None, "data": "", "checksum": None}
                     if (int(line["address"], 16) % 0x40) == 0:
                         new_line["address"] = line["address"]
                     else:
@@ -64,11 +66,13 @@ class intel_hex_reader:
 
                         new_line["data"] = "00" * needed_0_bytes
             new_line["data"] += line["data"]
-
+            #print(f'    {new_line["data"]}')
+            #print(f'    {len(new_line["data"])}')
             if len(new_line["data"]) == (0x40 * 2): # x2 due to byte being 2 nibbles
                 self._parse_64_byte_list.append(new_line.copy())
 
                 new_line = {"byte_count": 0x40, "address": None, "data": "", "checksum": None}
+            #print(new_line)
 
         if new_line["address"] is not None:
             needed_0_bytes = (0x40 * 0x2) - len(new_line["data"])

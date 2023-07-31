@@ -181,7 +181,7 @@
         <property key="fill-flash-options-how" value="0"/>
         <property key="fill-flash-options-inc-const" value="1"/>
         <property key="fill-flash-options-increment" value=""/>
-        <property key="fill-flash-options-seq" value=""/>
+        <property key="fill-flash-options-seq" value="0xFF"/>
         <property key="fill-flash-options-what" value="0"/>
         <property key="format-hex-file-for-download" value="true"/>
         <property key="initialize-data" value="true"/>
@@ -234,8 +234,6 @@
         <property key="memories.programmemory" value="false"/>
         <property key="memories.programmemory.ranges" value="7c0-3fff"/>
         <property key="poweroptions.powerenable" value="false"/>
-        <property key="programmerToGoFilePath"
-                  value="C:/Projects/eggys-intellivalve-firmware/FW/Rev1/debug/default/default_ptg"/>
         <property key="programoptions.donoteraseauxmem" value="false"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.ledbrightness" value="5"/>
@@ -458,7 +456,7 @@
         <property key="fill-flash-options-how" value="0"/>
         <property key="fill-flash-options-inc-const" value="1"/>
         <property key="fill-flash-options-increment" value=""/>
-        <property key="fill-flash-options-seq" value=""/>
+        <property key="fill-flash-options-seq" value="0xFF"/>
         <property key="fill-flash-options-what" value="0"/>
         <property key="format-hex-file-for-download" value="true"/>
         <property key="initialize-data" value="true"/>
@@ -511,8 +509,6 @@
         <property key="memories.programmemory" value="false"/>
         <property key="memories.programmemory.ranges" value="0-3fff"/>
         <property key="poweroptions.powerenable" value="false"/>
-        <property key="programmerToGoFilePath"
-                  value="C:/Projects/eggys-intellivalve-firmware/FW/Rev1/debug/default/default_ptg"/>
         <property key="programoptions.donoteraseauxmem" value="false"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.ledbrightness" value="5"/>
