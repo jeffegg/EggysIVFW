@@ -43,7 +43,7 @@ volatile bool receiveBuffersOverflow;
 extern volatile bool resetValve = false;
 extern volatile bool fwUpdateValue = false;
 extern volatile bool sendPeriodicEndStop = false;
-volatile uint8_t uart_rx_buffer[MAX_DATA_LENGTH] = {0};
+volatile uint8_t uart_rx_buffer[MAX_PACKET] = {0};
 
 volatile uint8_t transmitBuffer[MAX_PACKET] = {0};
 void (*CommandExecutor)(volatile Command *);

@@ -365,6 +365,27 @@ uint8_t MoveValveToNewPosition(void)
         
         if (GetDebugLevel() > 0x20)
         {
+             volatile Command * newCommand;  
+    
+            newCommand = GetCommandEntryBuffer();    
+            if (newCommand)
+            {
+                newCommand->protocal = 0x1;
+                newCommand->source = GetValveRs485Address();
+                newCommand->destination = 0x10;
+                newCommand->command = (uint8_t)VALVE_DEBUG_INFO;
+                newCommand->data[0] = 0x88;
+                newCommand->data[1] = GetCurrentPosition();
+                newCommand->data[2] = neededPosition;
+                newCommand->data[3] = (uint16_t)currentADCValue;
+                newCommand->data[5] = (uint16_t)neededADCValue;
+                newCommand->data[7] = direction_change;
+                newCommand->data[8] = (uint16_t)positionToADCTable[0];
+                newCommand->data[10] = (uint16_t)positionToADCTable[0x31];
+                newCommand->data_length = 12;
+            }
+            TransmitMessage(newCommand);
+            
         }
         
         // If we are within +/- 2of the ADCValue, we can stop. Each stop is about 0x1C off so this isn't much

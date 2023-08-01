@@ -292,7 +292,7 @@ class FWUpdater:
 
         for device in device_list:
             addr = int(device['Address'], 16)
-            if (addr == 0xC) or (addr not in duplicate_address_list):
+            if (addr == 0xC) or (addr in duplicate_address_list):
                 new_address = 0xA0
                 while new_address < 0xF8:
                     if new_address not in address_list:
@@ -315,7 +315,6 @@ class FWUpdater:
             self.goto_fw_update_mode_eggy(valve_uuid_selected, valve_address)
         else:
             self.reset_valve_new(valve_uuid_selected, valve_address)
-            valve_address = 0xC0
 
         self.setup_addresses_new(valve_uuid_selected, valve_address)
         time.sleep(1)
@@ -660,6 +659,9 @@ class FWUpdater:
                     if valve[i+0:i+3] == self._start_of_frame:
                         packet_len = int(valve[i+8:i+9].hex(), 16)
                         id_packets.append(valve[i : i+packet_len+9+2])
+                '''print(valve)
+                for entry in id_packets:
+                    print(hex(len(entry)), entry)'''
 
                 for entry in id_packets:
                     try:

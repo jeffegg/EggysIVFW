@@ -334,7 +334,7 @@ bool IsPacketValid(uint8_t value, uint8_t eusartRxCount)
 void EUSART_RxDataHandler(void){
     // use this default receive interrupt handler code
     uint8_t temp_reg = RC1REG;
-    if (IsPacketValid(temp_reg, eusartRxHead))
+    if (IsPacketValid(temp_reg, eusartRxHead) && (eusartRxCount < MAX_PACKET))
     {
         eusartRxBuffer[eusartRxHead++] = temp_reg;
         if (eusartRxDone == true) // This is a bit odd, but we added to the q and need to move back. If not things get out of wack and next packet will end up getting corrupted.

@@ -37,6 +37,7 @@ typedef enum
     VALVE_EEPROM            = 0x39, 
     VALVE_EEPROM_SET_DONE   = 0x3B,  // Valve EEPROM Data (For backup
     VALVE_MODE              = 0x41,
+    VALVE_DEBUG_INFO        = 0xF4,
     VALVE_FW_VERISON        = 0xF9
 } rs485_send_commands;
 
