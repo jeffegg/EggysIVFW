@@ -288,49 +288,7 @@ void ProvisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
                 newCommand = GetCommandEntryBuffer();
                 if (newCommand)
                 {
-                    newCommand->protocal = 0x1;
-                    newCommand->source = GetValveRs485Address();
-                    newCommand->destination = currentRS485RXBuffer->source;
-                    newCommand->command = (uint8_t)VALVE_FW_VERISON;
-                    newCommand->data[0] = fw_version[0];
-                    newCommand->data[1] = fw_version[1];
-                    newCommand->data[2] = fw_version[2];
-                    newCommand->data[3] = fw_version[3];
-                    newCommand->data[4] = fw_date[0];
-                    newCommand->data[5] = fw_date[1];
-                    newCommand->data[6] = fw_date[2];
-                    newCommand->data[7] = fw_date[3];
-                    newCommand->data[8] = deviceID[0];
-                    newCommand->data[9] = deviceID[1];
-                    newCommand->data[10] = revisionID[0];
-                    newCommand->data[11] = revisionID[1];  
-                    
-                    int i = 0;
-                    uint8_t fw_branch_size = (uint8_t)strlen(fw_branch);
-                    if (fw_branch_size > 20)
-                    {
-                        fw_branch_size = 20;
-                    }
-                    uint8_t fw_tag_size = (uint8_t)strlen(fw_tag);
-                    if (fw_tag_size > 10)
-                    {
-                        fw_tag_size = 10;
-                    }
-                    
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 12] = fw_branch_size;  
-                    newCommand->data[VALVE_EEPROM_SERIAL_LEN + 13] = fw_tag_size;  
-    
-                    for (i = 0; i < fw_branch_size; i++)
-                    {
-                        newCommand->data[VALVE_EEPROM_SERIAL_LEN + 14 + i] = fw_branch[i];
-                    }
-
-                    for (i = 0; i < fw_tag_size; i++)
-                    {
-                        newCommand->data[VALVE_EEPROM_SERIAL_LEN + 14 + fw_branch_size + i] = fw_tag[i];
-                    }
-
-                    newCommand->data_length = VALVE_EEPROM_SERIAL_LEN + 14 + fw_branch_size + fw_tag_size;
+                    SendValveHailMessage(newCommand, GetValveRs485Address());
                     TransmitMessage(newCommand);
                 }
             }
@@ -390,7 +348,7 @@ void SendMessage(volatile Command * command_struct, uint8_t valve_address, uint8
     }
 }
 
-void SendValveHailMessage(volatile Command * command, uint8_t valve_address, uint8_t* valve_uid)
+void SendValveHailMessage(volatile Command * command, uint8_t valve_address)
 {
     int i = 0;
     uint8_t fw_branch_size = (uint8_t)strlen(fw_branch);

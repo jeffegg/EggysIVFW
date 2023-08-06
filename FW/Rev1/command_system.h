@@ -97,7 +97,7 @@ void CopyToUARTRXBuff(uint8_t * rx_buffer, uint8_t length);
 void ReceiveCommandExecutor(void);
 void SetupValveAddressPackets(volatile Command * command, uint8_t destination);
 
-void SendValveHailMessage(volatile Command * command, uint8_t valve_address, uint8_t* valve_uid);
+void SendValveHailMessage(volatile Command * command, uint8_t valve_address);
 void SendValveAddress(volatile Command * command, uint8_t valve_address);
 void SendValveUUID(volatile Command * command, uint8_t valve_address, uint8_t* valve_uid);
 void SendValveENDStop(uint8_t altDest);

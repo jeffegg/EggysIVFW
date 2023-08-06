@@ -30,7 +30,7 @@ void GetDID_RIDFromEEPROM(void);
 
 volatile uint16_t localDeviceID = 0;
 volatile uint16_t localRevisionID = 0;
-uint8_t valve_uid[VALVE_EEPROM_SERIAL_LEN] = {0};
+extern uint8_t valve_uid[VALVE_EEPROM_SERIAL_LEN] = {0};
 uint8_t nextDebugLevel = 0;
 uint8_t currentDebugLevel = 0;
 uint8_t nextValveAddress = 0xB3;
@@ -189,7 +189,7 @@ void SettingsManagerRun(void)
         newCommand = GetCommandEntryBuffer();    
         if (newCommand)
         {
-            SendValveHailMessage(newCommand, GetValveRs485Address(), valve_uid);
+            SendValveHailMessage(newCommand, GetValveRs485Address());
         }
         TransmitMessage(newCommand);  
         sendValveHail = false;

@@ -633,7 +633,7 @@ class FWUpdater:
         ser.write(id_valve_packet)
         ser.flush()
         ser.close()
-        time.sleep(0.5)
+        time.sleep(0.2)
         ser = serial.Serial(self._rs485_loc, 9600)
         id_valve_packet = bytearray([0xFF, 0x0, 0xFF, 0xA5, 0x3F, 0xF, 0xF, 0x12, 0x1, 0x1])
         self._calculate_and_append_checksum(id_valve_packet)

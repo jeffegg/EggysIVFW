@@ -42,7 +42,7 @@ uint16_t positionToADCTable[0x31] = {0};
 struct ValveInfo currentValveInfo;
 volatile struct ValveInfo nextValveInfo;
 uint8_t currentMaintenceOverridePosition = 0;
-volatile uint8_t nextMaintenceOverridePosition = 0;
+extern volatile uint8_t nextMaintenceOverridePosition = 0;
 volatile uint8_t nextValveLocation = 0;
 uint16_t valveADCValue = 0xFFFF;
 uint16_t adderADC = 0;
@@ -184,6 +184,39 @@ uint8_t GetCurrentPosition(void)
     {
         return GetSelectedEndstopValue();
     }*/
+}
+
+void DecrementMainOverride(void)
+{
+    if(currentValveInfo.valveMode != VALVE_MODE_MAINTAINENC)
+    {
+        return;
+    }
+    // RED -
+    if (nextMaintenceOverridePosition != MIN_POSITION)
+    {
+        nextMaintenceOverridePosition--;
+    }
+    else
+    {
+        nextMaintenceOverridePosition = MIN_POSITION;
+    }
+}
+
+void IncrementMainOverride(void)
+{
+    if(currentValveInfo.valveMode != VALVE_MODE_MAINTAINENC)
+    {
+        return;
+    }
+    if (nextMaintenceOverridePosition <= MAX_POSITION)
+    {
+        nextMaintenceOverridePosition++;
+    }
+    else
+    {
+        nextMaintenceOverridePosition = MAX_POSITION;
+    }
 }
 
 uint8_t PeriodicValveUpdate(void)
@@ -470,13 +503,13 @@ void CreateADCTable(struct ValveSettings *currentValveSettings)
     uint16_t ADC_Endstop_0_value = currentValveSettings->endstop0ValueADC; 
     uint16_t ADC_Endstop_24_value = currentValveSettings->endstop24ValueADC;
     
-    positionToADCTable[0] = ADC_Endstop_0_value; 
-    positionToADCTable[0x30] = ADC_Endstop_24_value;
+    positionToADCTable[MIN_POSITION] = ADC_Endstop_0_value; 
+    positionToADCTable[MAX_POSITION] = ADC_Endstop_24_value;
     float adder = (float)(ADC_Endstop_0_value - ADC_Endstop_24_value) / (float)0x30; // 0x62 here is 0x31 << Q; since this may be in Q format
     adderADC = (uint16_t)adder;
-    float temp_adder = positionToADCTable[0x30];
+    float temp_adder = positionToADCTable[MAX_POSITION];
 
-    for (int i = 0x30; i >= 0; i--)
+    for (int i = MAX_POSITION; i >= 0; i--)
     {
         positionToADCTable[i] = (uint16_t)temp_adder;
         
@@ -487,7 +520,7 @@ void CreateADCTable(struct ValveSettings *currentValveSettings)
 uint8_t ADCValueToPosition(uint16_t currentDoubledADCValue)
 {
     uint16_t adcValueFromTable = 0;
-    uint16_t prevAdcValueFromTable = positionToADCTable[0x30];
+    uint16_t prevAdcValueFromTable = positionToADCTable[MAX_POSITION];
     uint8_t current_pos = 0xFF; // 0xFF value not found
     uint16_t midpoint = 0;
     
@@ -496,7 +529,7 @@ uint8_t ADCValueToPosition(uint16_t currentDoubledADCValue)
         return 0xFF;
     }
     
-    for (int i = 0x30; i >= 0; i--)
+    for (int i = MAX_POSITION; i >= 0; i--)
     {
         adcValueFromTable = positionToADCTable[i];
         if (currentDoubledADCValue == adcValueFromTable)

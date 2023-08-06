@@ -97,6 +97,7 @@ void HandleButtons(void)
         {   
             IncrementValveMode();
             modeButtonPushed = false;
+            return;
         }  
         if (redAndYellowButtonPushed)
         {
@@ -106,6 +107,7 @@ void HandleButtons(void)
             else
                 SetSelectedEndstop0();
             redAndYellowButtonPushed = false;
+            return;
         }
         if(redAndSaveButtonPushed)
         {
@@ -113,10 +115,21 @@ void HandleButtons(void)
             newCommand = GetCommandEntryBuffer();    
             if (newCommand)
             {
-                SendValveHailMessage(newCommand, GetValveRs485Address(), valve_uid);
+                SendValveHailMessage(newCommand, GetValveRs485Address());
                 redAndSaveButtonPushed = false;
             }
-            TransmitMessage(newCommand);        
-        }    
+            TransmitMessage(newCommand);    
+            return;
+        }  
+        
+        if (redButtonPushed)
+        {
+            // RED -
+            DecrementMainOverride();
+        }
+        else if (yellowButtonPushed)
+        {
+            IncrementMainOverride();
+        }
     }
 }

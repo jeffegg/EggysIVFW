@@ -42,7 +42,7 @@
 // 14 -> 12
 // 15 -> Service
 
-#define NUM_BLINKS_ID 60
+#define NUM_BLINKS_ID 120
 volatile LEDS currentDisplay;
 volatile LEDS nextDisplay;
 

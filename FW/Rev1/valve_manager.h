@@ -24,6 +24,8 @@
 #include <stdbool.h>
 #include "globals.h"
 
+#define MAX_POSITION 0x30
+#define MIN_POSITION 0x0
 
 typedef enum
 {
@@ -69,8 +71,10 @@ void SetSelectedEndstop24(void);
 SelectedEndstop GetSelectedEndstop(void);
 uint8_t GetSelectedEndstopValue(void);
 uint8_t GetCurrentPosition(void);
-
 uint8_t PeriodicValveUpdate(void);
+
+void DecrementMainOverride(void);
+void IncrementMainOverride(void);
 
 #endif	/* VALVE_MANAGER_H */
 
