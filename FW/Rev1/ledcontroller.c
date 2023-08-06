@@ -42,11 +42,12 @@
 // 14 -> 12
 // 15 -> Service
 
+#define NUM_BLINKS_ID 60
 volatile LEDS currentDisplay;
 volatile LEDS nextDisplay;
 
-bool nextIDValve = false;
-bool currentIDValve = false;
+volatile bool nextIDValve = false;
+volatile bool currentIDValve = false;
 volatile bool light_on = false;
 
 void FlashLedInterrupt(void);
@@ -136,7 +137,9 @@ void UpdateLeds(void)
 }
 
 void SetLeds(void)
-{    
+{      
+    currentIDValve = nextIDValve;
+    
     ValveMode nextValveMode = GetCurrentValveMode();
     if ((nextValveMode == VALVE_MODE_NORMAL) && (light_on || (!IsProvisioned())))
         nextDisplay.LEDbits.AUTO_LED = 1;
@@ -157,6 +160,11 @@ void SetLeds(void)
     uint8_t ledToLight = valveLocation >> 2;
     uint8_t between2Lights = valveLocation & 0x3;
     nextDisplay.raw_leds &= 0xC001;
+    
+    if (currentIDValve && light_on)
+    {
+        ledToLight = 0xFF;
+    }
     
     switch(ledToLight)
     {
@@ -249,7 +257,7 @@ void SetLeds(void)
          break;
         case 0xFF:
         default:
-            nextDisplay.raw_leds = 0x3FFE; //Turn on all LEDS to signify error
+            nextDisplay.raw_leds |= 0x3FFE; //Turn on all LEDS to signify error
          break;
     }
 }
@@ -261,5 +269,17 @@ void IdentifyValve(void)
 
 void FlashLedInterrupt(void)
 {
+    static uint8_t num_id_blinks = 0;
     light_on = !light_on;
+    
+    if(num_id_blinks >= NUM_BLINKS_ID)
+    {
+        nextIDValve = false;
+        num_id_blinks = 0;
+    }
+    
+    if (currentIDValve)
+    {
+       num_id_blinks += 1; 
+    }
 }

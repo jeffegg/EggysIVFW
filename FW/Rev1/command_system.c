@@ -61,7 +61,7 @@ extern uint8_t writeEEPROMSource = 0;
 extern uint8_t writeEEPROMAddress = 0;
 extern uint8_t writeEEPROMLength = 0;
 extern uint32_t writeEEPROMValue = 0;
-extern bool idValve;
+extern bool sendValveID;
 
 
 extern uint8_t reset_reason;
@@ -184,7 +184,8 @@ void ProvisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
         case VALVE_IDENTIFY_ADDR:
             if ((dest == 0xF) || (dest == GetValveRs485Address()))
             {
-                idValve = true;
+                IdentifyValve();
+                sendValveID = true;
             }
             receiveReady = false;
             break;
@@ -193,7 +194,7 @@ void ProvisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
             if (CheckUUID(currentRS485RXBuffer->data))
             {
                 IdentifyValve();
-                idValve = false;
+                sendValveID = false;
             }
             receiveReady = false;
             break;

@@ -44,7 +44,7 @@ extern bool provisonSeen = false;
 extern uint8_t *deviceID = (uint8_t *)&localDeviceID;
 extern uint8_t *revisionID = (uint8_t *)&localRevisionID;
 
-extern bool idValve = false;
+extern bool sendValveID = false;
 volatile bool sendValveHail = 0;
 
 void LoadValveSettings(void)
@@ -155,9 +155,9 @@ void ProvisionedTimeFunction(void)
     if (sendValveHailCount > 12) // Send 12 at about 10s ->> about 2 minutes
     {
         sendValveHailCount = 0;
-        idValve = false;
+        sendValveID = false;
     }
-    if (idValve) {
+    if (sendValveID) {
         sendValveHail = true;
         sendValveHailCount++;
     }
