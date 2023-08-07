@@ -498,25 +498,6 @@ void ValvePosition24InterruptHandler(void)
     lastInterruptValue = false;
 }
 
-void CreateADCTable(struct ValveSettings *currentValveSettings)
-{
-    uint16_t ADC_Endstop_0_value = currentValveSettings->endstop0ValueADC; 
-    uint16_t ADC_Endstop_24_value = currentValveSettings->endstop24ValueADC;
-    
-    positionToADCTable[MIN_POSITION] = ADC_Endstop_0_value; 
-    positionToADCTable[MAX_POSITION] = ADC_Endstop_24_value;
-    float adder = (float)(ADC_Endstop_0_value - ADC_Endstop_24_value) / (float)0x30; // 0x62 here is 0x31 << Q; since this may be in Q format
-    adderADC = (uint16_t)adder;
-    float temp_adder = positionToADCTable[MAX_POSITION];
-
-    for (int i = MAX_POSITION; i >= 0; i--)
-    {
-        positionToADCTable[i] = (uint16_t)temp_adder;
-        
-        temp_adder = (float)adder + (float)temp_adder;
-    }
-}
-
 uint8_t ADCValueToPosition(uint16_t currentDoubledADCValue)
 {
     uint16_t adcValueFromTable = 0;
@@ -554,6 +535,28 @@ uint8_t ADCValueToPosition(uint16_t currentDoubledADCValue)
     }
     
     return current_pos;
+}
+#define Q_FRAC 8
+void CreateADCTable(struct ValveSettings *currentValveSettings)
+{
+    uint16_t ADC_Endstop_0_value = currentValveSettings->endstop0ValueADC; 
+    uint16_t ADC_Endstop_24_value = currentValveSettings->endstop24ValueADC;
+
+    // This is Q Number math, specifically Q24.8 Math. This is about 314 of program memory vs 1500 + for float
+    // Take highest - lowest and make it the slope
+    uint32_t adder = (uint32_t)(ADC_Endstop_0_value - ADC_Endstop_24_value) << (uint32_t)Q_FRAC;
+    // Since we should never have a negative number, lets just add
+    adder += (uint32_t)MAX_POSITION >> (uint32_t)1;
+    adder = (uint32_t)adder / (uint32_t)MAX_POSITION;
+    uint32_t temp_adder = (uint32_t)ADC_Endstop_24_value << (uint32_t)Q_FRAC;
+    for (int i = MAX_POSITION; i >= 0; i--)
+    {
+        positionToADCTable[i] = (uint16_t)(temp_adder >> Q_FRAC);
+        
+        temp_adder = adder + temp_adder;
+    }
+    positionToADCTable[MIN_POSITION] = ADC_Endstop_0_value; 
+    
 }
 
 /*
