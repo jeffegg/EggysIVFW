@@ -46,9 +46,7 @@ extern volatile bool sendPeriodicEndStop = false;
 volatile uint8_t uart_rx_buffer[MAX_PACKET] = {0};
 
 volatile uint8_t transmitBuffer[MAX_PACKET] = {0};
-void (*CommandExecutor)(volatile Command *);
 
-void UnprovisionedCommandExecutor(volatile Command *currentRS485RXBuffer);
 void ProvisionedCommandExecutor(volatile Command *currentRS485RXBuffer);
 
 extern uint8_t sendEEPROMAddress = 0;
@@ -61,7 +59,7 @@ extern uint8_t writeEEPROMSource = 0;
 extern uint8_t writeEEPROMAddress = 0;
 extern uint8_t writeEEPROMLength = 0;
 extern uint32_t writeEEPROMValue = 0;
-extern bool sendValveID;
+extern volatile bool sendValveID;
 
 
 extern uint8_t reset_reason;
@@ -81,7 +79,9 @@ extern bool provisonSeen;
 
 void SetupCommandManager(void)
 {
-    CommandExecutor = &ProvisionedCommandExecutor;
+    receiveReady = false;
+    DE_SetLow();
+    nRE_SetLow();
  }
 
 
@@ -165,10 +165,8 @@ void ReceiveCommandExecutor(void)
         rs485RXBuffer[0].data[i] = uart_rx_buffer[9 + i];
     }
     
-    volatile Command * currentBuffer = &rs485RXBuffer[0];
-    CommandExecutor = &ProvisionedCommandExecutor;
-    
-    (*CommandExecutor)(currentBuffer);
+    volatile Command * currentBuffer = &rs485RXBuffer[0];  
+    ProvisionedCommandExecutor(currentBuffer);
 }
 
 void ProvisionedCommandExecutor(volatile Command *currentRS485RXBuffer)

@@ -76,6 +76,8 @@ volatile int8_t eusartRxLength = 0;
 volatile eusart_status_t eusartRxLastError;
 volatile bool eusartRxDone = false;
 
+volatile uint8_t temp_reg = 0;
+
 /**
   Section: EUSART APIs
 */
@@ -129,8 +131,22 @@ void EUSART_Initialize(void)
     eusartRxHead = 0;
     eusartRxTail = 0;
     eusartRxCount = 0;
-
+    eusartRxDone = false;
+    
+    
     // enable receive interrupt
+
+if(RC1STAbits.FERR){
+        EUSART_FramingErrorHandler();
+        temp_reg = RC1REG;
+    }
+
+    if(RC1STAbits.OERR){
+        EUSART_OverrunErrorHandler();
+        temp_reg = RC1REG;
+    }
+
+
     PIE1bits.RCIE = 1;
 }
 
@@ -235,7 +251,7 @@ void EUSART_Receive_ISR(void)
     
     if(eusartRxStatusBuffer[eusartRxHead].status){
         //EUSART_ErrorHandler();
-        uint8_t temp_reg = RC1REG;
+        temp_reg = RC1REG;
     } else {
         EUSART_RxDataHandler();
     }
@@ -363,7 +379,10 @@ uint8_t * GetBuffer(void)
     return eusartRxBuffer;
 }
 
-void EUSART_DefaultFramingErrorHandler(void){}
+void EUSART_DefaultFramingErrorHandler(void){
+    RC1STAbits.SPEN = 0;
+    RC1STAbits.SPEN = 1;
+}
 
 void EUSART_DefaultOverrunErrorHandler(void){
     // EUSART error - restart

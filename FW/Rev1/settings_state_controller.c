@@ -35,21 +35,24 @@ uint8_t nextDebugLevel = 0;
 uint8_t currentDebugLevel = 0;
 uint8_t nextValveAddress = 0xB3;
 uint8_t currentValveAddress = 0;
-bool nextValveProvisioned = false;
+volatile bool nextValveProvisioned = false;
 volatile bool currentValveProvisioned = false;
 
-uint8_t missedProvisionedCount = 0;
-extern bool provisonSeen = false;
+volatile uint8_t missedProvisionedCount = 0;
+volatile uint8_t sendValveHailCount = 0;
+
+extern volatile bool provisonSeen = false;
 
 extern uint8_t *deviceID = (uint8_t *)&localDeviceID;
 extern uint8_t *revisionID = (uint8_t *)&localRevisionID;
 
-extern bool sendValveID = false;
+extern volatile bool sendValveID = false;
 volatile bool sendValveHail = 0;
 
 void LoadValveSettings(void)
 {
     missedProvisionedCount = 0;
+    sendValveHailCount = 0;
     
     GetUUIDFromEEPROM();
     GetDID_RIDFromEEPROM();
@@ -132,7 +135,6 @@ inline bool IsProvisioned(void)
 
 void ProvisionedTimeFunction(void)
 {
-    static uint8_t sendValveHailCount = 0;
     if (!provisonSeen)
     {
         missedProvisionedCount++;

@@ -555,7 +555,7 @@ void CreateADCTable(struct ValveSettings *currentValveSettings)
         
         temp_adder = adder + temp_adder;
     }
-    positionToADCTable[MIN_POSITION] = ADC_Endstop_0_value; 
+    positionToADCTable[MIN_POSITION] = ADC_Endstop_0_value; // Just in case fix the last entry
     
 }
 

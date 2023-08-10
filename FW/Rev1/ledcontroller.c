@@ -49,11 +49,13 @@ volatile LEDS nextDisplay;
 volatile bool nextIDValve = false;
 volatile bool currentIDValve = false;
 volatile bool light_on = false;
+volatile uint8_t num_id_blinks = 0;
 
 void FlashLedInterrupt(void);
 
 void SetupLeds(void)
 {    
+    num_id_blinks = 0;
     nextDisplay.raw_leds = 0;
     currentDisplay.raw_leds = nextDisplay.raw_leds;
     TMR0_SetLightFlashInterruptHandler(FlashLedInterrupt);
@@ -269,7 +271,7 @@ void IdentifyValve(void)
 
 void FlashLedInterrupt(void)
 {
-    static uint8_t num_id_blinks = 0;
+    
     light_on = !light_on;
     
     if(num_id_blinks >= NUM_BLINKS_ID)

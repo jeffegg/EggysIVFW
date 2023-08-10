@@ -56,6 +56,10 @@
 */
 
 volatile uint8_t timer0ReloadVal;
+volatile uint16_t CountCallBack = 0;
+volatile uint16_t debounceCountCallBack = 0;
+volatile uint16_t flashLightCountCallBack = 0;
+    
 void (*TMR0_InterruptHandler)(void);
 void (*TMR0_ProvisionedInterruptHandler)(void);
 void (*TMR0_DebounceInterruptHandler)(void);
@@ -73,9 +77,18 @@ void TMR0_Initialize(void)
 	
     // TMR0 194; 
     TMR0 = 0xC2;
+    CountCallBack = 0;
+    debounceCountCallBack = 0;
+    flashLightCountCallBack = 0;
 	
     // Load the TMR value to reload variable
     timer0ReloadVal= 0xC2;
+        
+    // Set Default Interrupt Handler
+    TMR0_SetInterruptHandler(TMR0_DefaultInterruptHandler);
+    TMR0_SetProvisionedInterruptHandler(TMR0_DefaultProvisionedInterruptHandler);
+    TMR0_SetDebounceInterruptHandler(TMR0_DefaultDebounceInterruptHandler);
+    TMR0_SetLightFlashInterruptHandler(TMR0_DefaultLightFlashInterruptHandler);
 
     // Clear Interrupt flag before enabling the interrupt
     INTCONbits.TMR0IF = 0;
@@ -83,11 +96,6 @@ void TMR0_Initialize(void)
     // Enabling TMR0 interrupt
     INTCONbits.TMR0IE = 1;
 
-    // Set Default Interrupt Handler
-    TMR0_SetInterruptHandler(TMR0_DefaultInterruptHandler);
-    TMR0_SetProvisionedInterruptHandler(TMR0_DefaultProvisionedInterruptHandler);
-    TMR0_SetDebounceInterruptHandler(TMR0_DefaultDebounceInterruptHandler);
-    TMR0_SetLightFlashInterruptHandler(TMR0_DefaultLightFlashInterruptHandler);
 }
 
 uint8_t TMR0_ReadTimer(void)
@@ -113,9 +121,7 @@ void TMR0_Reload(void)
 
 void TMR0_ISR(void)
 {
-    static volatile uint16_t CountCallBack = 0;
-    static volatile uint16_t debounceCountCallBack = 0;
-    static volatile uint16_t flashLightCountCallBack = 0;
+
 
     TMR0 = timer0ReloadVal;
     
