@@ -380,8 +380,8 @@ uint8_t * GetBuffer(void)
 }
 
 void EUSART_DefaultFramingErrorHandler(void){
-    RC1STAbits.SPEN = 0;
-    RC1STAbits.SPEN = 1;
+    //RC1STAbits.SPEN = 0;
+    //RC1STAbits.SPEN = 1;
 }
 
 void EUSART_DefaultOverrunErrorHandler(void){
