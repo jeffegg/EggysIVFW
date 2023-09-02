@@ -489,8 +489,8 @@
                   value="${communication.interface.default}"/>
         <property key="communication.interface.jtag" value="2wire"/>
         <property key="communication.speed" value="${communication.speed.default}"/>
-        <property key="debugoptions.debug-startup" value="Halt at main"/>
-        <property key="debugoptions.reset-behaviour" value="Main"/>
+        <property key="debugoptions.debug-startup" value="Halt at Reset vector"/>
+        <property key="debugoptions.reset-behaviour" value="Reset Vector"/>
         <property key="debugoptions.simultaneous.debug" value="false"/>
         <property key="debugoptions.useswbreakpoints" value="true"/>
         <property key="event.recorder.enabled" value="false"/>
@@ -512,7 +512,7 @@
         <property key="memories.programmemory.ranges" value="0-3fff"/>
         <property key="poweroptions.powerenable" value="false"/>
         <property key="programmerToGoFilePath"
-                  value="C:/Projects/eggys-intellivalve-firmware/FW/Rev1/debug/default/default_ptg"/>
+                  value="C:/Projects/eggys-intellivalve-firmware/FW/Rev1/debug/debug/debug_ptg"/>
         <property key="programoptions.donoteraseauxmem" value="false"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.ledbrightness" value="5"/>
@@ -521,7 +521,7 @@
         <property key="programoptions.pgdconfig" value="pull down"/>
         <property key="programoptions.pgdresistor.value" value="4.7"/>
         <property key="programoptions.pgmentry.voltage" value="high"/>
-        <property key="programoptions.pgmspeed" value="Med"/>
+        <property key="programoptions.pgmspeed" value="Max"/>
         <property key="programoptions.preservedataflash" value="false"/>
         <property key="programoptions.preservedataflash.ranges"
                   value="${memories.dataflash.default}"/>
@@ -555,8 +555,8 @@
                   value="${communication.interface.default}"/>
         <property key="communication.interface.jtag" value="2wire"/>
         <property key="communication.speed" value="${communication.speed.default}"/>
-        <property key="debugoptions.debug-startup" value="Halt at main"/>
-        <property key="debugoptions.reset-behaviour" value="Main"/>
+        <property key="debugoptions.debug-startup" value="Halt at Reset vector"/>
+        <property key="debugoptions.reset-behaviour" value="Reset Vector"/>
         <property key="debugoptions.simultaneous.debug" value="false"/>
         <property key="debugoptions.useswbreakpoints" value="true"/>
         <property key="event.recorder.enabled" value="false"/>
@@ -587,7 +587,7 @@
         <property key="programoptions.pgdconfig" value="pull down"/>
         <property key="programoptions.pgdresistor.value" value="4.7"/>
         <property key="programoptions.pgmentry.voltage" value="high"/>
-        <property key="programoptions.pgmspeed" value="Med"/>
+        <property key="programoptions.pgmspeed" value="Max"/>
         <property key="programoptions.preservedataflash" value="false"/>
         <property key="programoptions.preservedataflash.ranges"
                   value="${memories.dataflash.default}"/>

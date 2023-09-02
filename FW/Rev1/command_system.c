@@ -298,6 +298,19 @@ void ProvisionedCommandExecutor(volatile Command *currentRS485RXBuffer)
                 perodicEndStopSource = source;
                 SetEndstop0Value(currentRS485RXBuffer->data[6]);
                 SetEndstop24Value(currentRS485RXBuffer->data[7]);
+                
+                if (currentRS485RXBuffer->data_length > 8)
+                {
+                    SelectedEndstop currentEndStop = GetSelectedEndstop();
+                    if((currentRS485RXBuffer->data[8] == ENDSTOP_0_SELECTED) && (currentEndStop != ENDSTOP_0_SELECTED))
+                    {
+                        SetSelectedEndstop0();
+                    }
+                    else if((currentRS485RXBuffer->data[8] == ENDSTOP_24_SELECTED) && (currentEndStop != ENDSTOP_24_SELECTED))
+                    {
+                        SetSelectedEndstop24();
+                    }
+                }
                 provisonSeen = true;
                 sendPeriodicEndStop = true;
             }

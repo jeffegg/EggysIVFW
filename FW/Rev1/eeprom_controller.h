@@ -30,7 +30,9 @@
 #define VALVE_EEPROM_SELECTED_END_STOP_ADDRESS            0x66  // Current endstop selected 1 byte
 #define VALVE_EEPROM_MAINTENCE_POSITION                   0x67  // Current endstop selected 1 byte
 #define VALVE_EEPROM_DEBUG_LEVEL_ADDRESS                  0x68  // Current debug level 4 bytes
-#define VALVE_EEPROM_PROVISONED_ADDRESS                   0x6C  // Are we provisioned? May drop this
+//#define VALVE_EEPROM_PROVISONED_ADDRESS                   0x6C  // Are we provisioned? May drop this
+#define VALVE_EEPROM_RESET_AFTER_MINUTES_ADDRESS          0x6C  // How amny minutes to wait after no provision to reset - 0 means disabled; 1-255 minutes
+#define VALVE_EEPROM_NUM_ID_MESSAGES_ADDRESS              0x6D  // Lower 2 bits are minutes to send (Val + 1=> 1-4 minutes) upper 6 bits are how many seconds between (0-64 seconds)
 
 #define VALVE_EEPROM_0_END_STOP_ADDRESS_1                 0x70  // Current Valve Mode 1 bytes + Reserve 1 byte
 #define VALVE_EEPROM_24_END_STOP_ADDRESS_1                0x71  // Current Valve Mode 1 bytes + Reserve 1 byte

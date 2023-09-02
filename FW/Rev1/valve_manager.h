@@ -50,8 +50,8 @@ struct ValveInfo
 
 typedef enum
 {
-    ENDSTOP_0_SELECTED,
-    ENDSTOP_24_SELECTED
+    ENDSTOP_0_SELECTED = 0,
+    ENDSTOP_24_SELECTED = 1
 } SelectedEndstop;
 
 // Setup Valve
